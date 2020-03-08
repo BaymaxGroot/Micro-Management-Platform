@@ -21,17 +21,17 @@
                     "children": [
                         {
                             "text": "商品分类",
-                            "link": "",
+                            "link": "/good/category",
                             "i18n": "商品分类"
                         },
                         {
                             "text": "商品管理",
-                            "link": "",
+                            "link": "/good/management",
                             "i18n": "商品管理"
                         },
                         {
                             "text": "用户期望商品",
-                            "link": "",
+                            "link": "/good/wanted",
                             "i18n": "用户期望商品"
                         }
                     ]
@@ -44,17 +44,17 @@
                     "children": [
                         {
                             "text": "订单列表",
-                            "link": "",
+                            "link": "/order/list",
                             "i18n": "订单列表"
                         },
                         {
                             "text": "售后订单",
-                            "link": "",
+                            "link": "/order/after-sale",
                             "i18n": "售后订单"
                         },
                         {
                             "text": "评价管理",
-                            "link": "",
+                            "link": "/order/evaluation",
                             "i18n": "评价管理"
                         }
                     ]
@@ -67,7 +67,7 @@
                     "children": [
                         {
                             "text": "用户列表",
-                            "link": "",
+                            "link": "/user/list",
                             "i18n": "用户列表"
                         }
                     ]
@@ -80,7 +80,7 @@
                     "children": [
                         {
                             "text": "分销商",
-                            "link": "",
+                            "link": "/distribution/list",
                             "i18n": "分销商"
                         }
                     ]
@@ -93,17 +93,17 @@
                     "children": [
                         {
                             "text": "文章",
-                            "link": "",
+                            "link": "/content/article",
                             "i18n": "文章"
                         },
                         {
                             "text": "专题",
-                            "link": "",
+                            "link": "/content/subject",
                             "i18n": "专题"
                         },
                         {
                             "text": "门店",
-                            "link": "",
+                            "link": "/content/store",
                             "i18n": "门店"
                         }
                     ]

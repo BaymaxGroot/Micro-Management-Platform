@@ -5,7 +5,7 @@ import { VERSION as VERSION_ALAIN, TitleService } from '@delon/theme';
 import { VERSION as VERSION_ZORRO, NzModalService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-root',
+  selector: 'micro-root',
   template: `
     <router-outlet></router-outlet>
   `,

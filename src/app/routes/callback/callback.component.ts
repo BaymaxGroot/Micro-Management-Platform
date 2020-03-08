@@ -4,7 +4,7 @@ import { SocialService } from '@delon/auth';
 import { SettingsService } from '@delon/theme';
 
 @Component({
-  selector: 'app-callback',
+  selector: 'micro-callback',
   template: ``,
   providers: [SocialService],
 })
