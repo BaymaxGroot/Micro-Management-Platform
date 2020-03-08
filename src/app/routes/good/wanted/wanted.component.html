@@ -6,3 +6,12 @@
         </nz-breadcrumb>
     </ng-template>
 </page-header>
+
+<div class="ant-row">
+    <nz-card nzTitle="用户期望商品" [nzExtra]="timerange">
+
+    </nz-card>
+    <ng-template #timerange>
+        <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
+    </ng-template>
+</div>

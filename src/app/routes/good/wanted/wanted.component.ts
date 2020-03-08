@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'micro-wanted',
-  templateUrl: './wanted.component.html',
-  styleUrls: ['./wanted.component.less']
+    selector: 'micro-wanted',
+    templateUrl: './wanted.component.html',
+    styleUrls: ['./wanted.component.less']
 })
 export class WantedComponent implements OnInit {
 
-  constructor() { }
+    dateFormat = 'yyyy/MM/dd';
 
-  ngOnInit() {
-  }
+    constructor() {
+    }
+
+    ngOnInit() {
+    }
 
 }
