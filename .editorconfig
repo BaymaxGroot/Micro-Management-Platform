@@ -1,0 +1,21 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+# 匹配全部文件
+[*]
+# 设置字符集
+charset = utf-8
+# 缩进类型 tab/space
+indent_style = space
+# 缩进空格数
+indent_size = 4
+# 结尾换行符 可选"lf"、"cr"、"crlf"
+end_of_line = lf
+# 在文件结尾插入新行
+insert_final_newline = false
+# 删除一行中的前后空格
+trim_trailing_whitespace = true
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
