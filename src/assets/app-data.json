@@ -15,6 +15,12 @@
             "hideInBreadcrumb": true,
             "children": [
                 {
+                    "text": "首页",
+                    "i18n": "首页",
+                    "icon": "anticon-dashboard",
+                    "link": "/summary"
+                },
+                {
                     "text": "商品管理",
                     "i18n": "商品管理",
                     "icon": "anticon-appstore",
