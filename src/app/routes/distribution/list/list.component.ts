@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'micro-liat',
-  templateUrl: './liat.component.html',
-  styleUrls: ['./liat.component.less']
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.less']
 })
-export class LiatComponent implements OnInit {
+export class ListComponent implements OnInit {
 
   constructor() { }
 

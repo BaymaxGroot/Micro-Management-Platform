@@ -1,15 +1,25 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
 
-import { DistributionRoutingModule } from './distribution-routing.module';
-import { LiatComponent } from './liat/liat.component';
+import {DistributionRoutingModule} from './distribution-routing.module';
+import {ListComponent} from './list/list.component';
+import {SharedModule} from "@shared";
 
+const COMPONENTS = [
+    ListComponent
+];
+
+const COMPONENTS_NOROUNT = [];
 
 @NgModule({
-  declarations: [LiatComponent],
-  imports: [
-    CommonModule,
-    DistributionRoutingModule
-  ]
+    declarations: [
+        ...COMPONENTS,
+        ...COMPONENTS_NOROUNT
+    ],
+    imports: [
+        SharedModule,
+        DistributionRoutingModule
+    ],
+    entryComponents: COMPONENTS_NOROUNT
 })
-export class DistributionModule { }
+export class DistributionModule {
+}
