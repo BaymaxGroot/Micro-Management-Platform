@@ -11,8 +11,6 @@ import { UserRegisterResultComponent } from './passport/register-result/register
 // single pages
 import { CallbackComponent } from './callback/callback.component';
 import { UserLockComponent } from './passport/lock/lock.component';
-import { TestComponent } from './test/test.component';
-import { Test1Component } from './test1/test1.component';
 
 const COMPONENTS = [
   DashboardComponent,
@@ -30,9 +28,7 @@ const COMPONENTS_NOROUNT = [];
   imports: [ SharedModule, RouteRoutingModule ],
   declarations: [
     ...COMPONENTS,
-    ...COMPONENTS_NOROUNT,
-    TestComponent,
-    Test1Component
+    ...COMPONENTS_NOROUNT
   ],
   entryComponents: COMPONENTS_NOROUNT
 })

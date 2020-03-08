@@ -1,0 +1,115 @@
+{
+    "app": {
+        "name": "江阴市民微商城",
+        "description": "江阴市民微商城v1."
+    },
+    "user": {
+        "name": "江阴市民微商城",
+        "avatar": "./assets/tmp/img/avatar.jpg",
+        "email": "cipchk@qq.com"
+    },
+    "menu": [
+        {
+            "text": "商城",
+            "i18n": "商城",
+            "group": true,
+            "hideInBreadcrumb": true,
+            "children": [
+                {
+                    "text": "商品管理",
+                    "i18n": "商品管理",
+                    "icon": "anticon-appstore",
+                    "children": [
+                        {
+                            "text": "商品分类",
+                            "link": "",
+                            "i18n": "商品分类"
+                        },
+                        {
+                            "text": "商品管理",
+                            "link": "",
+                            "i18n": "商品管理"
+                        },
+                        {
+                            "text": "用户期望商品",
+                            "link": "",
+                            "i18n": "用户期望商品"
+                        }
+                    ]
+                },
+                {
+                    "text": "订单管理",
+                    "i18n": "订单管理",
+                    "icon": "anticon-shopping-cart",
+                    "shortcutRoot": true,
+                    "children": [
+                        {
+                            "text": "订单列表",
+                            "link": "",
+                            "i18n": "订单列表"
+                        },
+                        {
+                            "text": "售后订单",
+                            "link": "",
+                            "i18n": "售后订单"
+                        },
+                        {
+                            "text": "评价管理",
+                            "link": "",
+                            "i18n": "评价管理"
+                        }
+                    ]
+                },
+                {
+                    "text": "用户管理",
+                    "i18n": "用户管理",
+                    "icon": "anticon-user",
+                    "shortcutRoot": true,
+                    "children": [
+                        {
+                            "text": "用户列表",
+                            "link": "",
+                            "i18n": "用户列表"
+                        }
+                    ]
+                },
+                {
+                    "text": "分销中心",
+                    "i18n": "分销中心",
+                    "icon": "anticon-fork",
+                    "shortcutRoot": true,
+                    "children": [
+                        {
+                            "text": "分销商",
+                            "link": "",
+                            "i18n": "分销商"
+                        }
+                    ]
+                },
+                {
+                    "text": "内容管理",
+                    "i18n": "内容管理",
+                    "icon": "anticon-book",
+                    "shortcutRoot": true,
+                    "children": [
+                        {
+                            "text": "文章",
+                            "link": "",
+                            "i18n": "文章"
+                        },
+                        {
+                            "text": "专题",
+                            "link": "",
+                            "i18n": "专题"
+                        },
+                        {
+                            "text": "门店",
+                            "link": "",
+                            "i18n": "门店"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
