@@ -5,3 +5,27 @@
         </nz-breadcrumb>
     </ng-template>
 </page-header>
+<div class="ant-row">
+    <nz-card nzTitle="商城信息">
+        <nz-row [nzGutter]="2">
+            <nz-col [nzSpan]="4">
+                <nz-statistic [nzValue]="3468 | number" [nzTitle]="'用户数'"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+                <nz-statistic [nzValue]="61 | number" [nzTitle]="'商品数'"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+                <nz-statistic [nzValue]="322 | number" [nzTitle]="'付款订单'"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+                <nz-statistic [nzValue]="0 | number" [nzTitle]="'已售罄商品'" [nzValueStyle]="{ color: '#CF1322' }"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+                <nz-statistic [nzValue]="9 | number" [nzTitle]="'待发货订单'" [nzValueStyle]="{ color: '#CF1322' }"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+                <nz-statistic [nzValue]="0 | number" [nzTitle]="'维权中订单'" [nzValueStyle]="{ color: '#CF1322' }"></nz-statistic>
+            </nz-col>
+        </nz-row>
+    </nz-card>
+</div>
