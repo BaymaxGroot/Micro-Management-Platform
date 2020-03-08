@@ -4,9 +4,8 @@
         "description": "江阴市民微商城v1."
     },
     "user": {
-        "name": "江阴市民微商城",
-        "avatar": "./assets/tmp/img/avatar.jpg",
-        "email": "cipchk@qq.com"
+        "name": "管理员",
+        "avatar": "./assets/images/avatar.jpg"
     },
     "menu": [
         {
