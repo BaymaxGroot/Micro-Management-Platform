@@ -11,6 +11,8 @@ import {UserLoginComponent} from './passport/login/login.component';
 // single pages
 import {CallbackComponent} from './callback/callback.component';
 import {UserLockComponent} from './passport/lock/lock.component';
+// dashboard page
+import {DashboardComponent} from "./dashboard/dashboard.component";
 
 const routes: Routes = [
     {
@@ -18,7 +20,8 @@ const routes: Routes = [
         component: LayoutDefaultComponent,
         canActivate: [SimpleGuard],
         children: [
-            // {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+            {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+            {path: 'dashboard', component: DashboardComponent},
             // 商品管理模块
             {path: 'good', loadChildren: () => import('./good/good.module').then(m => m.GoodModule)},
             // 订单管理模块
