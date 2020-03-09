@@ -18,7 +18,14 @@ export class EvaluationComponent implements OnInit {
             },
         },
         {title: '详情', index: 'detail'},
-        {title: '评价回复', index: 'reply'}
+        {title: '评价回复', index: 'reply'},
+        {
+            title: '操作', width: 100, buttons: [
+                {text: '回复', type: 'none', click: (record, modal, instance) => {}},
+                {text: '隐藏', type: 'none', click: (record, modal, instance) => {}},
+                {text: '删除', type: 'del', click: (record, modal, instance) => {}},
+            ]
+        }
     ];
 
     mockData: STData[] = [
