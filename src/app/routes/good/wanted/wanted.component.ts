@@ -9,6 +9,9 @@ import {STColumn, STData} from "@delon/abc";
 export class WantedComponent implements OnInit {
 
     dateFormat = 'yyyy/MM/dd';
+    /**
+     * 用户想要商品列表
+     */
     columnsSetting: STColumn[] = [
         {title: '商品类型', index: 'category'},
         {title: '商品名称', index: 'name'},
@@ -16,7 +19,9 @@ export class WantedComponent implements OnInit {
         {title: '用户', index: 'user'},
         {title: '时间', index: 'time', type: "date"}
     ];
-
+    /**
+     * 用户想要商品 mock数据
+     */
     mockData: STData[] = [
         {
             'category': '肉蛋类',

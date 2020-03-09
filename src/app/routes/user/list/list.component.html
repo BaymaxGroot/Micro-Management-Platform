@@ -8,7 +8,10 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="用户列表">
-
+    <nz-card nzTitle="用户列表" [nzExtra]="userListRange">
+        <st [data]="mockData" [columns]="columnsSetting" [bordered]="true" [size]="'middle'"></st>
     </nz-card>
+    <ng-template #userListRange>
+        <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
+    </ng-template>
 </div>
