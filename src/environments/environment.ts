@@ -4,6 +4,7 @@
 
 export const environment = {
     SERVER_URL: `./`,
+    AUTH: '',
     production: false,
     useHash: true,
     hmr: false,
