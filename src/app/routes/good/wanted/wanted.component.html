@@ -9,7 +9,7 @@
 
 <div class="ant-row">
     <nz-card nzTitle="用户期望商品" [nzExtra]="timerange">
-
+        <st [data]="mockData" [columns]="columnsSetting" [bordered]="true" [size]="'middle'"></st>
     </nz-card>
     <ng-template #timerange>
         <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>

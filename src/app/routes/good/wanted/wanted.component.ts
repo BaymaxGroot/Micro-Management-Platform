@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {STColumn, STData} from "@delon/abc";
 
 @Component({
     selector: 'micro-wanted',
@@ -8,6 +9,24 @@ import {Component, OnInit} from '@angular/core';
 export class WantedComponent implements OnInit {
 
     dateFormat = 'yyyy/MM/dd';
+    columnsSetting: STColumn[] = [
+        {title: '商品类型', index: 'category'},
+        {title: '商品名称', index: 'name'},
+        {title: '描述', index: 'description'},
+        {title: '用户', index: 'user'},
+        {title: '时间', index: 'time', type: "date"}
+    ];
+
+    mockData: STData[] = [
+        {
+            'category': '肉蛋类',
+            'name': '华伯黑猪五花肉',
+            'description': '我要买华伯黑猪五花肉有吗？',
+            'user': '白兰花（冯秀挺）',
+            'time': '2020-03-04 08:56'
+        },
+        {'category': '口罩', 'name': '口罩', 'description': '口罩', 'user': '我是昵称', 'time': '2020-03-01 10:09'}
+    ];
 
     constructor() {
     }
