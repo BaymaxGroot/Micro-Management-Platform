@@ -8,7 +8,36 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="商品分类">
-
+    <nz-card nzTitle="商品分类" [nzExtra]="categoryAction">
+        <st [data]="mockData" [columns]="columnsSetting" [bordered]="true" [size]="'middle'"></st>
     </nz-card>
+    <ng-template #categoryAction>
+        <button nz-button nzType="primary" (click)="showAddCategoryModal()">添加分类</button>
+    </ng-template>
+    <nz-modal
+        [(nzVisible)]="addCategoryModalVisible"
+        nzTitle="添加分类"
+        nzFooter=" "
+        (nzOnCancel)="handleCreateCategoryCancel()">
+        <form nz-form [formGroup]="addCategoryForm" (ngSubmit)="handleCreateCategorySubmit()" se-container nzLayout="vertical">
+            <se label="名称" error="请输入分类名称" required>
+                <input nz-input formControlName="name" placeholder="给分类起个名字"/>
+            </se>
+            <se label="排序" optionalHelp="排序值越小排序越靠前" error="请输入排序">
+                <nz-input-number nz-input formControlName="rank"></nz-input-number>
+            </se>
+
+            <se label="是否显示">
+                <nz-radio-group formControlName="show">
+                    <label nz-radio [nzValue]="0">隐藏</label>
+                    <label nz-radio [nzValue]="1">显示</label>
+                </nz-radio-group>
+            </se>
+            <se>
+                <button nz-button nzType="primary" [disabled]="addCategoryForm.invalid" type="submit"
+                        [nzLoading]="addCategorySubmitting">添加
+                </button>
+            </se>
+        </form>
+    </nz-modal>
 </div>
