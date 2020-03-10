@@ -9,7 +9,7 @@
 
 <div class="ant-row">
     <nz-card nzTitle="商品管理" [nzExtra]="goodListOptions">
-        <st [data]="mockData" [columns]="columnsSetting" [bordered]="true" [size]="'middle'"></st>
+        <st [data]="mockData" [columns]="columnsSetting"></st>
     </nz-card>
     <ng-template #goodListOptions>
         <button nz-button nzType="primary"><i nz-icon nzType="plus"></i>添加商品</button>

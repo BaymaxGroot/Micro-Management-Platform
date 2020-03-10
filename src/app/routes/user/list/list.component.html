@@ -9,7 +9,7 @@
 
 <div class="ant-row">
     <nz-card nzTitle="用户列表" [nzExtra]="userListRange">
-        <st [data]="mockData" [columns]="columnsSetting" [bordered]="true" [size]="'middle'"></st>
+        <st [data]="mockData" [columns]="columnsSetting"></st>
     </nz-card>
     <ng-template #userListRange>
         <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>

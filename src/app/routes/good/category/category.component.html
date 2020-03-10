@@ -9,7 +9,7 @@
 
 <div class="ant-row">
     <nz-card nzTitle="商品分类" [nzExtra]="categoryAction">
-        <st [data]="mockData" [columns]="columnsSetting" [bordered]="true" [size]="'middle'"></st>
+        <st [data]="mockData" [columns]="columnsSetting"></st>
     </nz-card>
     <ng-template #categoryAction>
         <button nz-button nzType="primary" (click)="showAddCategoryModal()">添加分类</button>
@@ -19,7 +19,7 @@
         nzTitle="添加分类"
         nzFooter=" "
         (nzOnCancel)="handleCreateCategoryCancel()">
-        <form nz-form [formGroup]="addCategoryForm" (ngSubmit)="handleCreateCategorySubmit()" se-container nzLayout="vertical">
+        <form nz-form [formGroup]="addCategoryForm" (ngSubmit)="handleCreateCategorySubmit()" se-container >
             <se label="名称" error="请输入分类名称" required>
                 <input nz-input formControlName="name" placeholder="给分类起个名字"/>
             </se>
