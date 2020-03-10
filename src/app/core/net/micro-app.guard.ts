@@ -24,18 +24,31 @@ export class MicroAppGuard implements CanActivate, CanActivateChild {
     }
 
     private _login() {
-        const token = this._tokenService.get().token;
-        console.log('token - - - -- ' + token);
-        if (!token) {
+        try {
+            const tokenobj = JSON.parse(window.atob(this._tokenService.get().token));
+            if (tokenobj && ('token' in tokenobj) && ('validTime' in tokenobj) && ((new Date().getTime() - tokenobj.validTime) / 1000 / 60 < 60)) {
+
+                // 重新设置用户Token 有效时间
+                this._tokenService.set({
+                    token: window.btoa(JSON.stringify({
+                        token: tokenobj.token,
+                        validTime: (new Date().getTime())
+                    }))
+                });
+
+                return true
+            } else {
+                this._navigate('/passport/login');
+                return false;
+            }
+        } catch (e) {
             this._navigate('/passport/login');
             return false;
-        } else {
-            return true;
         }
     }
 
     private _navigate(url: string) {
-        setTimeout( () => {
+        setTimeout(() => {
             this._injector.get(Router).navigateByUrl(url);
         })
     }

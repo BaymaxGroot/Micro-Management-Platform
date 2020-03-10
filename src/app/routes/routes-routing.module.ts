@@ -22,6 +22,7 @@ const routes: Routes = [
         component: LayoutDefaultComponent,
         // 开启路由守卫
         canActivate: [MicroAppGuard],
+        canActivateChild: [MicroAppGuard],
         children: [
             {path: '', redirectTo: 'summary', pathMatch: 'full'},
             {path: 'summary', component: SummaryComponent},

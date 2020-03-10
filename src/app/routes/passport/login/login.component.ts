@@ -113,7 +113,10 @@ export class UserLoginComponent implements OnDestroy {
             });
             // 设置用户Token信息
             this.tokenService.set({
-                token: "1231231231231"
+                token: window.btoa(JSON.stringify({
+                    token: '12345',
+                    validTime: (new Date().getTime())
+                }))
             });
             // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
             this.startupSrv.load().then(() => {
