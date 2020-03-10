@@ -6,7 +6,7 @@ export const environment = {
     SERVER_URL: `./`,
     AUTH: '',
     production: false,
-    useHash: true,
+    useHash: false,
     hmr: false,
 };
 

@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {SimpleGuard} from '@delon/auth';
+// import {SimpleGuard} from '@delon/auth';
 import {environment} from '@env/environment';
 // layout
 import {LayoutDefaultComponent} from '../layout/default/default.component';
@@ -14,12 +14,14 @@ import {UserLockComponent} from './passport/lock/lock.component';
 
 // summary page
 import {SummaryComponent} from "./summary/summary.component";
+import {MicroAppGuard} from "@core/net/micro-app.guard";
 
 const routes: Routes = [
     {
         path: '',
         component: LayoutDefaultComponent,
-        canActivate: [SimpleGuard],
+        // canActivate: [SimpleGuard],
+        canActivate: [MicroAppGuard],
         children: [
             {path: '', redirectTo: 'summary', pathMatch: 'full'},
             {path: 'summary', component: SummaryComponent},
@@ -41,9 +43,7 @@ const routes: Routes = [
             {
                 path: 'exception',
                 loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule)
-            },
-            // 业务子模块
-            // { path: 'widgets', loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule) },
+            }
         ]
     },
     // 全屏布局

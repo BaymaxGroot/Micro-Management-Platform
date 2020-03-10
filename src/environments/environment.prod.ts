@@ -2,6 +2,6 @@ export const environment = {
     SERVER_URL: `./`,
     AUTH: '',
     production: true,
-    useHash: true,
+    useHash: false,
     hmr: false,
 };
