@@ -8,7 +8,7 @@ const SERVER = environment.SERVER_URL;
 const AUTH = environment.AUTH;
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class MicroAppService {
 
