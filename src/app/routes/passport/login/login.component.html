@@ -1,18 +1,18 @@
 <form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
-  <nz-tabset [nzAnimated]="false" class="tabs" (nzSelectChange)="switch($event)">
+  <nz-tabset [nzAnimated]="false" class="tabs">
     <nz-tab [nzTitle]="'账户密码登录'">
       <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg anticon-"></nz-alert>
       <nz-form-item>
         <nz-form-control [nzErrorTip]="'请输入用户名!'">
           <nz-input-group nzSize="large" nzPrefixIcon="user">
-            <input nz-input formControlName="userName" placeholder="用户名: admin or user" />
+            <input nz-input formControlName="userName" placeholder="用户名: admin" />
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-control nzErrorTip="'请输入密码!'">
           <nz-input-group nzSize="large" nzPrefixIcon="lock">
-            <input nz-input type="password" formControlName="password" placeholder="密码: ng-alain.com" />
+            <input nz-input type="password" formControlName="password" placeholder="密码: 123" />
           </nz-input-group>
         </nz-form-control>
       </nz-form-item>

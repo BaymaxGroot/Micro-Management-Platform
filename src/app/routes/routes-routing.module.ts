@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-// import {SimpleGuard} from '@delon/auth';
 import {environment} from '@env/environment';
 // layout
 import {LayoutDefaultComponent} from '../layout/default/default.component';
@@ -10,17 +9,18 @@ import {LayoutPassportComponent} from '../layout/passport/passport.component';
 import {UserLoginComponent} from './passport/login/login.component';
 // single pages
 import {CallbackComponent} from './callback/callback.component';
-import {UserLockComponent} from './passport/lock/lock.component';
 
 // summary page
 import {SummaryComponent} from "./summary/summary.component";
+
+// 路由守卫
 import {MicroAppGuard} from "@core/net/micro-app.guard";
 
 const routes: Routes = [
     {
         path: '',
         component: LayoutDefaultComponent,
-        // canActivate: [SimpleGuard],
+        // 开启路由守卫
         canActivate: [MicroAppGuard],
         children: [
             {path: '', redirectTo: 'summary', pathMatch: 'full'},
@@ -57,8 +57,7 @@ const routes: Routes = [
         path: 'passport',
         component: LayoutPassportComponent,
         children: [
-            {path: 'login', component: UserLoginComponent, data: {title: '登录', titleI18n: 'pro-login'}},
-            {path: 'lock', component: UserLockComponent, data: {title: '锁屏', titleI18n: 'lock'}},
+            {path: 'login', component: UserLoginComponent, data: {title: '登录', titleI18n: '登录'}}
         ]
     },
     // 单页不包裹Layout
