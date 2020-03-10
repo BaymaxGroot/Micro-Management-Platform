@@ -36,7 +36,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SimpleInterceptor } from '@delon/auth';
 import {MicroAppInterceptor} from "@core/net/micro-app.interceptor ";
 const INTERCEPTOR_PROVIDES = [
-  { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true},
   { provide: HTTP_INTERCEPTORS, useClass: MicroAppInterceptor, multi: true}
 ];
 // #endregion
