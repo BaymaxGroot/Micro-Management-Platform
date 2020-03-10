@@ -1,9 +1,8 @@
-import {Injectable, Injector, Inject} from '@angular/core';
-import {Router} from '@angular/router';
+import {Injectable, Inject} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {zip} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {MenuService, SettingsService, TitleService, ALAIN_I18N_TOKEN} from '@delon/theme';
+import {MenuService, TitleService} from '@delon/theme';
 import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
 import {ACLService} from '@delon/acl';
 
@@ -20,12 +19,10 @@ export class StartupService {
     constructor(
         iconSrv: NzIconService,
         private menuService: MenuService,
-        private settingService: SettingsService,
         private aclService: ACLService,
         private titleService: TitleService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-        private httpClient: HttpClient,
-        private injector: Injector
+        private httpClient: HttpClient
     ) {
         iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
     }
@@ -39,16 +36,15 @@ export class StartupService {
                 return [appData];
             })
         ).subscribe(([appData]) => {
-
                 // Application data
                 const res: any = appData;
                 /**
                  * 移除向浏览器LocalStorage 注册用户和应用 信息功能
+                 * // Application information: including site name, description, year
+                 * this.settingService.setApp(res.app);
+                 * // User information: including name, avatar, email address
+                 * this.settingService.setUser(res.user);
                  */
-                // // Application information: including site name, description, year
-                // this.settingService.setApp(res.app);
-                // // User information: including name, avatar, email address
-                // this.settingService.setUser(res.user);
                 // ACL: Set the permissions to full, https://ng-alain.com/acl/getting-started
                 this.aclService.setFull(true);
                 // Menu data, https://ng-alain.com/theme/menu
