@@ -7,10 +7,9 @@ const SERVER = environment.SERVER_URL;
 const AUTH = environment.AUTH;
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class RequestService {
-
+export class MicroAppService {
     constructor(private _http: HttpClient) {
     }
 
@@ -30,7 +29,7 @@ export class RequestService {
      */
     public get(url: string, params?: HttpParams): Observable<any> {
         let httpParams = params ? params : new HttpParams();
-        const httpHeaders: HttpHeaders = RequestService.generateHeader;
+        const httpHeaders: HttpHeaders = MicroAppService.generateHeader;
 
         return this._http.get<any>(`${SERVER}${url}`, {headers: httpHeaders, params: httpParams});
     }
@@ -44,9 +43,8 @@ export class RequestService {
      */
     public post(url: string, body: any | null, params?: HttpParams): Observable<any> {
         let httpParams = params ? params : new HttpParams();
-        const httpHeaders: HttpHeaders = RequestService.generateHeader;
+        const httpHeaders: HttpHeaders = MicroAppService.generateHeader;
 
         return this._http.post(`${SERVER}${url}`, body, {headers: httpHeaders, params: httpParams});
     }
-
 }

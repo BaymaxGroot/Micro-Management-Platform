@@ -34,10 +34,10 @@ const FORM_MODULES = [ JsonSchemaModule ];
 // #region Http Interceptors
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SimpleInterceptor } from '@delon/auth';
-import { DefaultInterceptor } from '@core/net/default.interceptor';
+import {MicroAppInterceptor} from "@core/net/micro-app.interceptor ";
 const INTERCEPTOR_PROVIDES = [
   { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true},
-  { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true}
+  { provide: HTTP_INTERCEPTORS, useClass: MicroAppInterceptor, multi: true}
 ];
 // #endregion
 
@@ -63,8 +63,8 @@ const APPINIT_PROVIDES = [
 // #endregion
 
 import { DelonModule } from './delon.module';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
+import { CoreModule } from '@core/core.module';
+import { SharedModule } from '@shared';
 import { AppComponent } from './app.component';
 import { RoutesModule } from './routes/routes.module';
 import { LayoutModule } from './layout/layout.module';
