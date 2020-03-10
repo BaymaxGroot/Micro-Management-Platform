@@ -106,6 +106,11 @@ export class UserLoginComponent implements OnDestroy {
 
             // 清空路由复用信息
             this.reuseTabService.clear();
+            // 设置用户信息
+            this.settingsService.setUser({
+                name: '管理员',
+                avatar: './assets/images/avatar.jpg'
+            });
             // 设置用户Token信息
             this.tokenService.set({
                 token: "1231231231231"

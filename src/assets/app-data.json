@@ -3,10 +3,6 @@
         "name": "畅享新零售",
         "description": "畅享新零售v1."
     },
-    "user": {
-        "name": "管理员",
-        "avatar": "./assets/images/avatar.jpg"
-    },
     "menu": [
         {
             "text": "商城",
