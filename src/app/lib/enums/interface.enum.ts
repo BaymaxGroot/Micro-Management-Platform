@@ -1,8 +1,12 @@
 export enum Interface {
     /**
+     * 上传图片
+     */
+    UploadImage = '/upload',
+    /**
      * 登录
      */
-    LoginEndPoint = "/login",
+    LoginEndPoint = '/login',
     /**
      * 商品管理
      */
