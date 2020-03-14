@@ -3,9 +3,10 @@ import {STColumn, STColumnBadge, STData} from "@delon/abc";
 import {FormBuilder} from "@angular/forms";
 import {NzMessageService, UploadFile} from "ng-zorro-antd";
 import {SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
-import {Observable, Observer, Subscription} from "rxjs";
 import {MicroAppService} from "@core/net/micro-app.service";
-import {error} from "util";
+import {Interface} from "../../../lib/enums/interface.enum";
+import {HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse} from "@angular/common/http";
+import {environment} from "@env/environment";
 
 const BADGE: STColumnBadge = {
     0: {text: '隐藏', color: 'default'},
@@ -22,7 +23,8 @@ export class CategoryComponent implements OnInit {
     constructor(private fb: FormBuilder,
                 private msg: NzMessageService,
                 private cdr: ChangeDetectorRef,
-                private _microAppHttpClient: MicroAppService) {
+                private _microAppHttpClient: MicroAppService,
+                private http: HttpClient) {
     }
 
     /**
@@ -126,13 +128,55 @@ export class CategoryComponent implements OnInit {
                 title: '分类图标',
                 ui: {
                     widget: 'upload',
-                    action: 'https://jsonplaceholder.typicode.com/posts/',
+                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
                     limit: 1,
                     listType: 'picture-card',
                     fileType: 'image/png,image/jpeg,image/gif',
                     showUploadList: true,
                     fileList: this.iconFileList,
+                    beforeUpload: (file, fileList) => {
+                        console.log(file);
+                    },
+                    headers: (file) => {
+                        const httpHeaders = new HttpHeaders({
+                            'Access-Control-Allow-Origin': '*',
+                            'Authorization': environment.AUTH,
+                            'Content-Type': 'application/json'
+                        });
+                        file.headers = httpHeaders;
+                    },
+                    customRequest: (item) => {
+                        // Create a FormData here to store files and other parameters.
+                        const formData = new FormData();
+                        // tslint:disable-next-line:no-any
+                        formData.append('file', item.file as any);
+                        const httpHeaders = new HttpHeaders({
+                            'Authorization': environment.AUTH
+                        });
 
+                        const req = new HttpRequest('POST', item.action!, formData, {
+                            headers: httpHeaders,
+                            reportProgress: true,
+                            withCredentials: true
+                        });
+                        return this.http.request(req).subscribe(
+                            // tslint:disable-next-line no-any
+                            (event: HttpEvent<any>) => {
+                                if (event.type === HttpEventType.UploadProgress) {
+                                    if (event.total! > 0) {
+                                        // tslint:disable-next-line:no-any
+                                        (event as any).percent = (event.loaded / event.total!) * 100;
+                                    }
+                                    item.onProgress!(event, item.file!);
+                                } else if (event instanceof HttpResponse) {
+                                    item.onSuccess!(event.body, item.file!, event);
+                                }
+                            },
+                            err => {
+                                item.onError!(err, item.file!);
+                            }
+                        );
+                    }
                 } as SFUploadWidgetSchema
             },
             show: {

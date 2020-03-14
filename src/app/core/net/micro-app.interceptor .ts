@@ -89,11 +89,14 @@ export class MicroAppInterceptor implements HttpInterceptor {
         const newReq = req.clone({url});
 
         if (url.startsWith(environment.SERVER_URL)) {
-            if(url.indexOf(Interface.LoginEndPoint) == -1) {
+            if (url.indexOf(Interface.LoginEndPoint) == -1) {
                 const token = JSON.parse(window.atob(this._tokenService.get().token)).token;
-                newReq.headers.set('Token', token ? token : "");
+                const user = JSON.parse(window.atob(this._tokenService.get().token)).user
+                newReq.headers.set('User', user);
+                newReq.headers.set('Token', token);
             }
         }
+
 
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
