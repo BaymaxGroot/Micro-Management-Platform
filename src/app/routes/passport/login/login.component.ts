@@ -30,7 +30,7 @@ export class UserLoginComponent implements OnDestroy {
         public microAppHttpClient: MicroAppService,
         public msg: NzMessageService,
     ) {
-        this.form = fb.group({
+        this.loginform = fb.group({
             userName: [null, [Validators.required]],
             password: [null, Validators.required]
         });
@@ -40,14 +40,14 @@ export class UserLoginComponent implements OnDestroy {
     // #region fields
 
     get userName() {
-        return this.form.controls.userName;
+        return this.loginform.controls.userName;
     }
 
     get password() {
-        return this.form.controls.password;
+        return this.loginform.controls.password;
     }
 
-    form: FormGroup;
+    loginform: FormGroup;
     error = '';
     loginLoading = false;
     // #endregion

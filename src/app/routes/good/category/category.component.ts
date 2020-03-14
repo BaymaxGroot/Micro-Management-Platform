@@ -10,8 +10,8 @@ import {environment} from "@env/environment";
 import {DomSanitizer} from "@angular/platform-browser";
 
 const BADGE: STColumnBadge = {
-    0: {text: '隐藏', color: 'default'},
-    1: {text: '显示', color: 'success'},
+    False: {text: '隐藏', color: 'default'},
+    True: {text: '显示', color: 'success'},
 };
 
 @Component({
@@ -20,6 +20,11 @@ const BADGE: STColumnBadge = {
     styleUrls: ['./category.component.less']
 })
 export class CategoryComponent implements OnInit {
+
+    /**
+     * Loading Product List Tag
+     */
+    isLoadingList = true;
 
     constructor(private fb: FormBuilder,
                 private msg: NzMessageService,
@@ -33,11 +38,15 @@ export class CategoryComponent implements OnInit {
      * 分类列表设置
      */
     columnsSetting: STColumn[] = [
-        {title: 'ID', index: 'id'},
-        {title: '分类名称', index: 'category'},
-        {title: '图标', index: 'icon', type: 'img'},
-        {title: '显示', index: 'show', type: 'badge', badge: BADGE},
-        {title: '排序', index: 'rank'},
+        {
+            title: 'ID', index: 'clabel', format: (item) => {
+                return 'JYS' + item['clabel'];
+            }
+        },
+        {title: '分类名称', index: 'cname'},
+        {title: '图标', index: 'cicon', type: 'img'},
+        {title: '显示', index: 'cshow', type: 'badge', badge: BADGE},
+        {title: '排序', index: 'crank'},
         {
             title: '操作', buttons: [
                 {
@@ -66,29 +75,33 @@ export class CategoryComponent implements OnInit {
     ];
 
     /**
-     * 分类列表Mock数据
+     * 分类列表数据
      */
-    mockData: STData[] = [
-        {
-            'id': 60288,
-            'category': '助力抗疫',
-            'icon': 'http://b-ssl.duitang.com/uploads/item/201802/20/20180220165946_RiGPS.thumb.700_0.jpeg',
-            'show': 1,
-            'rank': 1
-        },
-        {
-            'id': 60290,
-            'category': '地方名灶',
-            'icon': 'http://img5.imgtn.bdimg.com/it/u=1522146444,3890939769&fm=11&gp=0.jpg',
-            'show': 0,
-            'rank': 2
-        }
-    ];
+    categoryListData: STData[] = [];
+
+    ngOnInit() {
+        this.isLoadingList = true;
+        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
+            this.categoryListData = data;
+        }, (err) => {
+
+        }, () => {
+            this.isLoadingList = false;
+        })
+    }
 
     /**
      * 添加分类模态框
      */
     addCategoryModalVisible = false;
+
+    showAddCategoryModal(): void {
+        this.addCategoryModalVisible = true;
+    }
+
+    handleCreateCategoryCancel(): void {
+        this.addCategoryModalVisible = false;
+    }
 
     /**
      * 添加分类表单
@@ -146,7 +159,7 @@ export class CategoryComponent implements OnInit {
                             this.msg.error('目前只支持选择JPG/PNG/GIF/JPEG!');
                             return false;
                         }
-                        if(fileList.length > 1) {
+                        if (fileList.length > 1) {
                             this.msg.error('请先删除已有的图片!');
                             return false;
                         }
@@ -210,23 +223,6 @@ export class CategoryComponent implements OnInit {
         },
         required: ['name', 'rank']
     };
-
-    ngOnInit() {
-        // this.addCategoryForm = this.fb.group({
-        //     name: [null, [Validators.required]],
-        //     rank: [null, [Validators.required]],
-        //     icon: [null, []],
-        //     show: [1, [Validators.min(0), Validators.max(1)]]
-        // });
-    }
-
-    showAddCategoryModal(): void {
-        this.addCategoryModalVisible = true;
-    }
-
-    handleCreateCategoryCancel(): void {
-        this.addCategoryModalVisible = false;
-    }
 
     handleCreateCategorySubmit(value: any): void {
         // this.addCategorySubmitting = true;

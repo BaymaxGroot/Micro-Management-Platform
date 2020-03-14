@@ -10,9 +10,9 @@ export enum Interface {
     /**
      * 商品管理
      */
-    LoadGoodCategoryListEndPoint = "/load/good/category",
-    LoadGoodListEndPoint = "/load/good",
-    LoadGoodWantedListEndPoint = "/load/good/wanted",
+    LoadProductCategoryListEndPoint = "/category/list",
+    LoadProductListEndPoint = "/load/good",
+    LoadProductWantedListEndPoint = "/load/good/wanted",
     /**
      * 订单管理
      */

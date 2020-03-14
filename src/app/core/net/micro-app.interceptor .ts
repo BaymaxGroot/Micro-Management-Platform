@@ -6,15 +6,13 @@ import {
     HttpHandler,
     HttpErrorResponse,
     HttpEvent,
-    HttpResponseBase, HttpHeaders,
+    HttpResponseBase
 } from '@angular/common/http';
 import {Observable, of, throwError} from 'rxjs';
 import {mergeMap, catchError} from 'rxjs/operators';
-import {NzMessageService, NzNotificationService} from 'ng-zorro-antd';
+import {NzNotificationService} from 'ng-zorro-antd';
 import {_HttpClient} from '@delon/theme';
-import {environment} from '@env/environment';
 import {DA_SERVICE_TOKEN, ITokenService} from '@delon/auth';
-import {Interface} from "../../lib/enums/interface.enum";
 
 const CODEMESSAGE = {
     200: '服务器成功返回请求的数据。',
@@ -56,26 +54,26 @@ export class MicroAppInterceptor implements HttpInterceptor {
             this.injector.get(_HttpClient).end();
         }
         // 业务处理：一些通用操作
-        switch (ev.status) {
-            case 200:
-                break;
-            case 401:
-                this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
-                // 清空 token 信息
-                (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
-                this.goTo('/passport/login');
-                break;
-            case 403:
-            case 404:
-            case 500:
-                this.goTo(`/exception/${ev.status}`);
-                break;
-            default:
-                if (ev instanceof HttpErrorResponse) {
-                    console.warn('未可知错误，大部分是由于后端不支持CORS或无效配置引起', ev);
-                }
-                break;
-        }
+        // switch (ev.status) {
+        //     case 200:
+        //         break;
+        //     case 401:
+        //         this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
+        //         // 清空 token 信息
+        //         (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
+        //         this.goTo('/passport/login');
+        //         break;
+        //     case 403:
+        //     case 404:
+        //     case 500:
+        //         this.goTo(`/exception/${ev.status}`);
+        //         break;
+        //     default:
+        //         if (ev instanceof HttpErrorResponse) {
+        //             console.warn('未可知错误，大部分是由于后端不支持CORS或无效配置引起', ev);
+        //         }
+        //         break;
+        // }
         if (ev instanceof HttpErrorResponse) {
             return throwError(ev);
         } else {
@@ -87,16 +85,6 @@ export class MicroAppInterceptor implements HttpInterceptor {
         // 统一加上服务端前缀
         let url = req.url;
         const newReq = req.clone({url});
-
-        if (url.startsWith(environment.SERVER_URL)) {
-            if (url.indexOf(Interface.LoginEndPoint) == -1) {
-                const token = JSON.parse(window.atob(this._tokenService.get().token)).token;
-                const user = JSON.parse(window.atob(this._tokenService.get().token)).user
-                newReq.headers.set('User', user);
-                newReq.headers.set('Token', token);
-            }
-        }
-
 
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
