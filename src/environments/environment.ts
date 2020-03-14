@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    SERVER_URL: `./`,
-    AUTH: '',
+    SERVER_URL: `http://localhost:8993/api`,
+    AUTH: 'E^8P56AUvAMPv8wrE@RAaxzb8^PMcj47VbfB3N&w8a$s2n%C4#U3zar?P[LR2mt',
     production: false,
     useHash: false,
     hmr: false,
