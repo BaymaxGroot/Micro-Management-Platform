@@ -64,17 +64,34 @@ export function fnSTConfig(): STConfig {
     };
 }
 
+// Delon Form
+import {DelonFormModule, DelonFormConfig} from '@delon/form';
+
+export function fnDelonFormConfig(): DelonFormConfig {
+    return {
+        ...new DelonFormConfig(),
+        liveValidate: true
+    };
+}
+
 const GLOBAL_CONFIG_PROVIDES = [
     // TIPS：@delon/abc 有大量的全局配置信息，例如设置所有 `st` 的页码默认为 `20` 行
     {provide: STConfig, useFactory: fnSTConfig},
     {provide: PageHeaderConfig, useFactory: fnPageHeaderConfig},
     {provide: DelonAuthConfig, useFactory: fnDelonAuthConfig},
+    {provide: DelonFormConfig, useFactory: fnDelonFormConfig},
+    {provide: DA_STORE_TOKEN, useClass: SessionStorageStore}
 ];
 
 // #endregion
 
+
 @NgModule({
-    imports: [AlainThemeModule.forRoot(), DelonACLModule.forRoot()],
+    imports: [
+        AlainThemeModule.forRoot(),
+        DelonACLModule.forRoot(),
+        DelonFormModule.forRoot()
+    ],
 })
 export class DelonModule {
     constructor(@Optional() @SkipSelf() parentModule: DelonModule) {
@@ -86,8 +103,7 @@ export class DelonModule {
             ngModule: DelonModule,
             providers: [
                 ...REUSETAB_PROVIDES,
-                ...GLOBAL_CONFIG_PROVIDES,
-                {provide: DA_STORE_TOKEN, useClass: SessionStorageStore}
+                ...GLOBAL_CONFIG_PROVIDES
             ],
         };
     }
