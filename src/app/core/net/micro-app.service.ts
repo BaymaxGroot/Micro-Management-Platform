@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
 import {HttpHeaders, HttpParams, HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {_HttpClient} from "@delon/theme";
 
 const SERVER = environment.SERVER_URL;
 const AUTH = environment.AUTH;
