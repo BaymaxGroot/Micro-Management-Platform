@@ -7,6 +7,7 @@ import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse} from "@angular/common/http";
 import {environment} from "@env/environment";
+import {DomSanitizer} from "@angular/platform-browser";
 
 const BADGE: STColumnBadge = {
     0: {text: '隐藏', color: 'default'},
@@ -24,7 +25,8 @@ export class CategoryComponent implements OnInit {
                 private msg: NzMessageService,
                 private cdr: ChangeDetectorRef,
                 private _microAppHttpClient: MicroAppService,
-                private http: HttpClient) {
+                private http: HttpClient,
+                private sanitizer: DomSanitizer) {
     }
 
     /**
@@ -129,13 +131,31 @@ export class CategoryComponent implements OnInit {
                 ui: {
                     widget: 'upload',
                     action: `${environment.SERVER_URL}${Interface.UploadImage}`,
-                    limit: 1,
+                    urlReName: 'url',
                     listType: 'picture-card',
-                    fileType: 'image/png,image/jpeg,image/gif',
                     showUploadList: true,
                     fileList: this.iconFileList,
                     beforeUpload: (file, fileList) => {
-                        console.log(file);
+                        let isJPG = false;
+                        ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'].forEach((item) => {
+                            if (item == file.type) {
+                                isJPG = true;
+                            }
+                        });
+                        if (!isJPG) {
+                            this.msg.error('目前只支持选择JPG/PNG/GIF/JPEG!');
+                            return false;
+                        }
+                        if(fileList.length > 1) {
+                            this.msg.error('请先删除已有的图片!');
+                            return false;
+                        }
+                    },
+                    change: (args) => {
+                        if (args.type == 'success') {
+                            args.fileList[0].url = this.sanitizer.bypassSecurityTrustResourceUrl(args.file.response.url).toString();
+                            args.fileList[0].filename = args.file.response.name;
+                        }
                     },
                     headers: (file) => {
                         const httpHeaders = new HttpHeaders({
