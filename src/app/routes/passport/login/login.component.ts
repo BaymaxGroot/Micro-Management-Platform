@@ -5,7 +5,6 @@ import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {ITokenService, DA_SERVICE_TOKEN} from '@delon/auth';
 import {ReuseTabService} from '@delon/abc';
-import {environment} from '@env/environment';
 import {StartupService} from '@core';
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
@@ -70,7 +69,7 @@ export class UserLoginComponent implements OnDestroy {
          * 进行登陆操作
          */
         this.microAppHttpClient
-            .post(`/${Interface.LoginEndPoint}?_allow_anonymous=true`, {
+            .post(`${Interface.LoginEndPoint}?_allow_anonymous=true`, {
                 uaccount: this.userName.value,
                 upassword: this.password.value
             })

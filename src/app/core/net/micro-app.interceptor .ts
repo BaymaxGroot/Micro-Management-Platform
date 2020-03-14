@@ -126,10 +126,6 @@ export class MicroAppInterceptor implements HttpInterceptor {
             newReq.headers.set('Token', token ? token : "");
         }
 
-        if (url == 'https://jsonplaceholder.typicode.com/posts/') {
-            newReq.headers.set('Access-Control-Allow-Origin', '*');
-        }
-
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
                 // 允许统一对请求错误处理

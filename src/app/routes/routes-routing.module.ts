@@ -7,9 +7,6 @@ import {LayoutFullScreenComponent} from '../layout/fullscreen/fullscreen.compone
 import {LayoutPassportComponent} from '../layout/passport/passport.component';
 // passport pages
 import {UserLoginComponent} from './passport/login/login.component';
-// single pages
-import {CallbackComponent} from './callback/callback.component';
-
 // summary page
 import {SummaryComponent} from "./summary/summary.component";
 
@@ -62,7 +59,6 @@ const routes: Routes = [
         ]
     },
     // 单页不包裹Layout
-    {path: 'callback/:type', component: CallbackComponent},
     {path: '**', redirectTo: 'exception/404'},
 ];
 

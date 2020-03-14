@@ -4,8 +4,6 @@ import {SharedModule} from '@shared';
 import {RouteRoutingModule} from './routes-routing.module';
 // passport pages
 import {UserLoginComponent} from './passport/login/login.component';
-// single pages
-import {CallbackComponent} from './callback/callback.component';
 
 // summary page
 import {SummaryComponent} from './summary/summary.component';
@@ -13,8 +11,6 @@ import {SummaryComponent} from './summary/summary.component';
 const COMPONENTS = [
     // passport pages
     UserLoginComponent,
-    // single pages
-    CallbackComponent,
     // dashboard page
     SummaryComponent
 ];
