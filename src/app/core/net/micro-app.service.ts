@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '@env/environment';
-import {HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpHeaders, HttpParams, HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {_HttpClient} from "@delon/theme";
 
@@ -12,19 +12,17 @@ const AUTH = environment.AUTH;
 })
 export class MicroAppService {
 
-    constructor(private _http: _HttpClient) {
-    }
 
-    get loading() {
-        return this._http.loading;
+    constructor(private _http: HttpClient) {
     }
 
     private static get generateHeader(): HttpHeaders {
-        return new HttpHeaders({
+        const httpHeaders = new HttpHeaders({
             'Access-Control-Allow-Origin': '*',
             'Authorization': AUTH,
             'Content-Type': 'application/json'
         });
+        return httpHeaders;
     }
 
     /**

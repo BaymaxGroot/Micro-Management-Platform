@@ -49,11 +49,11 @@ export class UserLoginComponent implements OnDestroy {
 
     form: FormGroup;
     error = '';
-
+    loginLoading = false;
     // #endregion
 
     submit() {
-
+        this.loginLoading = true;
         this.error = '';
         this.userName.markAsDirty();
         this.userName.updateValueAndValidity();
@@ -69,15 +69,12 @@ export class UserLoginComponent implements OnDestroy {
          * 进行登陆操作
          */
         this.microAppHttpClient
-            .post(`${Interface.LoginEndPoint}?_allow_anonymous=true`, {
+            .post(`${Interface.LoginEndPoint}`, {
                 uaccount: this.userName.value,
                 upassword: this.password.value
             })
             .subscribe((res: any) => {
-                if (res.msg !== 'ok') {
-                    this.error = res.msg;
-                    return;
-                }
+                this.loginLoading = false;
                 // 清空路由复用信息
                 this.reuseTabService.clear();
                 // 设置用户信息
@@ -101,6 +98,9 @@ export class UserLoginComponent implements OnDestroy {
                     }
                     this.router.navigateByUrl(url);
                 });
+            }, (error: any) => {
+                this.loginLoading = false;
+                this.msg.error('登陆失败: ' + error.error.msg);
             });
 
         // /**
@@ -140,8 +140,6 @@ export class UserLoginComponent implements OnDestroy {
         // }, 3000)
 
     }
-
-    mockLoading = false;
 
     ngOnDestroy(): void {
 

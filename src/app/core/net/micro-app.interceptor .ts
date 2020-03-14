@@ -6,7 +6,7 @@ import {
     HttpHandler,
     HttpErrorResponse,
     HttpEvent,
-    HttpResponseBase,
+    HttpResponseBase, HttpHeaders,
 } from '@angular/common/http';
 import {Observable, of, throwError} from 'rxjs';
 import {mergeMap, catchError} from 'rxjs/operators';
@@ -50,43 +50,14 @@ export class MicroAppInterceptor implements HttpInterceptor {
         setTimeout(() => this.injector.get(Router).navigateByUrl(url));
     }
 
-    private checkStatus(ev: HttpResponseBase) {
-        if ((ev.status >= 200 && ev.status < 300) || ev.status === 401) {
-            return;
-        }
-
-        const errortext = CODEMESSAGE[ev.status] || ev.statusText;
-        this.notification.error(`请求错误 ${ev.status}: ${ev.url}`, errortext);
-    }
-
     private handleData(ev: HttpResponseBase): Observable<any> {
         // 可能会因为 `throw` 导出无法执行 `_HttpClient` 的 `end()` 操作
         if (ev.status > 0) {
             this.injector.get(_HttpClient).end();
         }
-        this.checkStatus(ev);
         // 业务处理：一些通用操作
         switch (ev.status) {
             case 200:
-                // 业务层级错误处理，以下是假定restful有一套统一输出格式（指不管成功与否都有相应的数据格式）情况下进行处理
-                // 例如响应内容：
-                //  错误内容：{ status: 1, msg: '非法参数' }
-                //  正确内容：{ status: 0, response: {  } }
-                // 则以下代码片断可直接适用
-                // if (event instanceof HttpResponse) {
-                //     const body: any = event.body;
-                //     if (body && body.status !== 0) {
-                //         this.msg.error(body.msg);
-                //         // 继续抛出错误中断后续所有 Pipe、subscribe 操作，因此：
-                //         // this.http.get('/').subscribe() 并不会触发
-                //         return throwError({});
-                //     } else {
-                //         // 重新修改 `body` 内容为 `response` 内容，对于绝大多数场景已经无须再关心业务状态码
-                //         return of(new HttpResponse(Object.assign(event, { body: body.response })));
-                //         // 或者依然保持完整的格式
-                //         return of(event);
-                //     }
-                // }
                 break;
             case 401:
                 this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
@@ -115,15 +86,13 @@ export class MicroAppInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // 统一加上服务端前缀
         let url = req.url;
-        // if (!url.startsWith('https://') && !url.startsWith('http://')) {
-        //     url = environment.SERVER_URL + url;
-        // }
-
         const newReq = req.clone({url});
 
-        if (url.startsWith(environment.SERVER_URL) && url.indexOf(Interface.LoginEndPoint) == -1) {
-            const token = JSON.parse(window.atob(this._tokenService.get().token)).token;
-            newReq.headers.set('Token', token ? token : "");
+        if (url.startsWith(environment.SERVER_URL)) {
+            if(url.indexOf(Interface.LoginEndPoint) == -1) {
+                const token = JSON.parse(window.atob(this._tokenService.get().token)).token;
+                newReq.headers.set('Token', token ? token : "");
+            }
         }
 
         return next.handle(newReq).pipe(
