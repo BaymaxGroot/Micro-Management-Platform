@@ -115,13 +115,13 @@ export class MicroAppInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // 统一加上服务端前缀
         let url = req.url;
-        if (!url.startsWith('https://') && !url.startsWith('http://')) {
-            url = environment.SERVER_URL + url;
-        }
+        // if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        //     url = environment.SERVER_URL + url;
+        // }
 
         const newReq = req.clone({url});
 
-        if (url.indexOf(Interface.LoginEndPoint) == -1) {
+        if (url.startsWith(environment.SERVER_URL) && url.indexOf(Interface.LoginEndPoint) == -1) {
             const token = JSON.parse(window.atob(this._tokenService.get().token)).token;
             newReq.headers.set('Token', token ? token : "");
         }

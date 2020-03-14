@@ -25,7 +25,6 @@ export class MicroAppGuard implements CanActivate, CanActivateChild {
 
     private _login() {
         try {
-            console.log('12');
             const tokenobj = JSON.parse(window.atob(this._tokenService.get().token));
             if (tokenobj && ('token' in tokenobj) && ('validTime' in tokenobj) && ('user' in tokenobj) && ((new Date().getTime() - tokenobj.validTime) / 1000 / 60 < 60)) {
 
