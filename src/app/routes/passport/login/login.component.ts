@@ -69,65 +69,76 @@ export class UserLoginComponent implements OnDestroy {
         /**
          * 进行登陆操作
          */
-        // this.microAppHttpClient
-        //     .post(`/${Interface.LoginEndPoint}?_allow_anonymous=true`, {
-        //         userName: this.userName.value,
-        //         password: this.password.value
-        //     })
-        //     .subscribe((res: any) => {
-        //         if (res.msg !== 'ok') {
-        //             this.error = res.msg;
-        //             return;
-        //         }
-        //         // 清空路由复用信息
-        //         this.reuseTabService.clear();
-        //         // 设置用户Token信息
-        //         this.tokenService.set(res.user);
-        //         // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
-        //         this.startupSrv.load().then(() => {
-        //             let url = this.tokenService.referrer!.url || '/';
-        //             if (url.includes('/passport')) {
-        //                 url = '/';
-        //             }
-        //             this.router.navigateByUrl(url);
-        //         });
-        //     });
-
-        /**
-         * 模拟进行登录操作
-         */
-        this.mockLoading = true;
-        setTimeout(() => {
-            this.mockLoading = false;
-            if (this.userName.value !== "admin" || this.password.value !== "123") {
-                this.error = "用户名密码输入错误！";
-                return;
-            }
-
-            // 清空路由复用信息
-            this.reuseTabService.clear();
-            // 设置用户信息
-            this.settingsService.setUser({
-                name: '管理员',
-                avatar: './assets/images/avatar.jpg'
-            });
-            // 设置用户Token信息
-            this.tokenService.set({
-                token: window.btoa(JSON.stringify({
-                    token: '12345',
-                    validTime: (new Date().getTime())
-                }))
-            });
-            // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
-            this.startupSrv.load().then(() => {
-                let url = this.tokenService.referrer!.url || '/';
-                if (url.includes('/passport')) {
-                    url = '/';
+        this.microAppHttpClient
+            .post(`/${Interface.LoginEndPoint}?_allow_anonymous=true`, {
+                uaccount: this.userName.value,
+                upassword: this.password.value
+            })
+            .subscribe((res: any) => {
+                if (res.msg !== 'ok') {
+                    this.error = res.msg;
+                    return;
                 }
-                this.router.navigateByUrl(url);
+                // 清空路由复用信息
+                this.reuseTabService.clear();
+                // 设置用户信息
+                this.settingsService.setUser({
+                    name: res.user,
+                    avatar: './assets/images/avatar.jpg'
+                });
+                // 设置用户Token信息
+                this.tokenService.set({
+                    token: window.btoa(JSON.stringify({
+                        token: res.token,
+                        user: res.user,
+                        validTime: (new Date().getTime())
+                    }))
+                });
+                // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
+                this.startupSrv.load().then(() => {
+                    let url = this.tokenService.referrer!.url || '/';
+                    if (url.includes('/passport')) {
+                        url = '/';
+                    }
+                    this.router.navigateByUrl(url);
+                });
             });
 
-        }, 3000)
+        // /**
+        //  * 模拟进行登录操作
+        //  */
+        // this.mockLoading = true;
+        // setTimeout(() => {
+        //     this.mockLoading = false;
+        //     if (this.userName.value !== "admin" || this.password.value !== "123") {
+        //         this.error = "用户名密码输入错误！";
+        //         return;
+        //     }
+        //
+        //     // 清空路由复用信息
+        //     this.reuseTabService.clear();
+        //     // 设置用户信息
+        //     this.settingsService.setUser({
+        //         name: '管理员',
+        //         avatar: './assets/images/avatar.jpg'
+        //     });
+        //     // 设置用户Token信息
+        //     this.tokenService.set({
+        //         token: window.btoa(JSON.stringify({
+        //             token: '12345',
+        //             validTime: (new Date().getTime())
+        //         }))
+        //     });
+        //     // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
+        //     this.startupSrv.load().then(() => {
+        //         let url = this.tokenService.referrer!.url || '/';
+        //         if (url.includes('/passport')) {
+        //             url = '/';
+        //         }
+        //         this.router.navigateByUrl(url);
+        //     });
+        //
+        // }, 3000)
 
     }
 

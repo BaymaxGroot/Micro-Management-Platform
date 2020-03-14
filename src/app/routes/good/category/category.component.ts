@@ -1,7 +1,11 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {STColumn, STColumnBadge, STData} from "@delon/abc";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {NzMessageService} from "ng-zorro-antd";
+import {FormBuilder} from "@angular/forms";
+import {NzMessageService, UploadFile} from "ng-zorro-antd";
+import {SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
+import {Observable, Observer, Subscription} from "rxjs";
+import {MicroAppService} from "@core/net/micro-app.service";
+import {error} from "util";
 
 const BADGE: STColumnBadge = {
     0: {text: '隐藏', color: 'default'},
@@ -14,6 +18,12 @@ const BADGE: STColumnBadge = {
     styleUrls: ['./category.component.less']
 })
 export class CategoryComponent implements OnInit {
+
+    constructor(private fb: FormBuilder,
+                private msg: NzMessageService,
+                private cdr: ChangeDetectorRef,
+                private _microAppHttpClient: MicroAppService) {
+    }
 
     /**
      * 分类列表设置
@@ -78,21 +88,72 @@ export class CategoryComponent implements OnInit {
 
     /**
      * 添加分类表单
+     *
+     * 父级分类 select
+     * 分类名称 string
+     * 排序 100
+     * 分类图标 file image
      */
-    addCategoryForm: FormGroup;
-    addCategorySubmitting = false;
+    iconFileList: UploadFile[] = [];
+    categorySchema: SFSchema = {
+        properties: {
+            category: {
+                type: 'string',
+                title: '父级分类',
+                enum: [
+                    {label: '无', value: '0'},
+                    {label: '助力抗疫', value: '1'},
+                    {label: '新鲜蔬果', value: '2'},
+                    {label: '肉类蛋禽', value: '3'}
+                ],
+                ui: {
+                    widget: 'select'
+                } as SFSelectWidgetSchema,
+                default: '0'
+            },
+            name: {
+                type: 'string',
+                title: '分类名称'
+            },
+            rank: {
+                type: 'number',
+                title: '排序',
+                multipleOf: 4,
+                description: '排序值越小排序越靠前'
+            },
+            icon: {
+                type: 'string',
+                title: '分类图标',
+                ui: {
+                    widget: 'upload',
+                    action: 'https://jsonplaceholder.typicode.com/posts/',
+                    limit: 1,
+                    listType: 'picture-card',
+                    fileType: 'image/png,image/jpeg,image/gif',
+                    showUploadList: true,
+                    fileList: this.iconFileList,
 
-
-    constructor(private fb: FormBuilder, private msg: NzMessageService, private cdr: ChangeDetectorRef) {
-    }
+                } as SFUploadWidgetSchema
+            },
+            show: {
+                type: 'boolean',
+                title: '是否显示',
+                ui: {
+                    checkedChildren: '显示',
+                    unCheckedChildren: '隐藏',
+                }
+            }
+        },
+        required: ['name', 'rank']
+    };
 
     ngOnInit() {
-        this.addCategoryForm = this.fb.group({
-            name: [null, [Validators.required]],
-            rank: [null, [Validators.required]],
-            icon: [null, []],
-            show: [1, [Validators.min(0), Validators.max(1)]]
-        });
+        // this.addCategoryForm = this.fb.group({
+        //     name: [null, [Validators.required]],
+        //     rank: [null, [Validators.required]],
+        //     icon: [null, []],
+        //     show: [1, [Validators.min(0), Validators.max(1)]]
+        // });
     }
 
     showAddCategoryModal(): void {
@@ -103,13 +164,13 @@ export class CategoryComponent implements OnInit {
         this.addCategoryModalVisible = false;
     }
 
-    handleCreateCategorySubmit(): void {
-        this.addCategorySubmitting = true;
-        setTimeout(() => {
-            this.addCategorySubmitting = false;
-            this.msg.success('添加成功！');
-            this.cdr.detectChanges();
-        }, 1000);
+    handleCreateCategorySubmit(value: any): void {
+        // this.addCategorySubmitting = true;
+        // setTimeout(() => {
+        //     this.addCategorySubmitting = false;
+        //     this.msg.success('添加成功！');
+        //     this.cdr.detectChanges();
+        // }, 1000);
     }
 
 }
