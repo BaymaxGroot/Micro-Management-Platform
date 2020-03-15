@@ -95,6 +95,9 @@ export class CategoryComponent implements OnInit {
         this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
             if (data) {
                 this.categoryListData = data;
+                this.categoryListData.forEach((item) => {
+                   item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
+                });
                 data.forEach((item) => {
                     if (!item['cparent']) {
                         this.categoryRootList.push({
