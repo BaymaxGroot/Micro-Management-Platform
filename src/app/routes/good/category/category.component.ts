@@ -8,6 +8,8 @@ import {Interface} from "../../../lib/enums/interface.enum";
 import {HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse} from "@angular/common/http";
 import {environment} from "@env/environment";
 import {DomSanitizer} from "@angular/platform-browser";
+import {of} from "rxjs";
+import {delay} from "rxjs/operators";
 
 const BADGE: STColumnBadge = {
     False: {text: '隐藏', color: 'default'},
@@ -78,14 +80,37 @@ export class CategoryComponent implements OnInit {
      * 分类列表数据
      */
     categoryListData: STData[] = [];
+    categoryRootList = [];
 
     ngOnInit() {
-        this.isLoadingList = true;
-        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
-            this.categoryListData = data;
-        }, (err) => {
+        this.loadCategoryList();
+    }
 
-        }, () => {
+    /**
+     * 加载分类列表
+     */
+    loadCategoryList(): void {
+        this.isLoadingList = true;
+        this.categoryRootList = [];
+        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
+            if (data) {
+                this.categoryListData = data;
+                data.forEach((item) => {
+                    if (!item['cparent']) {
+                        this.categoryRootList.push({
+                            label: item['cname'],
+                            value: item['clabel']
+                        });
+                    }
+                });
+                this.categoryRootList.unshift({
+                    label: '无',
+                    value: 0
+                });
+            }
+            this.isLoadingList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
             this.isLoadingList = false;
         })
     }
@@ -96,6 +121,7 @@ export class CategoryComponent implements OnInit {
     addCategoryModalVisible = false;
 
     showAddCategoryModal(): void {
+
         this.addCategoryModalVisible = true;
     }
 
@@ -117,16 +143,18 @@ export class CategoryComponent implements OnInit {
             category: {
                 type: 'string',
                 title: '父级分类',
-                enum: [
-                    {label: '无', value: '0'},
-                    {label: '助力抗疫', value: '1'},
-                    {label: '新鲜蔬果', value: '2'},
-                    {label: '肉类蛋禽', value: '3'}
-                ],
+                default: '0',
                 ui: {
-                    widget: 'select'
-                } as SFSelectWidgetSchema,
-                default: '0'
+                    widget: 'select',
+                    asyncData: () =>
+                        of([
+                            {
+                                label: '父级分类',
+                                group: true,
+                                children: this.categoryRootList,
+                            },
+                        ]).pipe(delay(200))
+                } as SFSelectWidgetSchema
             },
             name: {
                 type: 'string',
@@ -135,7 +163,7 @@ export class CategoryComponent implements OnInit {
             rank: {
                 type: 'number',
                 title: '排序',
-                multipleOf: 4,
+                minimum: 2,
                 description: '排序值越小排序越靠前'
             },
             icon: {
@@ -221,16 +249,28 @@ export class CategoryComponent implements OnInit {
                 }
             }
         },
-        required: ['name', 'rank']
+        required: ['category','name', 'rank']
     };
+    isAddingOrEditingCategory = false;
 
     handleCreateCategorySubmit(value: any): void {
-        // this.addCategorySubmitting = true;
-        // setTimeout(() => {
-        //     this.addCategorySubmitting = false;
-        //     this.msg.success('添加成功！');
-        //     this.cdr.detectChanges();
-        // }, 1000);
+        let categoryTemplate = {
+            cname: value['name']? value['name']:0,
+            cicon: value['icon']? value['icon'].url:'',
+            cshow: value['show']? value['show']:0,
+            crank: value['rank']? value['rank']:2,
+            cparent: value['category']? value['category']:0
+        };
+        this.isAddingOrEditingCategory = true;
+        this._microAppHttpClient.post(Interface.AddOrEditProductCategoryInfoEndPoint, categoryTemplate).subscribe(() => {
+            this.isAddingOrEditingCategory = false;
+            this.msg.info('添加分类信息成功!');
+            this.handleCreateCategoryCancel();
+            this.loadCategoryList();
+        }, () => {
+            this.isAddingOrEditingCategory = false;
+            this.msg.info('添加分类信息失败, 请重新添加!');
+        })
     }
 
 }

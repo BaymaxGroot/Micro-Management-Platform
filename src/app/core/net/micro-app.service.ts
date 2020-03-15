@@ -23,7 +23,7 @@ export class MicroAppService {
             const token = JSON.parse(window.atob(this._tokenService.get().token)).token;
             const user = JSON.parse(window.atob(this._tokenService.get().token)).user;
             headers = {
-                'Access-Control-Allow-Origin': '*',
+                // 'Access-Control-Allow-Origin': '*',
                 'Authorization': AUTH,
                 'Content-Type': 'application/json',
                 'Account': user,

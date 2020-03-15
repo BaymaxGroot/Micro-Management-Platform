@@ -19,6 +19,6 @@
         [nzTitle]="'添加分类'"
         [nzFooter]="null"
         (nzOnCancel)="handleCreateCategoryCancel()">
-        <sf [schema]="categorySchema" (formSubmit)="handleCreateCategorySubmit($event)"></sf>
+        <sf [schema]="categorySchema" (formSubmit)="handleCreateCategorySubmit($event)" [loading]="isAddingOrEditingCategory"></sf>
     </nz-modal>
 </div>
