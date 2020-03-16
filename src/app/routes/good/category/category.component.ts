@@ -96,10 +96,12 @@ export class CategoryComponent implements OnInit {
             if (data) {
                 this.categoryListData = data;
                 this.categoryListData.forEach((item) => {
-                   item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
+                    if(item['cicon']) {
+                        item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
+                    }
                 });
                 data.forEach((item) => {
-                    if (!item['cparent']) {
+                    if (!item['cparent'] || parseInt(item['cparent']) == 0) {
                         this.categoryRootList.push({
                             label: item['cname'],
                             value: item['clabel']
@@ -174,7 +176,7 @@ export class CategoryComponent implements OnInit {
                 title: '分类图标',
                 ui: {
                     widget: 'upload',
-                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
+                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     urlReName: 'url',
                     listType: 'picture-card',
                     showUploadList: true,
@@ -201,21 +203,13 @@ export class CategoryComponent implements OnInit {
                             args.fileList[0].filename = args.file.response.name;
                         }
                     },
-                    headers: (file) => {
-                        const httpHeaders = new HttpHeaders({
-                            'Access-Control-Allow-Origin': '*',
-                            'Authorization': environment.AUTH,
-                            'Content-Type': 'application/json'
-                        });
-                        file.headers = httpHeaders;
-                    },
                     customRequest: (item) => {
                         // Create a FormData here to store files and other parameters.
                         const formData = new FormData();
                         // tslint:disable-next-line:no-any
                         formData.append('file', item.file as any);
                         const httpHeaders = new HttpHeaders({
-                            'Authorization': environment.AUTH
+                            'Authorization': environment.AUTH,
                         });
 
                         const req = new HttpRequest('POST', item.action!, formData, {
@@ -223,6 +217,7 @@ export class CategoryComponent implements OnInit {
                             reportProgress: true,
                             withCredentials: true
                         });
+
                         return this.http.request(req).subscribe(
                             // tslint:disable-next-line no-any
                             (event: HttpEvent<any>) => {
