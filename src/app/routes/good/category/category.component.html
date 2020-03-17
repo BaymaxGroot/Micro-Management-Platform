@@ -15,10 +15,15 @@
         <button nz-button nzType="primary" (click)="showAddCategoryModal()">添加分类</button>
     </ng-template>
     <nz-modal
-        [(nzVisible)]="addCategoryModalVisible"
+        [(nzVisible)]="addOrEditCategoryModalVisible"
         [nzTitle]="'添加分类'"
         [nzFooter]="null"
         (nzOnCancel)="handleCreateCategoryCancel()">
-        <sf [schema]="categorySchema" (formSubmit)="handleCreateCategorySubmit($event)" [loading]="isAddingOrEditingCategory" [cleanValue]="true"></sf>
+        <sf #sf [mode]="'edit'" [schema]="categorySchema" [formData]="categoryFormData" [button]="null">
+            <button nz-button type="button" (click)="handleCreateCategoryCancel()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditCategorySubmit(sf.value)" [disabled]="!sf.valid"
+                    [nzLoading]="isAddingOrEditingCategory">保存
+            </button>
+        </sf>
     </nz-modal>
 </div>

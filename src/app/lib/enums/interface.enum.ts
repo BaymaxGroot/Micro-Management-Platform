@@ -12,6 +12,7 @@ export enum Interface {
      */
     LoadProductCategoryListEndPoint = '/category/list',
     AddOrEditProductCategoryInfoEndPoint = '/category/set',
+    RemoveProductCategoryEndPoint = '/category/remove',
     LoadProductListEndPoint = "/load/good",
     LoadProductWantedListEndPoint = "/load/good/wanted",
     /**

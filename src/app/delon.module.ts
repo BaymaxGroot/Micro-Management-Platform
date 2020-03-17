@@ -70,7 +70,8 @@ import {DelonFormModule, DelonFormConfig} from '@delon/form';
 export function fnDelonFormConfig(): DelonFormConfig {
     return {
         ...new DelonFormConfig(),
-        liveValidate: true
+        liveValidate: false,
+        autocomplete: 'off'
     };
 }
 

@@ -46,7 +46,7 @@ export class CategoryComponent implements OnInit {
             }
         },
         {title: '分类名称', index: 'cname'},
-        {title: '图标', index: 'cicon', type: 'img'},
+        {title: '图标', index: 'cicon', type: 'img', width: 100},
         {title: '显示', index: 'cshow', type: 'badge', badge: BADGE},
         {title: '排序', index: 'crank'},
         {
@@ -62,23 +62,38 @@ export class CategoryComponent implements OnInit {
                     text: '修改',
                     type: 'modal',
                     click: (e: any) => {
-                        console.log('编辑被点击');
+                        this.editCategoryLabel = parseInt(e['clabel']);
+                        this.categoryFormData = {
+                            category: parseInt(e['cparent']),
+                            name: e['cname'],
+                            rank: parseInt(e['crank']),
+                            icon: {
+                                status: 'done',
+                                url: e['cicon'],
+                                name: e['cname']
+                            },
+                            show: e['cshow'] !== 'False'
+                        };
+                        this.categoryIconFileList = [{
+                            uid: -1,
+                            name: 'xxx.png',
+                            status: 'done',
+                            url: e['cicon']
+                        }];
+                        this.showAddCategoryModal();
                     }
                 },
                 {
                     text: '删除',
                     type: 'del',
                     click: (e: any) => {
-                        console.log('删除被点击');
+                        const clable = e['clabel'];
+                        this.handleRemoveCategory(parseInt(clable));
                     }
                 },
             ]
         }
     ];
-
-    /**
-     * 分类列表数据
-     */
     categoryListData: STData[] = [];
     categoryRootList = [];
 
@@ -96,7 +111,7 @@ export class CategoryComponent implements OnInit {
             if (data) {
                 this.categoryListData = data;
                 this.categoryListData.forEach((item) => {
-                    if(item['cicon']) {
+                    if (item['cicon']) {
                         item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
                     }
                 });
@@ -113,7 +128,9 @@ export class CategoryComponent implements OnInit {
                     value: 0
                 });
             }
-            this.isLoadingList = false;
+            setTimeout(() => {
+                this.isLoadingList = false;
+            }, 1000);
         }, (err) => {
             this.msg.error('请求失败, 请重试！');
             this.isLoadingList = false;
@@ -123,32 +140,36 @@ export class CategoryComponent implements OnInit {
     /**
      * 添加分类模态框
      */
-    addCategoryModalVisible = false;
+    addOrEditCategoryModalVisible = false;
+    isAddModal = true;
 
     showAddCategoryModal(): void {
-
-        this.addCategoryModalVisible = true;
+        this.categorySchema.properties.icon.enum = this.categoryIconFileList;
+        this.addOrEditCategoryModalVisible = true;
     }
 
     handleCreateCategoryCancel(): void {
-        this.addCategoryModalVisible = false;
+        this.isAddModal = true;
+        this.categoryFormData = {
+            category: 0
+        };
+        this.addOrEditCategoryModalVisible = false;
     }
 
     /**
-     * 添加分类表单
+     * 添加或者编辑分类表单
      *
-     * 父级分类 select
-     * 分类名称 string
-     * 排序 100
-     * 分类图标 file image
      */
-    iconFileList: UploadFile[] = [];
+    categoryFormData: any = {
+        category: 0
+    };
+    categoryIconFileList: any[];
     categorySchema: SFSchema = {
         properties: {
             category: {
                 type: 'string',
                 title: '父级分类',
-                default: '0',
+                default: 0,
                 ui: {
                     widget: 'select',
                     asyncData: () =>
@@ -174,13 +195,13 @@ export class CategoryComponent implements OnInit {
             icon: {
                 type: 'string',
                 title: '分类图标',
+                enum: this.categoryIconFileList,
                 ui: {
                     widget: 'upload',
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     urlReName: 'url',
                     listType: 'picture-card',
                     showUploadList: true,
-                    fileList: this.iconFileList,
                     beforeUpload: (file, fileList) => {
                         let isJPG = false;
                         ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'].forEach((item) => {
@@ -198,10 +219,10 @@ export class CategoryComponent implements OnInit {
                         }
                     },
                     change: (args) => {
-                        if (args.type == 'success') {
-                            args.fileList[0].url = this.sanitizer.bypassSecurityTrustResourceUrl(args.file.response.url).toString();
-                            args.fileList[0].filename = args.file.response.name;
-                        }
+                        // if (args.type == 'success') {
+                        //     args.fileList[0].url = this.sanitizer.bypassSecurityTrustResourceUrl(args.file.response.url).toString();
+                        //     args.fileList[0].filename = args.file.response.name;
+                        // }
                     },
                     customRequest: (item) => {
                         // Create a FormData here to store files and other parameters.
@@ -247,27 +268,43 @@ export class CategoryComponent implements OnInit {
                 }
             }
         },
-        required: ['category','name', 'rank']
+        required: ['category', 'name', 'rank']
     };
     isAddingOrEditingCategory = false;
+    editCategoryLabel: number = 0;
 
-    handleCreateCategorySubmit(value: any): void {
+    handleCreateOrEditCategorySubmit(value: any): void {
         let categoryTemplate = {
-            cname: value['name']? value['name']:0,
-            cicon: value['icon']? value['icon'].url:'',
-            cshow: value['show']? value['show']:0,
-            crank: value['rank']? value['rank']:2,
-            cparent: value['category']? value['category']:0
+            clabel: this.editCategoryLabel,
+            cname: value['name'] ? value['name'] : 0,
+            cicon: value['icon'] ? value['icon'].url : '',
+            cshow: value['show'] ? value['show'] : 0,
+            crank: value['rank'] ? value['rank'] : 2,
+            cparent: value['category'] ? value['category'] : 0
         };
         this.isAddingOrEditingCategory = true;
-        this._microAppHttpClient.post(Interface.AddOrEditProductCategoryInfoEndPoint, categoryTemplate).subscribe(() => {
+        this._microAppHttpClient.post(Interface.AddOrEditProductCategoryInfoEndPoint, categoryTemplate).subscribe((data) => {
             this.isAddingOrEditingCategory = false;
             this.msg.info('添加分类信息成功!');
             this.handleCreateCategoryCancel();
+
             this.loadCategoryList();
-        }, () => {
+        }, (err) => {
             this.isAddingOrEditingCategory = false;
-            this.msg.info('添加分类信息失败, 请重新添加!');
+            this.msg.error('添加分类信息失败, 请重新添加!');
+        })
+    }
+
+    handleRemoveCategory(label: number) {
+        let removeCategoryTemplate = {
+            clabel: label
+        };
+        this.isLoadingList = true;
+        this._microAppHttpClient.post(Interface.RemoveProductCategoryEndPoint, removeCategoryTemplate).subscribe((data) => {
+            this.msg.info('删除分类信息成功!');
+            this.loadCategoryList();
+        }, (err) => {
+            this.msg.error('删除分类信息失败, 请重新删除!');
         })
     }
 
