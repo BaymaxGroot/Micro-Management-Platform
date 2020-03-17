@@ -1,15 +1,14 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {STColumn, STColumnBadge, STData} from "@delon/abc";
 import {FormBuilder} from "@angular/forms";
-import {NzMessageService, UploadFile} from "ng-zorro-antd";
+import {NzMessageService} from "ng-zorro-antd";
 import {SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
-import {HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse} from "@angular/common/http";
 import {environment} from "@env/environment";
-import {DomSanitizer} from "@angular/platform-browser";
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
+import {UploadIconService} from "@shared/service/upload-icon.service";
 
 const BADGE: STColumnBadge = {
     False: {text: '隐藏', color: 'default'},
@@ -23,22 +22,25 @@ const BADGE: STColumnBadge = {
 })
 export class CategoryComponent implements OnInit {
 
-    /**
-     * Loading Product List Tag
-     */
-    isLoadingList = true;
+    constructor(
+        private fb: FormBuilder,
+        private msg: NzMessageService,
+        private cdr: ChangeDetectorRef,
+        private _microAppHttpClient: MicroAppService,
+        private _uploadIconService: UploadIconService
+    ) {
+        this._uploadIconService.maxUploadLimit = 1;
+    }
 
-    constructor(private fb: FormBuilder,
-                private msg: NzMessageService,
-                private cdr: ChangeDetectorRef,
-                private _microAppHttpClient: MicroAppService,
-                private http: HttpClient,
-                private sanitizer: DomSanitizer) {
+    ngOnInit() {
+        this.loadCategoryList();
     }
 
     /**
      * 分类列表设置
+     *
      */
+    isLoadingList = true;
     columnsSetting: STColumn[] = [
         {
             title: 'ID', index: 'clabel', format: (item) => {
@@ -62,24 +64,8 @@ export class CategoryComponent implements OnInit {
                     text: '修改',
                     type: 'modal',
                     click: (e: any) => {
-                        this.editCategoryLabel = parseInt(e['clabel']);
-                        this.categoryFormData = {
-                            category: parseInt(e['cparent']),
-                            name: e['cname'],
-                            rank: parseInt(e['crank']),
-                            icon: {
-                                status: 'done',
-                                url: e['cicon'],
-                                name: e['cname']
-                            },
-                            show: e['cshow'] !== 'False'
-                        };
-                        this.categoryIconFileList = [{
-                            uid: -1,
-                            name: 'xxx.png',
-                            status: 'done',
-                            url: e['cicon']
-                        }];
+                        this.isAddModal = false;
+                        this.handleAddOrEditFormDataInit();
                         this.showAddCategoryModal();
                     }
                 },
@@ -87,8 +73,7 @@ export class CategoryComponent implements OnInit {
                     text: '删除',
                     type: 'del',
                     click: (e: any) => {
-                        const clable = e['clabel'];
-                        this.handleRemoveCategory(parseInt(clable));
+                        this.handleRemoveCategory(parseInt(e['clabel']));
                     }
                 },
             ]
@@ -96,10 +81,6 @@ export class CategoryComponent implements OnInit {
     ];
     categoryListData: STData[] = [];
     categoryRootList = [];
-
-    ngOnInit() {
-        this.loadCategoryList();
-    }
 
     /**
      * 加载分类列表
@@ -144,26 +125,45 @@ export class CategoryComponent implements OnInit {
     isAddModal = true;
 
     showAddCategoryModal(): void {
-        this.categorySchema.properties.icon.enum = this.categoryIconFileList;
+        let iconEnum = [];
+        this._uploadIconService.iconList.forEach((item) => {
+            iconEnum.push({
+                url: item
+            })
+        });
+        this.categorySchema.properties.icon.enum = iconEnum;
         this.addOrEditCategoryModalVisible = true;
     }
 
     handleCreateCategoryCancel(): void {
         this.isAddModal = true;
-        this.categoryFormData = {
-            category: 0
-        };
+        this.handleAddOrEditFormDataInit();
         this.addOrEditCategoryModalVisible = false;
+    }
+
+    handleAddOrEditFormDataInit(e: any = {}): void {
+        if (this.isAddModal) {
+            this.categoryFormData = {
+                category: 0
+            };
+            this._uploadIconService.emptyIconList();
+        } else {
+            this.editCategoryLabel = parseInt(e['clabel']);
+            this.categoryFormData = {
+                category: parseInt(e['cparent']),
+                name: e['cname'],
+                rank: parseInt(e['crank']),
+                show: e['cshow'] !== 'False'
+            };
+            this._uploadIconService.addIcon(e['cicon']);
+        }
     }
 
     /**
      * 添加或者编辑分类表单
      *
      */
-    categoryFormData: any = {
-        category: 0
-    };
-    categoryIconFileList: any[];
+    categoryFormData: any;
     categorySchema: SFSchema = {
         properties: {
             category: {
@@ -179,7 +179,7 @@ export class CategoryComponent implements OnInit {
                                 group: true,
                                 children: this.categoryRootList,
                             },
-                        ]).pipe(delay(200))
+                        ]).pipe(delay(10))
                 } as SFSelectWidgetSchema
             },
             name: {
@@ -189,73 +189,28 @@ export class CategoryComponent implements OnInit {
             rank: {
                 type: 'number',
                 title: '排序',
-                minimum: 2,
+                minimum: 1,
                 description: '排序值越小排序越靠前'
             },
             icon: {
                 type: 'string',
                 title: '分类图标',
-                enum: this.categoryIconFileList,
                 ui: {
                     widget: 'upload',
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
-                    urlReName: 'url',
                     listType: 'picture-card',
                     showUploadList: true,
                     beforeUpload: (file, fileList) => {
-                        let isJPG = false;
-                        ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'].forEach((item) => {
-                            if (item == file.type) {
-                                isJPG = true;
-                            }
-                        });
-                        if (!isJPG) {
-                            this.msg.error('目前只支持选择JPG/PNG/GIF/JPEG!');
-                            return false;
-                        }
-                        if (fileList.length > 1) {
-                            this.msg.error('请先删除已有的图片!');
-                            return false;
-                        }
+                        return this._uploadIconService.handleBeforeUpload(file, fileList);
                     },
                     change: (args) => {
-                        // if (args.type == 'success') {
-                        //     args.fileList[0].url = this.sanitizer.bypassSecurityTrustResourceUrl(args.file.response.url).toString();
-                        //     args.fileList[0].filename = args.file.response.name;
-                        // }
+                        this._uploadIconService.handleUploadSuccess(args);
                     },
                     customRequest: (item) => {
-                        // Create a FormData here to store files and other parameters.
-                        const formData = new FormData();
-                        // tslint:disable-next-line:no-any
-                        formData.append('file', item.file as any);
-                        const httpHeaders = new HttpHeaders({
-                            'Authorization': environment.AUTH,
-                        });
-
-                        const req = new HttpRequest('POST', item.action!, formData, {
-                            headers: httpHeaders,
-                            reportProgress: true,
-                            withCredentials: true
-                        });
-
-                        return this.http.request(req).subscribe(
-                            // tslint:disable-next-line no-any
-                            (event: HttpEvent<any>) => {
-                                if (event.type === HttpEventType.UploadProgress) {
-                                    if (event.total! > 0) {
-                                        // tslint:disable-next-line:no-any
-                                        (event as any).percent = (event.loaded / event.total!) * 100;
-                                    }
-                                    item.onProgress!(event, item.file!);
-                                } else if (event instanceof HttpResponse) {
-                                    item.onSuccess!(event.body, item.file!, event);
-                                }
-                            },
-                            err => {
-                                item.onError!(err, item.file!);
-                            }
-                        );
+                        return this._uploadIconService.uploadImage(item);
+                    },
+                    remove: (file) => {
+                        return this._uploadIconService.handleDeleteIcon(file);
                     }
                 } as SFUploadWidgetSchema
             },

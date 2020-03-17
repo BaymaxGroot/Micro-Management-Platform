@@ -97,6 +97,15 @@ export class UploadIconService {
     public handleUploadSuccess(args: UploadChangeParam) {
         if (args.type == 'success') {
             this.addIcon(args.file.response.url);
+            args.fileList[0].url = environment.SERVER_URL + '/static/upload/' + args.file.response.url;
+            // args.fileList[0].url = args.file.response.url;
         }
+    }
+
+    public handleDeleteIcon(file: UploadFile): boolean{
+        this._iconList = this._iconList.filter( (item) => {
+            return file.url.indexOf(item) == -1;
+        } );
+        return true;
     }
 }
