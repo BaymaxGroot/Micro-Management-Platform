@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {STColumn, STColumnBadge, STData} from "@delon/abc";
 import {FormBuilder} from "@angular/forms";
 import {NzMessageService} from "ng-zorro-antd";
-import {SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
+import {SFComponent, SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {environment} from "@env/environment";
@@ -109,9 +109,7 @@ export class CategoryComponent implements OnInit {
                     value: 0
                 });
             }
-            setTimeout(() => {
-                this.isLoadingList = false;
-            }, 1000);
+            this.isLoadingList = false;
         }, (err) => {
             this.msg.error('请求失败, 请重试！');
             this.isLoadingList = false;
@@ -125,13 +123,7 @@ export class CategoryComponent implements OnInit {
     isAddModal = true;
 
     showAddCategoryModal(): void {
-        let iconEnum = [];
-        this._uploadIconService.iconList.forEach((item) => {
-            iconEnum.push({
-                url: item
-            })
-        });
-        this.categorySchema.properties.icon.enum = iconEnum;
+        this.handleAddOrEditFormDataInit();
         this.addOrEditCategoryModalVisible = true;
     }
 
@@ -144,7 +136,9 @@ export class CategoryComponent implements OnInit {
     handleAddOrEditFormDataInit(e: any = {}): void {
         if (this.isAddModal) {
             this.categoryFormData = {
-                category: 0
+                category: 0,
+                rank: 1,
+                show: false
             };
             this._uploadIconService.emptyIconList();
         } else {
@@ -228,13 +222,19 @@ export class CategoryComponent implements OnInit {
     isAddingOrEditingCategory = false;
     editCategoryLabel: number = 0;
 
+    disableCreateOrEditCategorySubmitButton (sf: SFComponent ): boolean{
+        console.log(sf.valid);
+        console.log(sf.value);
+        return !sf.valid || this._uploadIconService.isUploding;
+    }
+
     handleCreateOrEditCategorySubmit(value: any): void {
         let categoryTemplate = {
-            clabel: this.editCategoryLabel,
+            clabel: this.isAddModal ? 0 : this.editCategoryLabel,
             cname: value['name'] ? value['name'] : 0,
-            cicon: value['icon'] ? value['icon'].url : '',
+            cicon: this._uploadIconService.iconList[0]? this._uploadIconService.iconList[0] : '',
             cshow: value['show'] ? value['show'] : 0,
-            crank: value['rank'] ? value['rank'] : 2,
+            crank: value['rank'] ? value['rank'] : 1,
             cparent: value['category'] ? value['category'] : 0
         };
         this.isAddingOrEditingCategory = true;
@@ -242,7 +242,6 @@ export class CategoryComponent implements OnInit {
             this.isAddingOrEditingCategory = false;
             this.msg.info('添加分类信息成功!');
             this.handleCreateCategoryCancel();
-
             this.loadCategoryList();
         }, (err) => {
             this.isAddingOrEditingCategory = false;

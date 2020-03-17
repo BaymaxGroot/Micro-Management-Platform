@@ -9,7 +9,7 @@
 
 <div class="ant-row">
     <nz-card nzTitle="商品分类" [nzExtra]="categoryAction" [nzLoading]="isLoadingList">
-        <st [data]="categoryListData" [columns]="columnsSetting"></st>
+        <st [data]="categoryListData" [columns]="columnsSetting" [loadingDelay]="1000"></st>
     </nz-card>
     <ng-template #categoryAction>
         <button nz-button nzType="primary" (click)="showAddCategoryModal()">添加分类</button>
@@ -21,7 +21,7 @@
         (nzOnCancel)="handleCreateCategoryCancel()">
         <sf #sf [mode]="'edit'" [schema]="categorySchema" [formData]="categoryFormData" [button]="null">
             <button nz-button type="button" (click)="handleCreateCategoryCancel()">关闭</button>
-            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditCategorySubmit(sf.value)" [disabled]="!sf.valid"
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditCategorySubmit(sf.value)" [disabled]="disableCreateOrEditCategorySubmitButton(sf)"
                     [nzLoading]="isAddingOrEditingCategory">保存
             </button>
         </sf>

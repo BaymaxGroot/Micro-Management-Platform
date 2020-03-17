@@ -11,6 +11,7 @@ export class UploadIconService {
 
     private _maxUploadLimit: number = 1;
     private _iconList: string[] = [];
+    private _isUploding: boolean = false;
 
     constructor(
         private http: HttpClient,
@@ -20,6 +21,10 @@ export class UploadIconService {
 
     get maxUploadLimit(): number {
         return this._maxUploadLimit;
+    }
+
+    get isUploding(): boolean {
+        return this._isUploding;
     }
 
     set maxUploadLimit(value: number) {
@@ -57,6 +62,7 @@ export class UploadIconService {
             this.msg.error(`最多上传${this.maxUploadLimit}张图片, 请先删除已有的图片!`);
             return false;
         }
+        this._isUploding = true;
         return true;
     }
 
@@ -90,6 +96,7 @@ export class UploadIconService {
             },
             err => {
                 item.onError!(err, item.file!);
+                this._isUploding = false;
             }
         );
     }
@@ -98,7 +105,7 @@ export class UploadIconService {
         if (args.type == 'success') {
             this.addIcon(args.file.response.url);
             args.fileList[0].url = environment.SERVER_URL + '/static/upload/' + args.file.response.url;
-            // args.fileList[0].url = args.file.response.url;
+            this._isUploding = false;
         }
     }
 
