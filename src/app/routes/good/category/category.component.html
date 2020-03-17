@@ -12,7 +12,7 @@
         <st [data]="categoryListData" [columns]="columnsSetting" [loadingDelay]="2000"></st>
     </nz-card>
     <ng-template #categoryAction>
-        <button nz-button nzType="primary" (click)="showAddCategoryModal()">添加分类</button>
+        <button nz-button nzType="primary" (click)="showAddCategoryModal()"><i nz-icon nzType="plus"></i>添加分类</button>
     </ng-template>
     <nz-modal
         [(nzVisible)]="addOrEditCategoryModalVisible"
