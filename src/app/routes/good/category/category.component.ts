@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {STColumn, STColumnBadge, STData} from "@delon/abc";
 import {FormBuilder} from "@angular/forms";
 import {NzMessageService} from "ng-zorro-antd";
-import {SFComponent, SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
+import {SFComponent, SFSchema, SFSchemaEnumType, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {environment} from "@env/environment";
@@ -52,20 +52,21 @@ export class CategoryComponent implements OnInit {
         {title: '显示', index: 'cshow', type: 'badge', badge: BADGE},
         {title: '排序', index: 'crank'},
         {
+            title: '所属分类', index: 'root', filter: {
+                type: 'keyword',
+                fn: (filter, record) => {
+                    return !filter.value || record.root.indexOf(filter.value) !== -1
+                }
+            }
+        },
+        {
             title: '操作', buttons: [
-                {
-                    text: '查看商品列表',
-                    type: 'modal',
-                    click: (e: any) => {
-                        console.log('编辑被点击');
-                    }
-                },
                 {
                     text: '修改',
                     type: 'modal',
                     click: (e: any) => {
                         this.isAddModal = false;
-                        this.handleAddOrEditFormDataInit();
+                        this.handleAddOrEditFormDataInit(e);
                         this.showAddCategoryModal();
                     }
                 },
@@ -95,12 +96,10 @@ export class CategoryComponent implements OnInit {
                     if (item['cicon']) {
                         item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
                     }
-                });
-                data.forEach((item) => {
                     if (!item['cparent'] || parseInt(item['cparent']) == 0) {
                         this.categoryRootList.push({
                             label: item['cname'],
-                            value: item['clabel']
+                            value: parseInt(item['clabel'])
                         });
                     }
                 });
@@ -122,17 +121,29 @@ export class CategoryComponent implements OnInit {
     addOrEditCategoryModalVisible = false;
     isAddModal = true;
 
+    /**
+     * 显示 添加/修改 Category 对话框
+     */
     showAddCategoryModal(): void {
-        this.handleAddOrEditFormDataInit();
+        if (this.isAddModal) {
+            this.handleAddOrEditFormDataInit();
+        }
         this.addOrEditCategoryModalVisible = true;
     }
 
+    /**
+     * 隐藏 添加/修改 Category 对话框
+     */
     handleCreateCategoryCancel(): void {
         this.isAddModal = true;
         this.handleAddOrEditFormDataInit();
         this.addOrEditCategoryModalVisible = false;
     }
 
+    /**
+     * 添加或者修改 Category Form 表单数据初始化
+     * @param e
+     */
     handleAddOrEditFormDataInit(e: any = {}): void {
         if (this.isAddModal) {
             this.categoryFormData = {
@@ -149,7 +160,24 @@ export class CategoryComponent implements OnInit {
                 rank: parseInt(e['crank']),
                 show: e['cshow'] !== 'False'
             };
-            this._uploadIconService.addIcon(e['cicon']);
+            if (e['cicon']) {
+                this._uploadIconService.addIcon(e['cicon']);
+            }
+        }
+        if (e['cicon']) {
+            let icons = [];
+            icons.push({
+                uid: -1,
+                name: 'xxx.png',
+                status: 'done',
+                url: e['cicon'],
+                response: {
+                    resource_id: 1,
+                },
+            });
+            this.categorySchema.properties.icon.enum = icons;
+        } else {
+            this.categorySchema.properties.icon.enum = null;
         }
     }
 
@@ -163,7 +191,6 @@ export class CategoryComponent implements OnInit {
             category: {
                 type: 'string',
                 title: '父级分类',
-                default: 0,
                 ui: {
                     widget: 'select',
                     asyncData: () =>
@@ -222,17 +249,23 @@ export class CategoryComponent implements OnInit {
     isAddingOrEditingCategory = false;
     editCategoryLabel: number = 0;
 
-    disableCreateOrEditCategorySubmitButton (sf: SFComponent ): boolean{
-        console.log(sf.valid);
-        console.log(sf.value);
+    /**
+     * Submit 按钮是否可用
+     * @param sf
+     */
+    disableCreateOrEditCategorySubmitButton(sf: SFComponent): boolean {
         return !sf.valid || this._uploadIconService.isUploding;
     }
 
+    /**
+     * 添加/修改 Category
+     * @param value
+     */
     handleCreateOrEditCategorySubmit(value: any): void {
         let categoryTemplate = {
             clabel: this.isAddModal ? 0 : this.editCategoryLabel,
             cname: value['name'] ? value['name'] : 0,
-            cicon: this._uploadIconService.iconList[0]? this._uploadIconService.iconList[0] : '',
+            cicon: this._uploadIconService.iconList[0] ? this._uploadIconService.iconList[0] : '',
             cshow: value['show'] ? value['show'] : 0,
             crank: value['rank'] ? value['rank'] : 1,
             cparent: value['category'] ? value['category'] : 0
@@ -240,15 +273,19 @@ export class CategoryComponent implements OnInit {
         this.isAddingOrEditingCategory = true;
         this._microAppHttpClient.post(Interface.AddOrEditProductCategoryInfoEndPoint, categoryTemplate).subscribe((data) => {
             this.isAddingOrEditingCategory = false;
-            this.msg.info('添加分类信息成功!');
+            this.msg.info(this.isAddModal? '添加分类信息成功!':'修改分类信息成功!');
             this.handleCreateCategoryCancel();
             this.loadCategoryList();
         }, (err) => {
             this.isAddingOrEditingCategory = false;
-            this.msg.error('添加分类信息失败, 请重新添加!');
+            this.msg.info(this.isAddModal? '添加分类信息失败!':'修改分类信息失败!');
         })
     }
 
+    /**
+     * 删除Category
+     * @param label
+     */
     handleRemoveCategory(label: number) {
         let removeCategoryTemplate = {
             clabel: label

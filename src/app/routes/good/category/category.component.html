@@ -9,7 +9,7 @@
 
 <div class="ant-row">
     <nz-card nzTitle="商品分类" [nzExtra]="categoryAction" [nzLoading]="isLoadingList">
-        <st [data]="categoryListData" [columns]="columnsSetting" [loadingDelay]="1000"></st>
+        <st [data]="categoryListData" [columns]="columnsSetting" [loadingDelay]="2000"></st>
     </nz-card>
     <ng-template #categoryAction>
         <button nz-button nzType="primary" (click)="showAddCategoryModal()">添加分类</button>

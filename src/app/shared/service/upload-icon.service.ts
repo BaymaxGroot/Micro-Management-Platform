@@ -19,34 +19,62 @@ export class UploadIconService {
     ) {
     }
 
+    /**
+     * 设置最大文件数量
+     */
     get maxUploadLimit(): number {
         return this._maxUploadLimit;
     }
 
+    /**
+     * 标记是否正在上传图片
+     */
     get isUploding(): boolean {
         return this._isUploding;
     }
 
+    /**
+     * 得到最大文件数量
+     * @param value
+     */
     set maxUploadLimit(value: number) {
         this._maxUploadLimit = value;
     }
 
+    /**
+     * 得到文件列表
+     */
     get iconList(): string[] {
         return this._iconList;
     }
 
+    /**
+     * 是否达到文件最大数量
+     */
     public isReachLimit(): boolean {
         return this._iconList.length >= this._maxUploadLimit;
     }
 
+    /**
+     * 清空图片列表
+     */
     public emptyIconList() {
         this._iconList = [];
     }
 
+    /**
+     * 添加图片 文件名
+     * @param icon
+     */
     public addIcon(icon: string) {
         this._iconList.push(icon)
     }
 
+    /**
+     * 处理上传图片之前的操作
+     * @param file
+     * @param fileList
+     */
     public handleBeforeUpload(file: UploadFile, fileList: UploadFile[]): boolean {
         let isJPG = false;
         ['image/png', 'image/jpeg', 'image/gif', 'image/jpg'].forEach((item) => {
@@ -66,6 +94,10 @@ export class UploadIconService {
         return true;
     }
 
+    /**
+     * 处理上传图片操作
+     * @param item
+     */
     public uploadImage(item: UploadXHRArgs): Subscription {
         // Create a FormData here to store files and other parameters.
         const formData = new FormData();
@@ -101,6 +133,10 @@ export class UploadIconService {
         );
     }
 
+    /**
+     * 处理上传图片成功请求
+     * @param args
+     */
     public handleUploadSuccess(args: UploadChangeParam) {
         if (args.type == 'success') {
             this.addIcon(args.file.response.url);
@@ -109,6 +145,10 @@ export class UploadIconService {
         }
     }
 
+    /**
+     * 处理删除图片操作
+     * @param file
+     */
     public handleDeleteIcon(file: UploadFile): boolean{
         this._iconList = this._iconList.filter( (item) => {
             return file.url.indexOf(item) == -1;
