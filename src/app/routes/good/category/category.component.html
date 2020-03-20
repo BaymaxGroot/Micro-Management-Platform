@@ -8,8 +8,8 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="商品分类" [nzExtra]="categoryAction" [nzLoading]="isLoadingList">
-        <st [data]="categoryListData" [columns]="columnsSetting" [loadingDelay]="2000"></st>
+    <nz-card nzTitle="商品分类" [nzExtra]="categoryAction">
+        <st [data]="categoryListData" [columns]="columnsSetting" [loading]="isLoadingList" [loadingDelay]="2000"></st>
     </nz-card>
     <ng-template #categoryAction>
         <button nz-button nzType="primary" (click)="showAddCategoryModal()"><i nz-icon nzType="plus"></i>添加分类</button>
