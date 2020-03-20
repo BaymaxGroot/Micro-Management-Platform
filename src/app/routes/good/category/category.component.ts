@@ -41,10 +41,11 @@ export class CategoryComponent implements OnInit {
      *
      */
     isLoadingList = true;
+    categoryFilterList = [];
     columnsSetting: STColumn[] = [
         {
             title: 'ID', index: 'clabel', format: (item) => {
-                return 'JYS' + item['clabel'];
+                return 'T' + item['clabel'];
             }
         },
         {title: '分类名称', index: 'cname'},
@@ -53,9 +54,9 @@ export class CategoryComponent implements OnInit {
         {title: '排序', index: 'crank'},
         {
             title: '所属分类', index: 'root', filter: {
-                type: 'keyword',
+                menus: [],
                 fn: (filter, record) => {
-                    return !filter.value || record.root.indexOf(filter.value) !== -1
+                    return !filter.value || record.root.indexOf(filter.value) !== -1 || record.cname.indexOf(filter.value) !== -1;
                 }
             }
         },
@@ -102,10 +103,29 @@ export class CategoryComponent implements OnInit {
                             value: parseInt(item['clabel'])
                         });
                     }
+                    if (item['root']) {
+                        let flag = true;
+                        this.categoryFilterList.forEach((ca) => {
+                            if (ca.text == item['root']) {
+                                flag = false;
+                                return;
+                            }
+                        });
+                        if (flag) {
+                            this.categoryFilterList.push({
+                                text: item['root'], value: item['root']
+                            });
+                        }
+                    }
                 });
                 this.categoryRootList.unshift({
                     label: '无',
                     value: 0
+                });
+                this.columnsSetting.forEach((item) => {
+                    if (item.title == '所属分类') {
+                        item.filter.menus = this.categoryFilterList;
+                    }
                 });
             }
             this.isLoadingList = false;
@@ -273,12 +293,12 @@ export class CategoryComponent implements OnInit {
         this.isAddingOrEditingCategory = true;
         this._microAppHttpClient.post(Interface.AddOrEditProductCategoryInfoEndPoint, categoryTemplate).subscribe((data) => {
             this.isAddingOrEditingCategory = false;
-            this.msg.info(this.isAddModal? '添加分类信息成功!':'修改分类信息成功!');
+            this.msg.info(this.isAddModal ? '添加分类信息成功!' : '修改分类信息成功!');
             this.handleCreateCategoryCancel();
             this.loadCategoryList();
         }, (err) => {
             this.isAddingOrEditingCategory = false;
-            this.msg.info(this.isAddModal? '添加分类信息失败!':'修改分类信息失败!');
+            this.msg.info(this.isAddModal ? '添加分类信息失败!' : '修改分类信息失败!');
         })
     }
 
