@@ -310,7 +310,6 @@ export class CategoryComponent implements OnInit {
         let removeCategoryTemplate = {
             clabel: label
         };
-        this.isLoadingList = true;
         this._microAppHttpClient.post(Interface.RemoveProductCategoryEndPoint, removeCategoryTemplate).subscribe((data) => {
             this.msg.info('删除分类信息成功!');
             this.loadCategoryList();
