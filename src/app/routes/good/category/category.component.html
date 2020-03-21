@@ -19,7 +19,7 @@
         [nzTitle]="'分类编辑'"
         [nzFooter]="null"
         (nzOnCancel)="handleCreateCategoryCancel()">
-        <sf #sf [mode]="'edit'" [schema]="categorySchema" [formData]="categoryFormData" [button]="null" [noColon]="true">
+        <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="categorySchema" [formData]="categoryFormData" [button]="null" [noColon]="true">
             <button nz-button type="button" (click)="handleCreateCategoryCancel()">关闭</button>
             <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditCategorySubmit(sf.value)" [disabled]="disableCreateOrEditCategorySubmitButton(sf)"
                     [nzLoading]="isAddingOrEditingCategory">保存

@@ -13,7 +13,9 @@
             (change)="handleCheckBoxSelected($event)" [loadingDelay]="2000"></st>
     </nz-card>
     <ng-template #goodListOptions>
-        <button nz-button nzType="primary"><i nz-icon nzType="plus"></i>添加商品</button>
+        <button nz-button nzType="primary" (click)="handleCreateOrEditProductModelShow()"
+                [disabled]="isLoadingCategoryList"><i nz-icon nzType="plus"></i>添加商品
+        </button>
         <button nz-button nzType="primary" [disabled]="checkboxSelectedList.length == 0"
                 (click)="handleDownOrUpProduct(getCheckBoxSelectedIDList(),true)">批量上架
         </button>
@@ -27,13 +29,31 @@
                 (click)="handleClickBatchModifyProductStockButton()"><i nz-icon nzType="edit"></i>批量修改库存
         </button>
     </ng-template>
+    <!-- 添加 / 修改 商品信息弹窗 -->
+    <nz-modal
+        [(nzVisible)]="addOrEditProductModalVisible"
+        [nzTitle]="'商品编辑'"
+        [nzFooter]="null"
+        [nzWidth]="800"
+        (nzOnCancel)="handleCreateOrEditProductModelHide()">
+        <sf #sf *ngIf="!isLoadingList &&!isLoadingCategoryList" [mode]="'edit'" [schema]="productSchema"
+            [formData]="productFormData" [button]="null" [noColon]="true">
+            <!--            <ng-template [sf-template]="'ueditor'" let-me let-ui="ui" let-schema="summary"></ng-template>-->
+            <button nz-button type="button" (click)="handleCreateOrEditProductModelHide()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditProductSubmit(sf.value)"
+                    [disabled]="disableCreateOrEditProductSubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingProduct">保存
+            </button>
+        </sf>
+    </nz-modal>
     <!-- 批量修改产品库存弹窗 -->
     <nz-modal
         [(nzVisible)]="batchModifyModalShow"
         [nzTitle]="'库存设置'"
         [nzFooter]="null"
         (nzOnCancel)="handleBatchModifyModalCancel()">
-        <sf [mode]="'edit'" [schema]="modifyProductStockSchema" (formSubmit)="handleBatchModifyProductStockSubmit($event)"
+        <sf [mode]="'edit'" [schema]="modifyProductStockSchema"
+            (formSubmit)="handleBatchModifyProductStockSubmit($event)"
             [formData]="modifyProductStockFormData" [loading]="modifyProductStockSubmitting"></sf>
     </nz-modal>
 </div>

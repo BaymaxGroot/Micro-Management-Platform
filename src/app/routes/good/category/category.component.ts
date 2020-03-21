@@ -214,13 +214,7 @@ export class CategoryComponent implements OnInit {
                 ui: {
                     widget: 'select',
                     asyncData: () =>
-                        of([
-                            {
-                                label: '父级分类',
-                                group: true,
-                                children: this.categoryRootList,
-                            },
-                        ]).pipe(delay(10))
+                        of(this.categoryRootList).pipe(delay(10))
                 } as SFSelectWidgetSchema
             },
             name: {
