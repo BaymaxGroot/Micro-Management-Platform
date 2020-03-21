@@ -16,7 +16,7 @@
     </ng-template>
     <nz-modal
         [(nzVisible)]="addOrEditCategoryModalVisible"
-        [nzTitle]="'添加分类'"
+        [nzTitle]="'分类编辑'"
         [nzFooter]="null"
         (nzOnCancel)="handleCreateCategoryCancel()">
         <sf #sf [mode]="'edit'" [schema]="categorySchema" [formData]="categoryFormData" [button]="null">
