@@ -138,7 +138,7 @@ export class CategoryComponent implements OnInit {
     /**
      * 添加分类模态框
      */
-    addOrEditCategoryModalVisible = false;
+    addOrEditCategoryModalVisible: boolean = false;
     isAddModal = true;
 
     /**
