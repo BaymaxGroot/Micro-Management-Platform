@@ -222,7 +222,7 @@ export class CategoryComponent implements OnInit {
                 title: '分类名称'
             },
             rank: {
-                type: 'number',
+                type: 'integer',
                 title: '排序',
                 minimum: 1,
                 description: '排序值越小排序越靠前'
