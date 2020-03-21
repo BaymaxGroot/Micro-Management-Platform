@@ -71,13 +71,10 @@ import {SharedModule} from '@shared';
 import {AppComponent} from './app.component';
 import {RoutesModule} from './routes/routes.module';
 import {LayoutModule} from './layout/layout.module';
-import {UeditorWidget} from "@shared/widgets/ueditor.widget";
-import {WidgetRegistry} from "@delon/form";
 
 @NgModule({
     declarations: [
-        AppComponent,
-        UeditorWidget
+        AppComponent
     ],
     imports: [
         BrowserModule,
@@ -96,11 +93,7 @@ import {WidgetRegistry} from "@delon/form";
         ...INTERCEPTOR_PROVIDES,
         ...APPINIT_PROVIDES
     ],
-    bootstrap: [AppComponent],
-    entryComponents: [UeditorWidget]
+    bootstrap: [AppComponent]
 })
 export class AppModule {
-    constructor(widgetRegistry: WidgetRegistry) {
-        widgetRegistry.register(UeditorWidget.KEY, UeditorWidget);
-    }
 }
