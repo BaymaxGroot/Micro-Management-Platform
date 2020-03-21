@@ -64,7 +64,7 @@ export class CategoryComponent implements OnInit {
             title: '操作', buttons: [
                 {
                     text: '修改',
-                    type: 'modal',
+                    type: 'none',
                     click: (e: any) => {
                         this.isAddModal = false;
                         this.handleAddOrEditFormDataInit(e);
