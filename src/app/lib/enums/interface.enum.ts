@@ -13,8 +13,12 @@ export enum Interface {
     LoadProductCategoryListEndPoint = '/category/list',
     AddOrEditProductCategoryInfoEndPoint = '/category/set',
     RemoveProductCategoryEndPoint = '/category/remove',
-    LoadProductListEndPoint = "/load/good",
-    LoadProductWantedListEndPoint = "/load/good/wanted",
+    LoadProductListEndPoint = '/product/list',
+    AddOrEditProductInfoEndPoint = '',
+    RemoveProductEndPoint = '/product/delete',
+    ChangeProductStatusEndPoint = '/product/status/change',
+    ChangeProductStockEndPoint = '/product/stock/change',
+    LoadProductWantedListEndPoint = '/load/good/wanted',
     /**
      * 订单管理
      */
