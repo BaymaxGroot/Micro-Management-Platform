@@ -172,6 +172,7 @@ export class ManagementComponent implements OnInit {
      * 加载商品分类信息
      */
     isLoadingCategoryList = false;
+
     loadCategoryList() {
         this.isLoadingCategoryList = true;
         this.categoryRootList = [];
@@ -215,24 +216,11 @@ export class ManagementComponent implements OnInit {
             },
             name: {
                 type: 'string',
-                title: '商品名称',
-                ui: {
-                    grid: {
-                        span: 24
-                    }
-                }
+                title: '商品名称'
             },
             sub_title: {
                 type: 'string',
                 title: '副标题'
-            },
-            sub_title_color: {
-                type: 'string',
-                title: '副标题颜色',
-                format: 'color',
-                ui: {
-                    optionalHelp: '默认红色'
-                }
             },
             unit: {
                 type: 'string',
@@ -255,7 +243,7 @@ export class ManagementComponent implements OnInit {
                 }
             },
             rank: {
-                type: 'number',
+                type: 'integer',
                 title: '商品排序',
                 minimum: 1,
                 ui: {
@@ -266,7 +254,7 @@ export class ManagementComponent implements OnInit {
                 }
             },
             v_sales: {
-                type: 'number',
+                type: 'integer',
                 title: '虚拟销量',
                 minimum: 1,
                 ui: {
@@ -274,7 +262,7 @@ export class ManagementComponent implements OnInit {
                 }
             },
             v_visit: {
-                type: 'number',
+                type: 'integer',
                 title: '虚拟浏览量',
                 minimum: 1,
                 ui: {
@@ -329,7 +317,7 @@ export class ManagementComponent implements OnInit {
                 }
             },
             purchase: {
-                type: 'number',
+                type: 'integer',
                 title: '起购',
                 minimum: 1,
                 ui: {
@@ -340,7 +328,7 @@ export class ManagementComponent implements OnInit {
                 }
             },
             purchase_limit: {
-                type: 'number',
+                type: 'integer',
                 title: '限购',
                 minimum: 1,
                 ui: {
@@ -361,7 +349,7 @@ export class ManagementComponent implements OnInit {
                 }
             },
             stock: {
-                type: 'number',
+                type: 'integer',
                 title: '库存',
                 minimum: 0,
             },
@@ -437,7 +425,7 @@ export class ManagementComponent implements OnInit {
                 span: 12
             }
         },
-        required: ['category', 'name', 'price', 'ori_price', 'stock', 'summary']
+        required: ['category', 'name', 'price', 'ori_price', 'stock']
     };
     isAddingOrEditingProduct: boolean = false;
     editProductLabel: number = 0;
@@ -472,15 +460,45 @@ export class ManagementComponent implements OnInit {
      * Submit 按钮是否可用
      */
     disableCreateOrEditProductSubmitButton(sf: SFComponent) {
-        return !sf.valid
-            || this._uploadMainImageService.isUploding || this._uploadMainImageService.iconList.length == 0;
+        return !sf.valid || this._uploadMainImageService.isUploding;
     }
 
     /**
      * 添加 / 修改商品
      */
     handleCreateOrEditProductSubmit(value: any) {
-        console.log(value);
+        let createOrEditProductTemplate = {
+            'id': 0,
+            'cat_id': parseInt(value.category),
+            'sort': parseInt(value.rank),
+            'fake_sales': value.v_sales,
+            'fake_views': value.v_visit,
+            'delivery': value.delivery_type,
+            'stock': value.stock,
+            'min_buy_num': value.purchase,
+            'max_buy_num': value.purchase_limit,
+            'show_specification': value.use_specify,
+            'is_recommend': value.add_home_rec,
+            'weight': value.weight,
+            'price': value.price,
+            'original_price': value.ori_price,
+            'name': value.name,
+            'sub_title': value.sub_title,
+            'address': value.address,
+            'unit': value.unit,
+            'main_image': this._uploadMainImageService.iconList[0]? this._uploadMainImageService.iconList[0] : '',
+            'related_product': value.product_rec? value.product_rec.join(',') : ''
+        };
+        this.isAddingOrEditingProduct = true;
+        this._microAppHttpClient.post(Interface.AddOrEditProductInfoEndPoint, createOrEditProductTemplate).subscribe((data) => {
+            this.isAddingOrEditingProduct = false;
+            this.msg.info(this.isAddModal ? '添加商品信息成功!' : '修改商品信息成功!');
+            this.handleCreateOrEditProductModelHide();
+            this.loadProductList();
+        }, (err) => {
+            this.isAddingOrEditingProduct = false;
+            this.msg.info(this.isAddModal ? '添加商品信息失败!' : '修改商品信息失败!');
+        })
     }
 
     /**

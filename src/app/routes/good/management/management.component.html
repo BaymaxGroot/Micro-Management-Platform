@@ -10,7 +10,7 @@
 <div class="ant-row">
     <nz-card nzTitle="商品管理" [nzExtra]="goodListOptions" [nzLoading]="isLoadingList">
         <st *ngIf="!isLoadingList" [data]="productListData" [columns]="columnsSetting"
-            (change)="handleCheckBoxSelected($event)" [loadingDelay]="2000"></st>
+            (change)="handleCheckBoxSelected($event)" [loadingDelay]="4000"></st>
     </nz-card>
     <ng-template #goodListOptions>
         <button nz-button nzType="primary" (click)="handleCreateOrEditProductModelShow()"

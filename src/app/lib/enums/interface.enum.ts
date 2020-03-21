@@ -14,7 +14,7 @@ export enum Interface {
     AddOrEditProductCategoryInfoEndPoint = '/category/set',
     RemoveProductCategoryEndPoint = '/category/remove',
     LoadProductListEndPoint = '/product/list',
-    AddOrEditProductInfoEndPoint = '',
+    AddOrEditProductInfoEndPoint = '/product/set',
     RemoveProductEndPoint = '/product/delete',
     ChangeProductStatusEndPoint = '/product/status/change',
     ChangeProductStockEndPoint = '/product/stock/change',
