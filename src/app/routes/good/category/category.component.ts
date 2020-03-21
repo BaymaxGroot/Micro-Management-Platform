@@ -266,7 +266,7 @@ export class CategoryComponent implements OnInit {
         },
         required: ['category', 'name', 'rank']
     };
-    isAddingOrEditingCategory = false;
+    isAddingOrEditingCategory: boolean = false;
     editCategoryLabel: number = 0;
 
     /**
