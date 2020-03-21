@@ -41,11 +41,11 @@ export class UeditorWidget extends ControlWidget implements OnInit {
     ngOnInit(): void {
         this.loading = this.ui.loading || '加载中……';
         this.config = this.ui.config || {};
-        this.delay = this.ui.delay || 100;
+        this.delay = this.ui.delay || 300;
     }
 
     change(value: string) {
-        if (this.ui.change) this.ui.change(value);
-        this.setValue(value);
+        // if (this.ui.change) this.ui.change(value);
+        // this.setValue(value);
     }
 }
