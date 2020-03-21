@@ -41,7 +41,7 @@ export class UeditorWidget extends ControlWidget implements OnInit {
     ngOnInit(): void {
         this.loading = this.ui.loading || '加载中……';
         this.config = this.ui.config || {};
-        this.delay = this.ui.delay || 300;
+        this.delay = this.ui.delay || 100;
     }
 
     change(value: string) {
