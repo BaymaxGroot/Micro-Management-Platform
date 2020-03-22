@@ -5,11 +5,15 @@ import {ListComponent} from './list/list.component';
 import {AfterSaleComponent} from './after-sale/after-sale.component';
 import {EvaluationComponent} from './evaluation/evaluation.component';
 import {SharedModule} from "@shared";
+import { OrderItemComponent } from './list/order-item/order-item.component';
 
 const COMPONENTS = [
     ListComponent,
     AfterSaleComponent,
-    EvaluationComponent
+    EvaluationComponent,
+
+    //
+    OrderItemComponent
 ];
 
 const COMPONENTS_NOROUNT = [];
