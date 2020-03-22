@@ -8,22 +8,23 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="商品分类" [nzExtra]="categoryAction" [nzLoading]="isLoadingList">
+    <!-- 分类列表 -->
+    <nz-card nzTitle="商品分类" [nzExtra]="categoryAction" [nzLoading]="isLoadingList" *ngIf="!addOrEditCategoryModalVisible">
         <st *ngIf="!isLoadingList" [data]="categoryListData" [columns]="columnsSetting" [loadingDelay]="500"></st>
     </nz-card>
     <ng-template #categoryAction>
         <button nz-button nzType="primary" (click)="showAddCategoryModal()"><i nz-icon nzType="plus"></i>添加分类</button>
     </ng-template>
-    <nz-modal
-        [(nzVisible)]="addOrEditCategoryModalVisible"
-        [nzTitle]="'分类编辑'"
-        [nzFooter]="null"
-        (nzOnCancel)="handleCreateCategoryCancel()">
+    <!-- 分类编辑 -->
+    <nz-card nzTitle="商品分类编辑" [nzExtra]="categoryEditAction" *ngIf="addOrEditCategoryModalVisible">
         <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="categorySchema" [formData]="categoryFormData" [button]="null" [noColon]="true">
             <button nz-button type="button" (click)="handleCreateCategoryCancel()">关闭</button>
             <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditCategorySubmit(sf.value)" [disabled]="disableCreateOrEditCategorySubmitButton(sf)"
                     [nzLoading]="isAddingOrEditingCategory">保存
             </button>
         </sf>
-    </nz-modal>
+    </nz-card>
+    <ng-template #categoryEditAction>
+        <button nz-button nzType="primary" (click)="handleCreateCategoryCancel()">返回分类列表</button>
+    </ng-template>
 </div>

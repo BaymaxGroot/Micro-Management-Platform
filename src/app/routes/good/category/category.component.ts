@@ -301,6 +301,7 @@ export class CategoryComponent implements OnInit {
      * @param label
      */
     handleRemoveCategory(label: number) {
+        this.isLoadingList = true;
         let removeCategoryTemplate = {
             clabel: label
         };
