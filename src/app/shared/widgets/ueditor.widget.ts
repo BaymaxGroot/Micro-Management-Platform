@@ -45,7 +45,7 @@ export class UeditorWidget extends ControlWidget implements OnInit {
     }
 
     change(value: string) {
-        // if (this.ui.change) this.ui.change(value);
-        // this.setValue(value);
+        if (this.ui.change) this.ui.change(value);
+        this.setValue(value);
     }
 }
