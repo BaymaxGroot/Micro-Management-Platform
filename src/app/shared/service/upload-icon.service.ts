@@ -9,6 +9,7 @@ import {environment} from "@env/environment";
 })
 export class UploadIconService {
 
+    private _minUploadLimit: number = 0;
     private _maxUploadLimit: number = 1;
     private _iconList: string[] = [];
     private _isUploding: boolean = false;
@@ -53,6 +54,14 @@ export class UploadIconService {
      */
     public isReachLimit(): boolean {
         return this._iconList.length >= this._maxUploadLimit;
+    }
+
+    get minUploadLimit(): number {
+        return this._minUploadLimit;
+    }
+
+    set minUploadLimit(value: number) {
+        this._minUploadLimit = value;
     }
 
     /**

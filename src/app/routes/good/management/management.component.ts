@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, Injectable, OnInit} from '@angular/core';
 import {STChange, STColumn, STColumnTag, STData} from "@delon/abc";
 import {FormBuilder} from "@angular/forms";
 import {NzMessageService} from "ng-zorro-antd";
@@ -17,6 +17,7 @@ import {
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
 import {UeditorWidget} from "@shared/widgets/ueditor.widget";
+import {HttpClient} from "@angular/common/http";
 
 const TAG: STColumnTag = {
     0: {text: '已下架', color: ''},
@@ -30,13 +31,19 @@ const TAG: STColumnTag = {
 })
 export class ManagementComponent implements OnInit {
 
+    private _uploadIconsService: UploadIconService;
+
     constructor(
         private fb: FormBuilder,
         private msg: NzMessageService,
         private _microAppHttpClient: MicroAppService,
-        private _uploadMainImageService: UploadIconService
+        private _uploadMainImageService: UploadIconService,
+        private _httpClient: HttpClient
     ) {
         this._uploadMainImageService.maxUploadLimit = 1;
+        this._uploadIconsService = new UploadIconService(_httpClient, msg);
+        this._uploadIconsService.maxUploadLimit = 6;
+        this._uploadIconsService.minUploadLimit = 3;
     }
 
     ngOnInit() {
@@ -104,6 +111,7 @@ export class ManagementComponent implements OnInit {
                 },
                 {
                     text: '修改', type: 'none', click: (record, modal, instance) => {
+                        this.handleCreateOrEditProductModelShow();
                     }
                 },
                 {
@@ -227,7 +235,7 @@ export class ManagementComponent implements OnInit {
                 title: '单位',
                 ui: {
                     grid: {
-                        span: 8
+                        span: 6
                     }
                 }
             },
@@ -238,7 +246,7 @@ export class ManagementComponent implements OnInit {
                 ui: {
                     unit: '克',
                     grid: {
-                        span: 8
+                        span: 6
                     }
                 }
             },
@@ -249,7 +257,17 @@ export class ManagementComponent implements OnInit {
                 ui: {
                     optionalHelp: '排序按升序排列',
                     grid: {
-                        span: 8
+                        span: 6
+                    }
+                }
+            },
+            stock: {
+                type: 'integer',
+                title: '库存',
+                minimum: 0,
+                ui: {
+                    grid: {
+                        span: 6
                     }
                 }
             },
@@ -289,8 +307,28 @@ export class ManagementComponent implements OnInit {
                     remove: (file) => {
                         return this._uploadMainImageService.handleDeleteIcon(file);
                     },
-                    grid: {
-                        span: 24
+                } as SFUploadWidgetSchema
+            },
+            icons: {
+                type: 'string',
+                title: '商品图片',
+                ui: {
+                    widget: 'upload',
+                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    listType: 'picture-card',
+                    optionalHelp: '最少上传三张',
+                    showUploadList: true,
+                    beforeUpload: (file, fileList) => {
+                        return this._uploadIconsService.handleBeforeUpload(file, fileList);
+                    },
+                    change: (args) => {
+                        return this._uploadIconsService.handleUploadSuccess(args);
+                    },
+                    customRequest: (item) => {
+                        return this._uploadIconsService.uploadImage(item);
+                    },
+                    remove: (file) => {
+                        return this._uploadIconsService.handleDeleteIcon(file);
                     }
                 } as SFUploadWidgetSchema
             },
@@ -348,22 +386,43 @@ export class ManagementComponent implements OnInit {
                     }
                 }
             },
-            stock: {
-                type: 'integer',
-                title: '库存',
-                minimum: 0,
-            },
             use_specify: {
-                type: 'string',
-                title: '是否使用规格',
-                enum: [
-                    {label: '是', value: 1},
-                    {label: '否', value: 0}
-                ],
-                ui: {
-                    widget: 'radio'
-                } as SFRadioWidgetSchema,
-                default: 0
+                type: 'array',
+                title: '规格',
+                maxItems: 3,
+                items: {
+                    type: 'object',
+                    properties: {
+                        price: {
+                            type: 'number',
+                            title: '售价',
+                            minimum: 0
+                        },
+                        original_price: {
+                            type: 'number',
+                            title: '原价',
+                            minimum: 0
+                        },
+                        stock: {
+                            type: 'integer',
+                            title: '库存',
+                            minimum: 0
+                        },
+                        weight: {
+                            type: 'number',
+                            title: '重量',
+                            minimum: 0,
+                            ui: {
+                                unit: '克'
+                            }
+                        },
+                        max_buy_num: {
+                            type: 'number',
+                            title: '限购',
+                            minimum: 0
+                        }
+                    }
+                }
             },
             address: {
                 type: 'string',
@@ -417,6 +476,77 @@ export class ManagementComponent implements OnInit {
                     }
                 } as SFRadioWidgetSchema,
                 default: 0
+            },
+            summary: {
+                type: 'string',
+                title: '商品详情',
+                ui: {
+                    widget: 'ueditor',
+                    config: {
+                        serverUrl: '',
+                        toolbars: [
+                            [
+                                'undo', //撤销
+                                'redo', //重做
+                                'bold', //加粗
+                                'indent', //首行缩进
+                                'italic', //斜体
+                                'underline', //下划线
+                                'strikethrough', //删除线
+                                'subscript', //下标
+                                'fontborder', //字符边框
+                                'superscript', //上标
+                                'formatmatch', //格式刷
+                                'blockquote', //引用
+                                'pasteplain', //纯文本粘贴模式
+                                'selectall', //全选
+                                'horizontal', //分隔线
+                                'removeformat', //清除格式
+                                'time', //时间
+                                'date', //日期
+                                'deletecaption', //删除表格标题
+                                'inserttitle', //插入标题
+                                'cleardoc', //清空文档
+                                'fontfamily', //字体
+                                'fontsize', //字号
+                                'paragraph', //段落格式
+                                'simpleupload', //单图上传
+                                'link', //超链接
+                                'emotion', //表情
+                                'spechars', //特殊字符
+                                'searchreplace', //查询替换
+                                'justifyleft', //居左对齐
+                                'justifyright', //居右对齐
+                                'justifycenter', //居中对齐
+                                'justifyjustify', //两端对齐
+                                'forecolor', //字体颜色
+                                'backcolor', //背景色
+                                'insertorderedlist', //有序列表
+                                'insertunorderedlist', //无序列表
+                                'fullscreen', //全屏
+                                'directionalityltr', //从左向右输入
+                                'directionalityrtl', //从右向左输入
+                                'rowspacingtop', //段前距
+                                'rowspacingbottom', //段后距
+                                'pagebreak', //分页
+                                'imagenone', //默认
+                                'imageleft', //左浮动
+                                'imageright', //右浮动
+                                'imagecenter', //居中
+                                'lineheight', //行间距
+                                'edittip ', //编辑提示
+                                'customstyle', //自定义标题
+                                'autotypeset', //自动排版
+                                'touppercase', //字母大写
+                                'tolowercase', //字母小写
+                                'background', //背景
+                            ]
+                        ]
+                    },
+                    grid: {
+                        span: 24
+                    }
+                }
             }
         },
         ui: {
@@ -425,10 +555,22 @@ export class ManagementComponent implements OnInit {
                 span: 12
             }
         },
-        required: ['category', 'name', 'price', 'ori_price', 'stock']
+        required: ['category', 'name', 'price', 'ori_price', 'stock', 'summary']
     };
     isAddingOrEditingProduct: boolean = false;
     editProductLabel: number = 0;
+    showEditCard: boolean = false;
+    schema: SFSchema = {
+        properties: {
+            remark: {
+                type: 'string',
+                title: '描述',
+                ui: {
+                    widget: 'ueditor'
+                }
+            }
+        }
+    };
 
     /**
      * 打开添加商品 对话框
@@ -460,7 +602,7 @@ export class ManagementComponent implements OnInit {
      * Submit 按钮是否可用
      */
     disableCreateOrEditProductSubmitButton(sf: SFComponent) {
-        return !sf.valid || this._uploadMainImageService.isUploding;
+        return !sf.valid || this._uploadMainImageService.isUploding || this._uploadIconsService.iconList.length < this._uploadIconsService.minUploadLimit;
     }
 
     /**
@@ -470,24 +612,26 @@ export class ManagementComponent implements OnInit {
         let createOrEditProductTemplate = {
             'id': 0,
             'cat_id': parseInt(value.category),
-            'sort': parseInt(value.rank),
-            'fake_sales': value.v_sales,
-            'fake_views': value.v_visit,
-            'delivery': value.delivery_type,
-            'stock': value.stock,
-            'min_buy_num': value.purchase,
-            'max_buy_num': value.purchase_limit,
-            'show_specification': value.use_specify,
-            'is_recommend': value.add_home_rec,
-            'weight': value.weight,
-            'price': value.price,
-            'original_price': value.ori_price,
+            'sort': parseInt(value.rank? value.rank:1),
+            'fake_sales': value.v_sales? value.v_sales:0,
+            'fake_views': value.v_visit?value.v_visit:0,
+            'delivery': value.delivery_type? value.delivery_type:0,
+            'stock': value.stock? value.stock:0,
+            'min_buy_num': value.purchase? value.purchase:0,
+            'max_buy_num': value.purchase_limit?value.purchase_limit:0,
+            'show_specification': value.use_specify?1:0,
+            'is_recommend': value.add_home_rec? value.add_home_rec:0,
+            'weight': value.weight? value.weight:0,
+            'price': value.price? value.price:0,
+            'original_price': value.ori_price?value.ori_price:0,
             'name': value.name,
-            'sub_title': value.sub_title,
-            'address': value.address,
-            'unit': value.unit,
-            'main_image': this._uploadMainImageService.iconList[0]? this._uploadMainImageService.iconList[0] : '',
-            'related_product': value.product_rec? value.product_rec.join(',') : ''
+            'sub_title': value.sub_title? value.sub_title:'',
+            'address': value.address?value.address:'',
+            'unit': value.unit?value.unit:'',
+            'main_image': this._uploadMainImageService.iconList[0] ? this._uploadMainImageService.iconList[0] : '',
+            'related_product': value.product_rec ? value.product_rec.join(',') : '',
+            'images': this._uploadIconsService.iconList,
+            'summary': value.summary? value.summary:''
         };
         this.isAddingOrEditingProduct = true;
         this._microAppHttpClient.post(Interface.AddOrEditProductInfoEndPoint, createOrEditProductTemplate).subscribe((data) => {
