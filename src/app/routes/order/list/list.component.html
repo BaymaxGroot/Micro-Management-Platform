@@ -8,7 +8,28 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="订单列表">
-
+    <nz-card nzTitle="订单列表" [nzExtra]="orderExtra">
+        <st [data]="orderMockData" [columns]="orderColumnsSetting" [expand]="expand" expandRowByClick expandAccordion>
+            <ng-template #expand let-item let-index="index" let-column="column">
+                <div nz-row nzType="flex" nzJustify="space-around" nzAlign="middle">
+                    <div nz-col nzSpan="6">
+                        <micro-order-item></micro-order-item>
+                        <micro-order-item></micro-order-item>
+                        <micro-order-item></micro-order-item>
+                    </div>
+                    <div nz-col nzSpan="6">
+                        <div>
+                            <div>付款状态</div>
+                            <div>已付款</div>
+                        </div>
+                    </div>
+                    <div nz-col nzSpan="6">1</div>
+                    <div nz-col nzSpan="6">1</div>
+                </div>
+            </ng-template>
+        </st>
     </nz-card>
+    <ng-template #orderExtra>
+        <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
+    </ng-template>
 </div>
