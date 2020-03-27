@@ -49,6 +49,7 @@ export class ManagementComponent implements OnInit {
     ngOnInit() {
         this.loadProductList();
         this.loadCategoryList();
+        this.loadShopList();
     }
 
     /**
@@ -180,7 +181,6 @@ export class ManagementComponent implements OnInit {
      * 加载商品分类信息
      */
     isLoadingCategoryList = false;
-
     loadCategoryList() {
         this.isLoadingCategoryList = true;
         this.categoryRootList = [];
@@ -201,12 +201,36 @@ export class ManagementComponent implements OnInit {
     }
 
     /**
+     * 加载商户信息
+     */
+    isLoadingShopList = false;
+    loadShopList() {
+        this.isLoadingShopList = true;
+        this.shopList = [];
+        this._microAppHttpClient.get(Interface.LoadShopListEndPoint).subscribe( (data) => {
+            if(data) {
+                data.forEach( (item) => {
+                    this.shopList.push({
+                       label: item['name'],
+                       value: parseInt(item['shop_id'])
+                    });
+                } );
+            }
+            this.isLoadingShopList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingShopList = false;
+        })
+    }
+
+    /**
      * 添加 / 修改 商品信息模块
      */
     addOrEditProductModalVisible: boolean = false;
     isAddModal = true;
     productFormData: any;
     categoryRootList = [];
+    shopList = [];
     productRootList = [];
     productSchema: SFSchema = {
         properties: {
@@ -217,6 +241,18 @@ export class ManagementComponent implements OnInit {
                     widget: 'select',
                     asyncData: () =>
                         of(this.categoryRootList).pipe(delay(10)),
+                    grid: {
+                        span: 24
+                    }
+                } as SFSelectWidgetSchema
+            },
+            shop: {
+                type: 'string',
+                title: '供应商',
+                ui: {
+                    widget: 'select',
+                    asyncData: () =>
+                        of(this.shopList).pipe(delay(10)),
                     grid: {
                         span: 24
                     }
@@ -555,7 +591,7 @@ export class ManagementComponent implements OnInit {
                 span: 12
             }
         },
-        required: ['category', 'name', 'price', 'ori_price', 'stock', 'summary']
+        required: ['category', 'shop', 'name', 'price', 'ori_price', 'stock', 'summary']
     };
     isAddingOrEditingProduct: boolean = false;
     editProductLabel: number = 0;
@@ -612,6 +648,7 @@ export class ManagementComponent implements OnInit {
         let createOrEditProductTemplate = {
             'id': 0,
             'cat_id': parseInt(value.category),
+            'shop_id': parseInt(value.shop),
             'sort': parseInt(value.rank? value.rank:1),
             'fake_sales': value.v_sales? value.v_sales:0,
             'fake_views': value.v_visit?value.v_visit:0,

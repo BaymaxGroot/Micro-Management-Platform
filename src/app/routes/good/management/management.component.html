@@ -8,7 +8,8 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="商品管理" [nzExtra]="goodListOptions" [nzLoading]="isLoadingList" *ngIf="!addOrEditProductModalVisible">
+    <nz-card nzTitle="商品管理" [nzExtra]="goodListOptions" [nzLoading]="isLoadingList"
+             *ngIf="!addOrEditProductModalVisible">
         <st *ngIf="!isLoadingList" [data]="productListData" [columns]="columnsSetting"
             (change)="handleCheckBoxSelected($event)" [loadingDelay]="4000"></st>
     </nz-card>
@@ -43,7 +44,8 @@
 
     <!-- 添加 / 修改 商品信息弹窗 -->
     <nz-card nzTitle="商品编辑" [nzExtra]="goodEditOptions" *ngIf="addOrEditProductModalVisible">
-        <sf #sf *ngIf="!isLoadingList &&!isLoadingCategoryList" [mode]="'edit'" [schema]="productSchema"
+        <sf #sf *ngIf="!isLoadingList && !isLoadingCategoryList && !isLoadingShopList" [mode]="'edit'"
+            [schema]="productSchema"
             [formData]="productFormData" [button]="null" [noColon]="true">
             <!--            <ng-template [sf-template]="'ueditor'" let-me let-ui="ui" let-schema="summary"></ng-template>-->
             <button nz-button type="button" (click)="handleCreateOrEditProductModelHide()">关闭</button>

@@ -32,6 +32,7 @@ export enum Interface {
     /**
      * 分销中心
      */
+    LoadShopListEndPoint = '/shop/list',
     /**
      * 内容管理
      */

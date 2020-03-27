@@ -58,7 +58,7 @@ import {STConfig} from '@delon/abc';
 export function fnSTConfig(): STConfig {
     return {
         ...new STConfig(),
-        ps: 10,
+        ps: 20,
         bordered: true,
         size: 'small'
     };
