@@ -1,10 +1,10 @@
-<div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle">
-    <div nz-col>
-        <img _src="https://dpic.tiankong.com/5n/th/QJ6187965944.jpg?x-oss-process=style/shows_794" [size]="100"/>
+<div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle" class="order-item">
+    <div nz-col [nzSpan]="8">
+        <img _src="{{imgUrl}}" [size]="100"/>
     </div>
-    <div nz-col class="order-desc">
+    <div nz-col class="order-desc" [nzSpan]="16">
         <div>
-            <strong class="text-purple">【特价】 水果玉米 7.9元/3斤</strong>
+            <strong class="text-purple">{{name}}</strong>
         </div>
         <div>
             <small>规格: </small>
@@ -12,11 +12,11 @@
         </div>
         <div>
             <small>数量: </small>
-            <small class="ng-star-inserted text-volcano">2份</small>
+            <small class="ng-star-inserted text-volcano">{{quantity}}份</small>
         </div>
         <div>
             <small>小计: </small>
-            <small class="ng-star-inserted text-volcano">15.80元</small>
+            <small class="ng-star-inserted text-volcano">{{price}}元</small>
         </div>
     </div>
 </div>
