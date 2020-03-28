@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {STColumn, STData} from "@delon/abc";
+import {NzMessageService} from "ng-zorro-antd";
+import {MicroAppService} from "@core/net/micro-app.service";
+import {Interface} from "../../../lib/enums/interface.enum";
+import {SFComponent, SFSchema} from "@delon/form";
 
 @Component({
     selector: 'micro-list',
@@ -8,44 +12,141 @@ import {STColumn, STData} from "@delon/abc";
 })
 export class ListComponent implements OnInit {
 
+    objectKeys = Object.keys;
     dateFormat = 'yyyy/MM/dd';
 
-    constructor() {
+    constructor(
+        private msg: NzMessageService,
+        private _microAppHttpClient: MicroAppService,
+    ) {
     }
 
     ngOnInit() {
+        this.loadOrderList();
     }
 
     /**
      * 订单列表
      */
+    isLoadingOrderList: boolean = false;
+    orderList = [];
     orderColumnsSetting: STColumn[] = [
-        {title: '订单号', index: 'oid'},
-        {title: '用户', index: 'ouser'},
-        {title: '下单时间', index: 'otime'},
-        {title: '总金额', index: 'omoney'}
-    ];
-
-    /**
-     * 订单虚拟数据
-     */
-    orderMockData: STData[] = [
+        {title: '订单号', index: 'order_number'},
+        {title: '用户', index: 'member_name'},
+        {title: '下单时间', index: 'date', type: 'date'},
+        {title: '总金额', index: 'total_price'},
         {
-            oid: '20200322174618260859',
-            ouser: '（ID：1545865）用户：勤宇海坤',
-            otime: '2020-03-22 17:46:28',
-            omoney: '66.20元',
-            description: '你好呀嘻嘻',
-            expand: true
+            title: '订单状态', index: 'order_status', format: (item) => {
+                switch (parseInt(item.pay_status)) {
+                    case 1:
+                        return '支付完成';
+                    case 0:
+                        return '无效';
+                    case -1:
+                        return '申请退款';
+                    case -2:
+                        return '退款中';
+                    case -9:
+                        return '退款成功';
+                    case -8:
+                        return '待支付';
+                    case -7:
+                        return '完成支付待确认';
+                }
+            }
         },
         {
-            oid: '20200322174618260859',
-            ouser: '（ID：1545865）用户：勤宇海坤',
-            otime: '2020-03-22 17:46:28',
-            omoney: '66.20元',
-            description: '你好呀嘻嘻',
-            expand: false
+            title: '操作', buttons: [
+                {
+                    text: '修改发货地址', type: 'none', click: (record, modal, instance) => {
+                        this.order_id = record.order_id;
+                        this.openChangeAddress = true;
+                    }
+                }
+            ]
         }
     ];
 
+    /**
+     * 加载订单列表
+     */
+    loadOrderList() {
+        this.isLoadingOrderList = true;
+        this.orderList = [];
+        this._microAppHttpClient.get(Interface.LoadOrderListEndPoint).subscribe((data) => {
+            if (data) {
+                this.orderList = data;
+            }
+            this.isLoadingOrderList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingOrderList = false;
+        })
+    }
+
+    OrderDelivery(order_id: string, shop_id: string) {
+        let OrderDeliveryTemplate = {
+            'order_id': parseInt(order_id),
+            'shop_id': parseInt(shop_id),
+            'state': 1
+        };
+        this._microAppHttpClient.post(Interface.ChangeOrderDeliveryStatus, OrderDeliveryTemplate).subscribe((data) => {
+            this.msg.info('修改发货状态成功！');
+            this.loadOrderList();
+        }, (err) => {
+            this.msg.error('修改发货状态失败！');
+        })
+    }
+
+    /**
+     * 修改发货地址
+     */
+    openChangeAddress: boolean = false;
+    order_id: string = '';
+    isChangingAddress: boolean = false;
+    changeAddressSchema: SFSchema = {
+        properties: {
+            name: {
+                type: 'string',
+                title: '收件人'
+            },
+            phone:{
+                type: 'string',
+                title: '电话'
+            },
+            address: {
+                type: 'string',
+                title: '收货地址'
+            }
+        },
+        required: ['name', 'phone', 'address']
+    };
+
+    hideChangeAddressModal() {
+        this.openChangeAddress = false;
+        this.loadOrderList();
+    }
+
+    disableChangeAddressSubmitButton(sf: SFComponent) {
+        return !sf.valid || this.isChangingAddress;
+    }
+
+    changeAddressSubmit(value: any) {
+        let changeAddressTemplate = {
+            order_id: parseInt(this.order_id),
+            nickname: value.name,
+            mobile: value.phone,
+            address: value.address
+        };
+        this.isChangingAddress = true;
+        this._microAppHttpClient.post(Interface.ChangeOrderAddress, changeAddressTemplate).subscribe((data) => {
+            this.isChangingAddress = false;
+            this.openChangeAddress = false;
+            this.msg.info('修改订单收货地址成功!');
+            this.loadOrderList();
+        }, (err) => {
+            this.isChangingAddress = false;
+            this.msg.error('修改订单收货地址失败!');
+        })
+    }
 }

@@ -30,7 +30,6 @@ const TAG: STColumnTag = {
     styleUrls: ['./management.component.less']
 })
 export class ManagementComponent implements OnInit {
-
     private _uploadIconsService: UploadIconService;
 
     constructor(

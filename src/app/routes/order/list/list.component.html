@@ -8,20 +8,30 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="订单列表" [nzExtra]="orderExtra">
-        <st [data]="orderMockData" [columns]="orderColumnsSetting" [expand]="expand" expandRowByClick expandAccordion>
-            <ng-template #expand let-item let-index="index" let-column="column">
-                <div nz-row nzType="flex" nzJustify="space-around" nzAlign="middle">
-                    <div nz-col nzSpan="6">
-                        <micro-order-item></micro-order-item>
+    <nz-card nzTitle="商品管理" [nzLoading]="isLoadingOrderList" *ngIf="!openChangeAddress">
+        <st *ngIf="!isLoadingOrderList" [data]="orderList" [columns]="orderColumnsSetting" [expand]="expand"
+            expandRowByClick expandAccordion [loadingDelay]="1000">
+            <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
+                <div nz-row nzType="flex" nzAlign="middle"
+                     *ngFor="let shop of objectKeys(item.goods_list)">
+                    <div nz-col [nzSpan]="24">
+                        <nz-divider [nzText]="'分销商: ' + item.goods_list[shop][0].shop_name" [nzOrientation]="'left'"></nz-divider>
+                    </div>
+                    <div nz-col nzSpan="6" [nzOffset]="1">
+                        <micro-order-item *ngFor="let order of item.goods_list[shop]" [name]="order.name"
+                                          [imgUrl]="order.pic_url" [price]="order.price"
+                                          [quantity]="order.quantity"></micro-order-item>
                     </div>
                     <div nz-col nzSpan="6">
-                        <micro-order-item></micro-order-item>
+                        <div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle">
+                            <div nz-col [nzSpan]="24" class="operations">
+                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id, shop)">发货</button>
+                            </div>
+                            <div nz-col [nzSpan]="24" class="operations">
+                                <button nz-button nzType="primary">打印小票</button>
+                            </div>
+                        </div>
                     </div>
-                    <div nz-col nzSpan="6">
-                        <micro-order-item></micro-order-item>
-                    </div>
-                    <div nz-col nzSpan="6">1</div>
                 </div>
             </ng-template>
         </st>
@@ -29,4 +39,12 @@
     <ng-template #orderExtra>
         <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
     </ng-template>
+    <nz-card nzTitle="收货地址修改" [nzLoading]="isLoadingOrderList" *ngIf="openChangeAddress">
+        <sf #sf [mode]="'edit'" [schema]="changeAddressSchema" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="hideChangeAddressModal()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="changeAddressSubmit(sf.value)" [disabled]="disableChangeAddressSubmitButton(sf)"
+                    [nzLoading]="isChangingAddress">保存
+            </button>
+        </sf>
+    </nz-card>
 </div>

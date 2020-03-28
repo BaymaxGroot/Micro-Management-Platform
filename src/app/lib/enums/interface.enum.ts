@@ -22,9 +22,11 @@ export enum Interface {
     /**
      * 订单管理
      */
-    LoadOrderListEndPoint = "",
+    LoadOrderListEndPoint = "/order/list",
     LoadOrderAfterSaleEndPoint = "",
     LoadOrderEvaluationEndPoint = "",
+    ChangeOrderDeliveryStatus = '/express/state/set',
+    ChangeOrderAddress = '/express/info/set',
     /**
      * 用户管理
      */
