@@ -8,7 +8,7 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="商品管理" [nzLoading]="isLoadingOrderList" *ngIf="!openChangeAddress">
+    <nz-card nzTitle="订单列表" [nzLoading]="isLoadingOrderList" *ngIf="!openChangeAddress">
         <st *ngIf="!isLoadingOrderList" [data]="orderList" [columns]="orderColumnsSetting" [expand]="expand"
             expandRowByClick expandAccordion [loadingDelay]="1000">
             <ng-template #expand let-item let-index="index" let-key="key" let-column="column">

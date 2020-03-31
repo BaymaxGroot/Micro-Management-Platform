@@ -11,12 +11,6 @@
             "hideInBreadcrumb": true,
             "children": [
                 {
-                    "text": "首页",
-                    "i18n": "首页",
-                    "icon": "anticon-dashboard",
-                    "link": "/summary"
-                },
-                {
                     "text": "商品管理",
                     "i18n": "商品管理",
                     "icon": "anticon-appstore",
@@ -88,27 +82,10 @@
                     ]
                 },
                 {
-                    "text": "内容管理",
-                    "i18n": "内容管理",
-                    "icon": "anticon-book",
-                    "shortcutRoot": true,
-                    "children": [
-                        {
-                            "text": "文章",
-                            "link": "/content/article",
-                            "i18n": "文章"
-                        },
-                        {
-                            "text": "专题",
-                            "link": "/content/subject",
-                            "i18n": "专题"
-                        },
-                        {
-                            "text": "门店",
-                            "link": "/content/store",
-                            "i18n": "门店"
-                        }
-                    ]
+                    "text": "系统设置",
+                    "i18n": "系统设置",
+                    "icon": "anticon-setting",
+                    "link": "/setting"
                 }
             ]
         }

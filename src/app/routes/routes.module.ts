@@ -5,14 +5,9 @@ import {RouteRoutingModule} from './routes-routing.module';
 // passport pages
 import {UserLoginComponent} from './passport/login/login.component';
 
-// summary page
-import {SummaryComponent} from './summary/summary.component';
-
 const COMPONENTS = [
     // passport pages
     UserLoginComponent,
-    // dashboard page
-    SummaryComponent
 ];
 const COMPONENTS_NOROUNT = [];
 
