@@ -3,13 +3,11 @@ import {NgModule} from '@angular/core';
 import {GoodRoutingModule} from './good-routing.module';
 import {CategoryComponent} from './category/category.component';
 import {ManagementComponent} from './management/management.component';
-import {WantedComponent} from './wanted/wanted.component';
 import {SharedModule} from "@shared";
 
 const COMPONENTS = [
     CategoryComponent,
-    ManagementComponent,
-    WantedComponent
+    ManagementComponent
 ];
 
 const COMPONENTS_NOROUNT = [];

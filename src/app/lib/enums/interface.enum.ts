@@ -36,6 +36,7 @@ export enum Interface {
      */
     LoadShopListEndPoint = '/shop/list',
     /**
-     * 内容管理
+     * 设置中心
      */
+    SettingParamsEndPoint = ''
 }

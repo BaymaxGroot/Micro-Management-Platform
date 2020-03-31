@@ -24,11 +24,6 @@
                             "text": "商品管理",
                             "link": "/good/management",
                             "i18n": "商品管理"
-                        },
-                        {
-                            "text": "用户期望商品",
-                            "link": "/good/wanted",
-                            "i18n": "用户期望商品"
                         }
                     ]
                 },
@@ -42,16 +37,6 @@
                             "text": "订单列表",
                             "link": "/order/list",
                             "i18n": "订单列表"
-                        },
-                        {
-                            "text": "售后订单",
-                            "link": "/order/after-sale",
-                            "i18n": "售后订单"
-                        },
-                        {
-                            "text": "评价管理",
-                            "link": "/order/evaluation",
-                            "i18n": "评价管理"
                         }
                     ]
                 },
