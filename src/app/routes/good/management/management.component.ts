@@ -206,7 +206,7 @@ export class ManagementComponent implements OnInit {
     loadShopList() {
         this.isLoadingShopList = true;
         this.shopList = [];
-        this._microAppHttpClient.get(Interface.LoadShopListEndPoint).subscribe( (data) => {
+        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe( (data) => {
             if(data) {
                 data.forEach( (item) => {
                     this.shopList.push({

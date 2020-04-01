@@ -11,9 +11,6 @@ import {UserLoginComponent} from './passport/login/login.component';
 // 路由守卫
 import {MicroAppGuard} from "@core/net/micro-app.guard";
 
-//系统设置
-import {SettingComponent} from "./setting/setting.component";
-
 const routes: Routes = [
     {
         path: '',
@@ -34,7 +31,7 @@ const routes: Routes = [
                 path: 'distribution',
                 loadChildren: () => import('./distribution/distribution.module').then(m => m.DistributionModule)
             },
-            {path: 'setting', component: SettingComponent},
+            {path: 'setting', loadChildren: () => import('./setting/setting.module').then(m => m.SettingModule)},
 
             // { path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard' } },
             {

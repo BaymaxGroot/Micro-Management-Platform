@@ -8,7 +8,23 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="分销商">
-
+    <nz-card nzTitle="分销商" [nzExtra]="deliveryExtra" [nzLoading]="isLoadingList" *ngIf="!addOrEditDeliveryModalVisible">
+        <st *ngIf="!isLoadingList" [data]="distributorList" [columns]="distributorColumnSetting" [loadingDelay]="1000"></st>
     </nz-card>
+    <ng-template #deliveryExtra>
+        <button nz-button nzType="primary" (click)="showAddOrDeliveryModal()" [disabled]="isLoadingList"><i nz-icon nzType="plus"></i>添加分销商</button>
+    </ng-template>
+
+    <!-- 分销商编辑 -->
+    <nz-card nzTitle="分销商编辑" [nzExtra]="deliveryEditAction" *ngIf="addOrEditDeliveryModalVisible">
+        <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="deliverySchema" [formData]="deliveryFormData" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="handleCreateOrEditDeliveryCancel()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditDeliverySubmit(sf.value)" [disabled]="disableCreateOrEditDeliverySubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingDelivery">保存
+            </button>
+        </sf>
+    </nz-card>
+    <ng-template #deliveryEditAction>
+        <button nz-button nzType="primary" (click)="handleCreateOrEditDeliveryCancel()">返回分类列表</button>
+    </ng-template>
 </div>

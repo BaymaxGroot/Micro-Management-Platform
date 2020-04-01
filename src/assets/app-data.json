@@ -70,7 +70,24 @@
                     "text": "系统设置",
                     "i18n": "系统设置",
                     "icon": "anticon-setting",
-                    "link": "/setting"
+                    "shortcutRoot": true,
+                    "children": [
+                        {
+                            "text": "参数设置",
+                            "link": "/setting/params",
+                            "i18n": "参数设置"
+                        },
+                        {
+                            "text": "轮播图设置",
+                            "link": "/setting/carousel",
+                            "i18n": "轮播图设置"
+                        },
+                        {
+                            "text": "图片魔方设置",
+                            "link": "/setting/blocker",
+                            "i18n": "图片魔方设置"
+                        }
+                    ]
                 }
             ]
         }

@@ -34,7 +34,10 @@ export enum Interface {
     /**
      * 分销中心
      */
-    LoadShopListEndPoint = '/shop/list',
+    LoadDistributorListEndPoint = '/shop/list',
+    AddDistributorEndPoint = '/shop/info/set',
+    DeleteDistributorEndPoint = '/shop/delete',
+    DistributorStatusSetEndPoint = '/shop/status/set',
     /**
      * 设置中心
      */

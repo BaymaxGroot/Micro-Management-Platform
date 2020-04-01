@@ -292,7 +292,7 @@ export class CategoryComponent implements OnInit {
             this.loadCategoryList();
         }, (err) => {
             this.isAddingOrEditingCategory = false;
-            this.msg.info(this.isAddModal ? '添加分类信息失败!' : '修改分类信息失败!');
+            this.msg.error(this.isAddModal ? '添加分类信息失败!' : '修改分类信息失败!');
         })
     }
 
