@@ -6,3 +6,51 @@
         </nz-breadcrumb>
     </ng-template>
 </page-header>
+
+<div class="ant-row">
+    <nz-card nzTitle="轮播图设置" *ngIf="!addOrEditBannerModalVisible" [nzExtra]="bannerAction">
+        <nz-list
+            [nzLoading]="isLoadingList"
+            [nzRenderItem]="item"
+            [nzDataSource]="bannerList"
+            [nzGrid]="{ gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
+            <ng-template #item let-item>
+                <nz-list-item>
+                    <nz-card nzHoverable [nzCover]="cover">
+                        <ng-template #cover>
+                            <img class="img" alt="{{ item.title }}" src="{{ item.cover }}"/>
+                        </ng-template>
+                        <nz-card-meta [nzTitle]="nzTitle" [nzDescription]="subDescription">
+                            <ng-template #nzTitle>
+                                <a>{{ '标题: ' + item.title }}</a>
+                            </ng-template>
+                            <ng-template #subDescription>
+                                <div>链接: {{getLinkType(item.type)}}</div>
+                                <div>显示: {{item.status == 0? '否':'是'}}</div>
+                            </ng-template>
+                        </nz-card-meta>
+                        <div class="card-item-content">
+                            <button nz-button nzType="primary" [nzSize]="'small'" (click)="editBanner(item)"><i nz-icon nzType="edit"></i></button>
+                            <button nz-button nzType="danger" [nzSize]="'small'" (click)="deleteBanner(item.id)"><i nz-icon nzType="delete"></i></button>
+                        </div>
+                    </nz-card>
+                </nz-list-item>
+            </ng-template>
+        </nz-list>
+    </nz-card>
+    <ng-template #bannerAction>
+        <button nz-button nzType="primary" (click)="handleShowAddOrEditBannerModal()" [disabled]="isLoadingList"><i nz-icon nzType="plus"></i>添加轮播图</button>
+    </ng-template>
+
+    <nz-card nzTitle="轮播图编辑" [nzExtra]="bannerEditAction" *ngIf="addOrEditBannerModalVisible">
+        <sf #sf [mode]="'edit'" [schema]="bannerSchema" [formData]="bannerFormData" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="handleHideAddOrEditBannerModal()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditBannerSubmit(sf.value)" [disabled]="disableCreateOrEditBannerSubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingBanner">保存
+            </button>
+        </sf>
+    </nz-card>
+    <ng-template #bannerEditAction>
+        <button nz-button nzType="primary" (click)="handleHideAddOrEditBannerModal()">返回轮播图列表</button>
+    </ng-template>
+</div>

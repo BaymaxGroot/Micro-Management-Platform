@@ -41,5 +41,8 @@ export enum Interface {
     /**
      * 设置中心
      */
-    SettingParamsEndPoint = ''
+    SettingParamsEndPoint = '',
+    LoadCarouselListEndPoint = '/banner/list',
+    DeleteCarouselEndPoint = '/banner/delete',
+    AddOrEditCarouselEndPoint = '/banner/info/set',
 }
