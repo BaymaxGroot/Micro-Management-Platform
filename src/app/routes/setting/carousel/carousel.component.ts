@@ -94,7 +94,7 @@ export class CarouselComponent implements OnInit {
     getLinkType(type): string {
         switch (type) {
             case 0:
-                return '其他';
+                return '无';
             case 1:
                 return '商品列表';
             case 2:

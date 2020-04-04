@@ -92,6 +92,8 @@ export class BlockerComponent implements OnInit {
 
     getLinkType(type): string {
         switch (type) {
+            case 0:
+                return '无';
             case 1:
                 return '商品列表';
             case 2:
@@ -142,7 +144,8 @@ export class BlockerComponent implements OnInit {
                 enum: [],
                 ui: {
                     widget: 'cascader',
-                } as SFCascaderWidgetSchema
+                } as SFCascaderWidgetSchema,
+                default: [-10]
             },
             icon: {
                 type: 'string',
@@ -185,6 +188,7 @@ export class BlockerComponent implements OnInit {
 
     handleAddOrEditBlockerFormDataInit(e: any = {}) {
         this.blockerSchema.properties.type.enum = [
+            {value: -10, label: '其他', parent: 0},
             {
                 value: -11, label: '商品列表', parent: 0, children: this.typeList.filter((w) => {
                     return w.parent == -11;
@@ -200,7 +204,7 @@ export class BlockerComponent implements OnInit {
             this.blockerFormData = {
                 title: '',
                 rank: 0,
-                type: [-12]
+                type: [-10]
             };
             this._uploadIconService.emptyIconList();
         } else {
@@ -209,6 +213,9 @@ export class BlockerComponent implements OnInit {
             let linkurl = e['link'];
             let types = [];
             switch (type) {
+                case 0:
+                    types.push(-10);
+                    break;
                 case 1:
                     types.push(-11);
                     break;
