@@ -31,6 +31,9 @@ export enum Interface {
      * 用户管理
      */
     LoadUserEndPoint = "/load/user",
+    DeleteUserEndPoint = '',
+    AddOrEditUserEndPoint = '',
+
     /**
      * 分销中心
      */
@@ -45,4 +48,8 @@ export enum Interface {
     LoadCarouselListEndPoint = '/banner/list',
     DeleteCarouselEndPoint = '/banner/delete',
     AddOrEditCarouselEndPoint = '/banner/info/set',
+
+    LoadBlockerListEndPoint = '/cube/list',
+    DeleteBlockerEndPoint = '/cube/delete',
+    AddOrEditBlockerEndPoint = '/cube/info/set',
 }

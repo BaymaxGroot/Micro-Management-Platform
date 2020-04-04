@@ -31,6 +31,7 @@ const TAG: STColumnTag = {
 })
 export class ManagementComponent implements OnInit {
     private _uploadIconsService: UploadIconService;
+    private _uploadDetailIconService: UploadIconService;
 
     constructor(
         private fb: FormBuilder,
@@ -43,6 +44,9 @@ export class ManagementComponent implements OnInit {
         this._uploadIconsService = new UploadIconService(_httpClient, msg);
         this._uploadIconsService.maxUploadLimit = 6;
         this._uploadIconsService.minUploadLimit = 3;
+
+        this._uploadDetailIconService = new UploadIconService(_httpClient, msg);
+        this._uploadDetailIconService.maxUploadLimit = 10;
     }
 
     ngOnInit() {
@@ -180,6 +184,7 @@ export class ManagementComponent implements OnInit {
      * 加载商品分类信息
      */
     isLoadingCategoryList = false;
+
     loadCategoryList() {
         this.isLoadingCategoryList = true;
         this.categoryRootList = [];
@@ -203,17 +208,18 @@ export class ManagementComponent implements OnInit {
      * 加载商户信息
      */
     isLoadingShopList = false;
+
     loadShopList() {
         this.isLoadingShopList = true;
         this.shopList = [];
-        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe( (data) => {
-            if(data) {
-                data.forEach( (item) => {
+        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe((data) => {
+            if (data) {
+                data.forEach((item) => {
                     this.shopList.push({
-                       label: item['name'],
-                       value: parseInt(item['shop_id'])
+                        label: item['name'],
+                        value: parseInt(item['shop_id'])
                     });
-                } );
+                });
             }
             this.isLoadingShopList = false;
         }, (err) => {
@@ -516,72 +522,26 @@ export class ManagementComponent implements OnInit {
                 type: 'string',
                 title: '商品详情',
                 ui: {
-                    widget: 'ueditor',
-                    config: {
-                        serverUrl: '',
-                        toolbars: [
-                            [
-                                'undo', //撤销
-                                'redo', //重做
-                                'bold', //加粗
-                                'indent', //首行缩进
-                                'italic', //斜体
-                                'underline', //下划线
-                                'strikethrough', //删除线
-                                'subscript', //下标
-                                'fontborder', //字符边框
-                                'superscript', //上标
-                                'formatmatch', //格式刷
-                                'blockquote', //引用
-                                'pasteplain', //纯文本粘贴模式
-                                'selectall', //全选
-                                'horizontal', //分隔线
-                                'removeformat', //清除格式
-                                'time', //时间
-                                'date', //日期
-                                'deletecaption', //删除表格标题
-                                'inserttitle', //插入标题
-                                'cleardoc', //清空文档
-                                'fontfamily', //字体
-                                'fontsize', //字号
-                                'paragraph', //段落格式
-                                'simpleupload', //单图上传
-                                'link', //超链接
-                                'emotion', //表情
-                                'spechars', //特殊字符
-                                'searchreplace', //查询替换
-                                'justifyleft', //居左对齐
-                                'justifyright', //居右对齐
-                                'justifycenter', //居中对齐
-                                'justifyjustify', //两端对齐
-                                'forecolor', //字体颜色
-                                'backcolor', //背景色
-                                'insertorderedlist', //有序列表
-                                'insertunorderedlist', //无序列表
-                                'fullscreen', //全屏
-                                'directionalityltr', //从左向右输入
-                                'directionalityrtl', //从右向左输入
-                                'rowspacingtop', //段前距
-                                'rowspacingbottom', //段后距
-                                'pagebreak', //分页
-                                'imagenone', //默认
-                                'imageleft', //左浮动
-                                'imageright', //右浮动
-                                'imagecenter', //居中
-                                'lineheight', //行间距
-                                'edittip ', //编辑提示
-                                'customstyle', //自定义标题
-                                'autotypeset', //自动排版
-                                'touppercase', //字母大写
-                                'tolowercase', //字母小写
-                                'background', //背景
-                            ]
-                        ]
+                    widget: 'upload',
+                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    listType: 'picture-card',
+                    showUploadList: true,
+                    beforeUpload: (file, fileList) => {
+                        return this._uploadDetailIconService.handleBeforeUpload(file, fileList);
+                    },
+                    change: (args) => {
+                        return this._uploadDetailIconService.handleUploadSuccess(args);
+                    },
+                    customRequest: (item) => {
+                        return this._uploadDetailIconService.uploadImage(item);
+                    },
+                    remove: (file) => {
+                        return this._uploadDetailIconService.handleDeleteIcon(file);
                     },
                     grid: {
                         span: 24
                     }
-                }
+                } as SFUploadWidgetSchema
             }
         },
         ui: {
@@ -590,7 +550,7 @@ export class ManagementComponent implements OnInit {
                 span: 12
             }
         },
-        required: ['category', 'shop', 'name', 'price', 'ori_price', 'stock', 'summary']
+        required: ['category', 'shop', 'name', 'price', 'ori_price', 'stock']
     };
     isAddingOrEditingProduct: boolean = false;
     editProductLabel: number = 0;
@@ -637,7 +597,7 @@ export class ManagementComponent implements OnInit {
      * Submit 按钮是否可用
      */
     disableCreateOrEditProductSubmitButton(sf: SFComponent) {
-        return !sf.valid || this._uploadMainImageService.isUploding || this._uploadIconsService.iconList.length < this._uploadIconsService.minUploadLimit;
+        return !sf.valid || this._uploadMainImageService.isUploding || this._uploadIconsService.iconList.length < this._uploadIconsService.minUploadLimit || this._uploadDetailIconService.isUploding;
     }
 
     /**
@@ -648,26 +608,29 @@ export class ManagementComponent implements OnInit {
             'id': 0,
             'cat_id': parseInt(value.category),
             'shop_id': parseInt(value.shop),
-            'sort': parseInt(value.rank? value.rank:1),
-            'fake_sales': value.v_sales? value.v_sales:0,
-            'fake_views': value.v_visit?value.v_visit:0,
-            'delivery': value.delivery_type? value.delivery_type:0,
-            'stock': value.stock? value.stock:0,
-            'min_buy_num': value.purchase? value.purchase:0,
-            'max_buy_num': value.purchase_limit?value.purchase_limit:0,
-            'show_specification': value.use_specify?1:0,
-            'is_recommend': value.add_home_rec? value.add_home_rec:0,
-            'weight': value.weight? value.weight:0,
-            'price': value.price? value.price:0,
-            'original_price': value.ori_price?value.ori_price:0,
+            'sort': parseInt(value.rank ? value.rank : 1),
+            'fake_sales': value.v_sales ? value.v_sales : 0,
+            'fake_views': value.v_visit ? value.v_visit : 0,
+            'tags': 0,
+            'service': 0,
+            'delivery': value.delivery_type ? value.delivery_type : 0,
+            'stock': value.stock ? value.stock : 0,
+            'min_buy_num': value.purchase ? value.purchase : 0,
+            'max_buy_num': value.purchase_limit ? value.purchase_limit : 0,
+            'show_specification': value.use_specify ? 1 : 0,
+            'specifications': [],
+            'is_recommend': value.add_home_rec ? value.add_home_rec : 0,
+            'weight': value.weight ? value.weight : 0,
+            'price': value.price ? value.price : 0,
+            'original_price': value.ori_price ? value.ori_price : 0,
             'name': value.name,
-            'sub_title': value.sub_title? value.sub_title:'',
-            'address': value.address?value.address:'',
-            'unit': value.unit?value.unit:'',
+            'sub_title': value.sub_title ? value.sub_title : '',
+            'address': value.address ? value.address : '',
+            'unit': value.unit ? value.unit : '',
             'main_image': this._uploadMainImageService.iconList[0] ? this._uploadMainImageService.iconList[0] : '',
             'related_product': value.product_rec ? value.product_rec.join(',') : '',
             'images': this._uploadIconsService.iconList,
-            'summary': value.summary? value.summary:''
+            'summary': this._uploadDetailIconService.iconList.join(',')
         };
         this.isAddingOrEditingProduct = true;
         this._microAppHttpClient.post(Interface.AddOrEditProductInfoEndPoint, createOrEditProductTemplate).subscribe((data) => {

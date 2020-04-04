@@ -3,9 +3,7 @@ import {NzMessageService} from "ng-zorro-antd";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {environment} from "@env/environment";
-import {SFCascaderWidgetSchema, SFComponent, SFRadioWidgetSchema, SFSchema, SFUploadWidgetSchema} from "@delon/form";
-import {of} from "rxjs";
-import {delay} from "rxjs/operators";
+import {SFCascaderWidgetSchema, SFComponent, SFSchema, SFUploadWidgetSchema} from "@delon/form";
 import {UploadIconService} from "@shared/service/upload-icon.service";
 
 @Component({

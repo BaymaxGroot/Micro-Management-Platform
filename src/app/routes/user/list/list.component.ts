@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {STColumn, STData} from "@delon/abc";
+import {NzMessageService} from "ng-zorro-antd";
+import {MicroAppService} from "@core/net/micro-app.service";
+import {Interface} from "../../../lib/enums/interface.enum";
 
 @Component({
     selector: 'micro-list',
@@ -9,6 +12,15 @@ import {STColumn, STData} from "@delon/abc";
 export class ListComponent implements OnInit {
 
     dateFormat = 'yyyy/MM/dd';
+
+    constructor(
+        private msg: NzMessageService,
+        private _microAppHttpClient: MicroAppService,
+    ) {
+    }
+
+    ngOnInit() {
+    }
 
     /**
      * 用户列表
@@ -95,14 +107,27 @@ export class ListComponent implements OnInit {
         }
     ];
 
-    /**
-     *
-     */
-
-    constructor() {
+    isLoading: boolean = false;
+    userList = [];
+    loadUserList() {
+        this.isLoading = true;
+        this._microAppHttpClient.get(Interface.LoadUserEndPoint).subscribe((data) => {
+           this.userList = data;
+           this.isLoading = false;
+        }, (err) => {
+            this.msg.error('加载用户列表失败!');
+        });
     }
 
-    ngOnInit() {
+    deleteUser(uid: number) {
+        let userTemplate = {
+            uid: uid
+        };
+        this._microAppHttpClient.post(Interface.DeleteUserEndPoint, userTemplate).subscribe((data) => {
+           this.msg.info('删除用户成功!');
+           this.loadUserList();
+        }, (err) => {
+            this.msg.error('删除用户失败!');
+        });
     }
-
 }
