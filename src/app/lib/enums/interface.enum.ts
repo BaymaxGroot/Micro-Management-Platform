@@ -23,16 +23,18 @@ export enum Interface {
      * 订单管理
      */
     LoadOrderListEndPoint = "/order/list",
-    LoadOrderAfterSaleEndPoint = "",
-    LoadOrderEvaluationEndPoint = "",
     ChangeOrderDeliveryStatus = '/express/state/set',
     ChangeOrderAddress = '/express/info/set',
+
+    LoadEvaluateListEndPoint = '',
+    ChangeEvaluateStatusEndPoint = '',
+    DeleteEvaluateEndPoint = '',
     /**
      * 用户管理
      */
-    LoadUserEndPoint = "/load/user",
-    DeleteUserEndPoint = '',
-    AddOrEditUserEndPoint = '',
+    LoadUserEndPoint = "/user/list",
+    DeleteUserEndPoint = '/delete/user',
+    AddOrEditUserEndPoint = '/user/info',
 
     /**
      * 分销中心
@@ -44,7 +46,8 @@ export enum Interface {
     /**
      * 设置中心
      */
-    SettingParamsEndPoint = '',
+    GetParamsEndPoint = '/setting/info',
+    SettingParamsEndPoint = '/setting/info/set',
     LoadCarouselListEndPoint = '/banner/list',
     DeleteCarouselEndPoint = '/banner/delete',
     AddOrEditCarouselEndPoint = '/banner/info/set',

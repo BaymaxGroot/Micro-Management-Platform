@@ -8,10 +8,10 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="用户列表" [nzExtra]="userListRange">
-        <st [data]="mockData" [columns]="columnsSetting"></st>
+    <nz-card nzTitle="用户列表" [nzExtra]="userListRange" [nzLoading]="isLoading">
+        <st [data]="userList" [columns]="columnsSetting" *ngIf="!isLoading" [loadingDelay]="500"></st>
     </nz-card>
     <ng-template #userListRange>
-        <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
+        <button nz-button nzType="primary" (click)="showAddCategoryModal()"><i nz-icon nzType="plus"></i>添加用户</button>
     </ng-template>
 </div>

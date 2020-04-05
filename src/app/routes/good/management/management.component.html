@@ -47,7 +47,7 @@
         <sf #sf *ngIf="!isLoadingList && !isLoadingCategoryList && !isLoadingShopList" [mode]="'edit'"
             [schema]="productSchema"
             [formData]="productFormData" [button]="null" [noColon]="true">
-            <!--            <ng-template [sf-template]="'ueditor'" let-me let-ui="ui" let-schema="summary"></ng-template>-->
+
             <button nz-button type="button" (click)="handleCreateOrEditProductModelHide()">关闭</button>
             <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditProductSubmit(sf.value)"
                     [disabled]="disableCreateOrEditProductSubmitButton(sf)"

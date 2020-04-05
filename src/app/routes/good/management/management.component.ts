@@ -16,7 +16,6 @@ import {
 } from "@delon/form";
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
-import {UeditorWidget} from "@shared/widgets/ueditor.widget";
 import {HttpClient} from "@angular/common/http";
 
 const TAG: STColumnTag = {
@@ -83,7 +82,7 @@ export class ManagementComponent implements OnInit {
                 },
             },
         },
-        {title: '商品图片', index: 'main_image', type: 'img'},
+        {title: '商品图片', index: 'main_image_url', type: 'img'},
         {
             title: {text: '售价 / 原价', optional: '（单位：￥）'}, index: 'price', format: (item) => {
                 return item.price + ' / ' + item.original_price;
@@ -115,6 +114,8 @@ export class ManagementComponent implements OnInit {
                 },
                 {
                     text: '修改', type: 'none', click: (record, modal, instance) => {
+                        this.isAddModal = false;
+                        this.handleAddOrEditProductFormDataInit(record);
                         this.handleCreateOrEditProductModelShow();
                     }
                 },
@@ -150,7 +151,7 @@ export class ManagementComponent implements OnInit {
                     });
                     item['check'] = 0;
                     if (item['main_image']) {
-                        item['main_image'] = environment.SERVER_URL + '/static/upload/' + item['main_image'];
+                        item['main_image_url'] = environment.SERVER_URL + '/static/upload/' + item['main_image'];
                     }
                     if (item['cname']) {
                         let flag = true;
@@ -434,6 +435,10 @@ export class ManagementComponent implements OnInit {
                 items: {
                     type: 'object',
                     properties: {
+                        name: {
+                            type: 'string',
+                            title: '规格名称'
+                        },
                         price: {
                             type: 'number',
                             title: '售价',
@@ -554,18 +559,6 @@ export class ManagementComponent implements OnInit {
     };
     isAddingOrEditingProduct: boolean = false;
     editProductLabel: number = 0;
-    showEditCard: boolean = false;
-    schema: SFSchema = {
-        properties: {
-            remark: {
-                type: 'string',
-                title: '描述',
-                ui: {
-                    widget: 'ueditor'
-                }
-            }
-        }
-    };
 
     /**
      * 打开添加商品 对话框
@@ -590,7 +583,120 @@ export class ManagementComponent implements OnInit {
      * 添加商品 / 修改商品 表单数据初始化
      */
     handleAddOrEditProductFormDataInit(e: any = {}) {
+        if (this.isAddModal) {
+            this.productFormData = {
+                category: '',
+                shop: '',
+                name: '',
+                sub_title: '',
+                unit: '',
+                weight: 0,
+                rank: 0,
+                stock: 0,
+                v_sales: 0,
+                v_visit: 0,
+                price: 0,
+                ori_price: 0,
+                purchase: 0,
+                purchase_limit: 0,
+                activity_tag: '',
+                use_specify: [],
+                address: '',
+                delivery_type: 0,
+                product_rec: '',
+                add_home_rec: 0
+            };
+            this._uploadDetailIconService.emptyIconList();
+            this._uploadIconsService.emptyIconList();
+            this._uploadMainImageService.emptyIconList();
+        } else {
+            this.editProductLabel = parseInt(e['id']);
+            this.productFormData = {
+                category: parseInt(e['cat_id']),
+                shop: parseInt(e['shop_id']),
+                name: e['name'],
+                sub_title: e['sub_title'],
+                unit: e['unit'],
+                weight: e['weight'],
+                rank: e['sort'],
+                stock: e['stock'],
+                v_sales: e['fake_sales'],
+                v_visit: e['fake_views'],
+                price: e['price'],
+                ori_price: e['original_price'],
+                purchase: e['min_buy_num'],
+                purchase_limit: e['max_buy_num'],
+                activity_tag: e['tags'],
+                use_specify: [],
+                address: e['address'],
+                delivery_type: parseInt(e['delivery']),
+                product_rec: e['related_product'].split(','),
+                add_home_rec: parseInt(e['is_recommend'])
+            };
+            if (e['main_image']) {
+                this._uploadMainImageService.addIcon(e['main_image']);
+            }
+            if (e['images']) {
+                e['images'].split(',').forEach((item) => {
+                    this._uploadIconsService.addIcon(item);
+                })
+            }
+            if (e['summary']) {
+                e['summary'].split(',').forEach((item) => {
+                    this._uploadDetailIconService.addIcon(item);
+                })
+            }
+        }
 
+        if (e['main_image']) {
+            let icons = [];
+            icons.push({
+                uid: Math.ceil(Math.random() * 10000000),
+                name: 'xxx.png',
+                status: 'done',
+                url: environment.SERVER_URL + '/static/upload/' + e['main_image'],
+                response: {
+                    resource_id: 1,
+                },
+            });
+            this.productSchema.properties.main_icon.enum = icons;
+        } else {
+            this.productSchema.properties.main_icon.enum = [];
+        }
+        if (e['images']) {
+            let icons = [];
+            e['images'].split(',').forEach((item) => {
+                icons.push({
+                    uid: Math.ceil(Math.random() * 10000000),
+                    name: 'xxx.png',
+                    status: 'done',
+                    url: environment.SERVER_URL + '/static/upload/' + item,
+                    response: {
+                        resource_id: 1,
+                    },
+                });
+            });
+            this.productSchema.properties.icons.enum = icons;
+        } else {
+            this.productSchema.properties.icons.enum = [];
+        }
+        if (e['summary']) {
+            let icons = [];
+            e['summary'].split(',').forEach((item) => {
+                icons.push({
+                    uid: Math.ceil(Math.random() * 10000000),
+                    name: 'xxx.png',
+                    status: 'done',
+                    url: environment.SERVER_URL + '/static/upload/' + item,
+                    response: {
+                        resource_id: 1,
+                    },
+                });
+            });
+            this.productSchema.properties.summary.enum = icons;
+        } else {
+            this.productSchema.properties.summary.enum = [];
+        }
     }
 
     /**
@@ -605,7 +711,7 @@ export class ManagementComponent implements OnInit {
      */
     handleCreateOrEditProductSubmit(value: any) {
         let createOrEditProductTemplate = {
-            'id': 0,
+            'id': this.isAddModal ? 0 : this.editProductLabel,
             'cat_id': parseInt(value.category),
             'shop_id': parseInt(value.shop),
             'sort': parseInt(value.rank ? value.rank : 1),
@@ -617,8 +723,8 @@ export class ManagementComponent implements OnInit {
             'stock': value.stock ? value.stock : 0,
             'min_buy_num': value.purchase ? value.purchase : 0,
             'max_buy_num': value.purchase_limit ? value.purchase_limit : 0,
-            'show_specification': value.use_specify ? 1 : 0,
-            'specifications': [],
+            'show_specification': value.use_specify.length > 0 ? 1 : 0,
+            'specifications': value.use_specify,
             'is_recommend': value.add_home_rec ? value.add_home_rec : 0,
             'weight': value.weight ? value.weight : 0,
             'price': value.price ? value.price : 0,
