@@ -8,8 +8,8 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="参数设置">
-        <sf #sf [mode]="'edit'" [schema]="settingSchema" [button]="null" [noColon]="true">
+    <nz-card nzTitle="参数设置" [nzLoading]="isLoading">
+        <sf #sf [mode]="'edit'" [schema]="settingSchema" [formData]="formData" [button]="null" [noColon]="true">
             <button nz-button type="submit" [nzType]="'primary'" (click)="handleSubmit(sf.value)" [disabled]="disableChangeSettingParamsSubmitButton(sf)"
                     [nzLoading]="isSettingParams">保存
             </button>
