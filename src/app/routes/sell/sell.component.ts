@@ -56,7 +56,7 @@ export class SellComponent implements OnInit {
     loadSellList() {
          this.isLoadingList = true;
         this.sellList = [];
-        this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + this.settingService.user.shop_id).subscribe((data) => {
+        this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + this.settingService.user.shop).subscribe((data) => {
             if (data) {
                 this.sellList = data;
             }

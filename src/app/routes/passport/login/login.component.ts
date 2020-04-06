@@ -88,7 +88,7 @@ export class UserLoginComponent implements OnDestroy {
                 this.tokenService.set({
                     token: window.btoa(JSON.stringify({
                         token: res.token,
-                        user: res.user,
+                        user: encodeURIComponent(res.user),
                         validTime: (new Date().getTime())
                     }))
                 });
