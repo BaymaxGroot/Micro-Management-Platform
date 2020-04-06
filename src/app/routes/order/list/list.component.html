@@ -38,9 +38,7 @@
             </ng-template>
         </st>
     </nz-card>
-    <ng-template #orderExtra>
-        <nz-range-picker [nzFormat]="dateFormat"></nz-range-picker>
-    </ng-template>
+
     <nz-card nzTitle="收货地址修改" [nzLoading]="isLoadingOrderList" *ngIf="openChangeAddress">
         <sf #sf [mode]="'edit'" [schema]="changeAddressSchema" [button]="null" [noColon]="true">
             <button nz-button type="button" (click)="hideChangeAddressModal()">关闭</button>
@@ -51,7 +49,7 @@
         </sf>
     </nz-card>
 
-    <nz-card nzTitle="打印订单" *ngIf="isPrintOrder">
+    <nz-card nzTitle="打印订单" *ngIf="isPrintOrder" [nzExtra]="printAction">
         <nz-alert *ngIf="error" [nzType]="'warning'" [nzMessage]="message">
             <ng-template #message>
                 请先下载
@@ -118,4 +116,8 @@
             </nz-form-item>
         </form>
     </nz-card>
+
+    <ng-template #printAction>
+        <button nz-button nzType="primary" (click)="handleHidePrintOrder()">返回</button>
+    </ng-template>
 </div>

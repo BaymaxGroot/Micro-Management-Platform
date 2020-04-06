@@ -26,8 +26,8 @@ export enum Interface {
     ChangeOrderDeliveryStatus = '/express/state/set',
     ChangeOrderAddress = '/express/info/set',
 
-    LoadEvaluateListEndPoint = '',
-    ChangeEvaluateStatusEndPoint = '',
+    LoadEvaluateListEndPoint = '/comment/list',
+    ChangeEvaluateStatusEndPoint = '/comment/status/set',
     DeleteEvaluateEndPoint = '',
     /**
      * 用户管理

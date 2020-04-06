@@ -37,6 +37,11 @@
                             "text": "订单列表",
                             "link": "/order/list",
                             "i18n": "订单列表"
+                        },
+                        {
+                            "text": "评价管理",
+                            "link": "/order/evaluate",
+                            "i18n": "评价管理"
                         }
                     ]
                 },

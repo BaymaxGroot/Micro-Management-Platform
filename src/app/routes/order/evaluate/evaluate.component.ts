@@ -29,22 +29,27 @@ export class EvaluateComponent implements OnInit {
     isLoadingList: boolean = false;
     evaluateList = [];
     evaluateColumnSetting: STColumn[] = [
+        {title: '用户', index: 'member_name'},
+        {title: '产品名', index: 'product_name'},
+        {title: '评分', index: 'score'},
+        {title: '评论', index: 'content'},
+        {title: '状态', index: 'status', type: 'tag', tag: TAG},
         {
             title: '操作', buttons: [
                 {
                     text: (record) => {
                         return record.status == 1 ? '隐藏' : '显示';
                     }, type: 'none', click: ((record) => {
-                      this.handleChangeEvaluateStatus(parseInt(record['shop_id']), record['status'] == 0);
+                      this.handleChangeEvaluateStatus(parseInt(record['id']), record['status'] == 0);
                     })
                 },
-                {
-                    text: '删除',
-                    type: 'del',
-                    click: (record) => {
-                        this.handleRemoveEvaluate(parseInt(record['shop_id']));
-                    }
-                }
+                // {
+                //     text: '删除',
+                //     type: 'del',
+                //     click: (record) => {
+                //         this.handleRemoveEvaluate(parseInt(record['shop_id']));
+                //     }
+                // }
             ]
         }
     ];
@@ -65,7 +70,7 @@ export class EvaluateComponent implements OnInit {
 
     handleChangeEvaluateStatus(e_id: number, status: boolean) {
         let changeEvaluateStatusTemplate = {
-            shop_id: e_id,
+            id: e_id,
             status: status? 1:0
         };
         this.isLoadingList = true;

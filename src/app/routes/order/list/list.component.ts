@@ -241,4 +241,8 @@ export class ListComponent implements OnInit {
         if (isPrivew) LODOP.PREVIEW();
         else LODOP.PRINT();
     }
+
+    handleHidePrintOrder() {
+        this.isPrintOrder = false;
+    }
 }

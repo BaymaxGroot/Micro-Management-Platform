@@ -94,6 +94,7 @@ export class CategoryComponent implements OnInit {
             if (data) {
                 this.categoryListData = data;
                 this.categoryListData.forEach((item) => {
+                    item['iconname'] = item['cicon'];
                     if (item['cicon']) {
                         item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
                     }
@@ -180,15 +181,15 @@ export class CategoryComponent implements OnInit {
                 rank: parseInt(e['crank']),
                 show: e['cshow'] !== 'False'
             };
-            if (e['cicon']) {
-                this._uploadIconService.addIcon(e['cicon']);
+            if (e['iconname']) {
+                this._uploadIconService.addIcon(e['iconname']);
             }
         }
-        if (e['cicon']) {
+        if (e['iconname']) {
             let icons = [];
             icons.push({
                 uid: -1,
-                name: 'xxx.png',
+                name: e['iconname'],
                 status: 'done',
                 url: e['cicon'],
                 response: {
