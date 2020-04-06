@@ -40,7 +40,7 @@
     </nz-card>
 
     <nz-card nzTitle="收货地址修改" [nzLoading]="isLoadingOrderList" *ngIf="openChangeAddress">
-        <sf #sf [mode]="'edit'" [schema]="changeAddressSchema" [button]="null" [noColon]="true">
+        <sf #sf [mode]="'edit'" [schema]="changeAddressSchema" [formData]="addressFormData" [button]="null" [noColon]="true">
             <button nz-button type="button" (click)="hideChangeAddressModal()">关闭</button>
             <button nz-button type="submit" [nzType]="'primary'" (click)="changeAddressSubmit(sf.value)"
                     [disabled]="disableChangeAddressSubmitButton(sf)"

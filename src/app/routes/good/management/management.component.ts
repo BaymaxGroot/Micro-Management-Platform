@@ -7,6 +7,7 @@ import {UploadIconService} from "@shared/service/upload-icon.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {environment} from "@env/environment";
 import {
+    FormProperty, PropertyGroup,
     SFComponent,
     SFRadioWidgetSchema,
     SFSchema,
@@ -332,8 +333,12 @@ export class ManagementComponent implements OnInit {
             main_icon: {
                 type: 'string',
                 title: '商品缩略图',
+                enum: [],
                 ui: {
                     widget: 'upload',
+                    validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
+                      return [];
+                    },
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     listType: 'picture-card',
                     showUploadList: true,
@@ -354,8 +359,12 @@ export class ManagementComponent implements OnInit {
             icons: {
                 type: 'string',
                 title: '商品图片',
+                enum: [],
                 ui: {
                     widget: 'upload',
+                    validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
+                      return [];
+                    },
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     listType: 'picture-card',
                     optionalHelp: '最少上传三张',
@@ -495,19 +504,19 @@ export class ManagementComponent implements OnInit {
                 } as SFRadioWidgetSchema,
                 default: 0
             },
-            product_rec: {
-                type: 'string',
-                title: '商品推荐',
-                ui: {
-                    widget: 'tree-select',
-                    multiple: true,
-                    asyncData: () =>
-                        of(this.productRootList).pipe(delay(10)),
-                    grid: {
-                        span: 24
-                    }
-                } as SFTreeSelectWidgetSchema
-            },
+            // product_rec: {
+            //     type: 'string',
+            //     title: '商品推荐',
+            //     ui: {
+            //         widget: 'tree-select',
+            //         multiple: true,
+            //         asyncData: () =>
+            //             of(this.productRootList).pipe(delay(10)),
+            //         grid: {
+            //             span: 24
+            //         }
+            //     } as SFTreeSelectWidgetSchema
+            // },
             add_home_rec: {
                 type: 'string',
                 title: '首页推荐',
@@ -526,8 +535,12 @@ export class ManagementComponent implements OnInit {
             summary: {
                 type: 'string',
                 title: '商品详情',
+                enum: [],
                 ui: {
                     widget: 'upload',
+                    validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
+                      return [];
+                    },
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     listType: 'picture-card',
                     showUploadList: true,
@@ -703,13 +716,26 @@ export class ManagementComponent implements OnInit {
      * Submit 按钮是否可用
      */
     disableCreateOrEditProductSubmitButton(sf: SFComponent) {
-        return !sf.valid || this._uploadMainImageService.isUploding || this._uploadIconsService.iconList.length < this._uploadIconsService.minUploadLimit || this._uploadDetailIconService.isUploding;
+        return this._uploadMainImageService.isUploding || this._uploadIconsService.iconList.length < this._uploadIconsService.minUploadLimit || this._uploadDetailIconService.isUploding;
     }
 
     /**
      * 添加 / 修改商品
      */
     handleCreateOrEditProductSubmit(value: any) {
+
+        let tag = true;
+        this.productSchema.required.forEach( (item) => {
+            if (value[item] == '') {
+                tag = false;
+            }
+        } );
+
+        if(!tag) {
+            this.msg.error('请填写必填字段!');
+            return;
+        }
+
         let createOrEditProductTemplate = {
             'id': this.isAddModal ? 0 : this.editProductLabel,
             'cat_id': parseInt(value.category),
@@ -735,7 +761,7 @@ export class ManagementComponent implements OnInit {
             'unit': value.unit ? value.unit : '',
             'main_image': this._uploadMainImageService.iconList[0] ? this._uploadMainImageService.iconList[0] : '',
             'related_product': value.product_rec ? value.product_rec.join(',') : '',
-            'images': this._uploadIconsService.iconList,
+            'images': this._uploadIconsService.iconList.join(','),
             'summary': this._uploadDetailIconService.iconList.join(',')
         };
         this.isAddingOrEditingProduct = true;

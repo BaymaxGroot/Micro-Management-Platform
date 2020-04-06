@@ -10,6 +10,8 @@ import {UserLoginComponent} from './passport/login/login.component';
 
 // 路由守卫
 import {MicroAppGuard} from "@core/net/micro-app.guard";
+import {SettingsService} from "@delon/theme";
+import {SellComponent} from "./sell/sell.component";
 
 const routes: Routes = [
     {
@@ -19,7 +21,8 @@ const routes: Routes = [
         canActivate: [MicroAppGuard],
         canActivateChild: [MicroAppGuard],
         children: [
-            {path: '', redirectTo: 'good', pathMatch: 'full'},
+            // {path: '', redirectTo: 'good', pathMatch: 'full'},
+            {path: 'sell', component: SellComponent},
             // 商品管理模块
             {path: 'good', loadChildren: () => import('./good/good.module').then(m => m.GoodModule)},
             // 订单管理模块
@@ -71,4 +74,6 @@ const routes: Routes = [
     exports: [RouterModule],
 })
 export class RouteRoutingModule {
+    constructor(private settingService: SettingsService,) {
+    }
 }

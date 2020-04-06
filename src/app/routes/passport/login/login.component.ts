@@ -80,6 +80,8 @@ export class UserLoginComponent implements OnDestroy {
                 // 设置用户信息
                 this.settingsService.setUser({
                     name: res.user,
+                    role: res.role,
+                    shop: res.shop_id,
                     avatar: './assets/images/avatar.jpg'
                 });
                 // 设置用户Token信息

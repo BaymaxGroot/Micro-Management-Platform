@@ -26,6 +26,8 @@ export enum Interface {
     ChangeOrderDeliveryStatus = '/express/state/set',
     ChangeOrderAddress = '/express/info/set',
 
+    OrderRefundEndPoint = '/order/refund',
+
     LoadEvaluateListEndPoint = '/comment/list',
     ChangeEvaluateStatusEndPoint = '/comment/status/set',
     DeleteEvaluateEndPoint = '',
@@ -55,4 +57,9 @@ export enum Interface {
     LoadBlockerListEndPoint = '/cube/list',
     DeleteBlockerEndPoint = '/cube/delete',
     AddOrEditBlockerEndPoint = '/cube/info/set',
+
+    /**
+     * 销售明细
+     */
+    SellEndPoint = '/sales/info/id',
 }

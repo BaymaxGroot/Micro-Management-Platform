@@ -30,7 +30,7 @@ export class StartupService {
 
     private viaHttp(resolve: any, reject: any) {
         zip(
-            this.httpClient.get('assets/app-data.json')
+            this.httpClient.get(this.settingService.user.role == 1? 'assets/app-data.json':'assets/user.json')
         ).pipe(
             catchError(([appData]) => {
                 resolve(null);

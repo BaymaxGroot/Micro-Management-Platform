@@ -42,11 +42,13 @@ export class ListComponent implements OnInit {
         {title: '总金额', index: 'total_price'},
         {
             title: '订单状态', index: 'order_status', format: (item) => {
-                switch (parseInt(item.pay_status)) {
+                switch (parseInt(item.order_status)) {
                     case 1:
                         return '支付完成';
                     case 0:
-                        return '无效';
+                        return '已取消';
+                     case -6:
+                        return '申请退款';
                     case -1:
                         return '申请退款';
                     case -2:
@@ -54,9 +56,9 @@ export class ListComponent implements OnInit {
                     case -9:
                         return '退款成功';
                     case -8:
-                        return '待支付';
+                        return '待付款';
                     case -7:
-                        return '完成支付待确认';
+                        return '待发货';
                 }
             }
         },
@@ -65,7 +67,20 @@ export class ListComponent implements OnInit {
                 {
                     text: '修改发货地址', type: 'none', click: (record, modal, instance) => {
                         this.order_id = record.order_id;
+                        this.addressFormData = {
+                          name: record.express_info.nickname,
+                          phone: record.express_info.mobile,
+                          address: record.express_info.address
+                        };
                         this.openChangeAddress = true;
+                    }
+                },
+                {
+                    text: '退款', type: 'none', click: (record, modal, instance) => {
+                        this.handleRefund(parseInt(record['order_id']));
+                    },
+                    iif: (item) => {
+                        return item.order_status == 1;
                     }
                 }
             ]
@@ -109,6 +124,7 @@ export class ListComponent implements OnInit {
     openChangeAddress: boolean = false;
     order_id: string = '';
     isChangingAddress: boolean = false;
+    addressFormData: any;
     changeAddressSchema: SFSchema = {
         properties: {
             name: {
@@ -244,5 +260,19 @@ export class ListComponent implements OnInit {
 
     handleHidePrintOrder() {
         this.isPrintOrder = false;
+    }
+
+    handleRefund(order_id:number) {
+        let refundTemplate = {
+            order_id: order_id
+        };
+        this.isLoadingOrderList = true;
+        this._microAppHttpClient.post(Interface.OrderRefundEndPoint, refundTemplate).subscribe((data) => {
+            this.msg.info('操作退款成功!');
+            this.loadOrderList();
+        }, (err) => {
+            this.msg.error('操作退款失败!');
+            this.isLoadingOrderList = false;
+        })
     }
 }
