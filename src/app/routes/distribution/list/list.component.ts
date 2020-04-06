@@ -59,6 +59,14 @@ export class ListComponent implements OnInit {
                     }
                 },
                 {
+                    text: '销售明细',
+                    type: 'none',
+                    click: (record) => {
+                        this.showShopSellModal = true;
+                        this.loadSellList(record.shop_id);
+                    }
+                },
+                {
                     text: '删除',
                     type: 'del',
                     click: (record) => {
@@ -198,6 +206,54 @@ export class ListComponent implements OnInit {
             this.isLoadingDistributorList();
         }, (err) => {
             this.msg.error('删除分销商信息失败, 请重新删除!');
+        })
+    }
+
+    showShopSellModal: boolean = false;
+    handleHideShopSellModal() {
+        this.showShopSellModal = false;
+    }
+    isLoadingSellList: boolean = false;
+    sellList = [];
+    sellColumnSetting: STColumn[] = [
+        {
+            title: '订单编号', index: 'order_number'
+        },
+        {title: '发货时间', index: 'delivery_time'},
+        {title: '总价格', index: 'total_price'},
+        {title: '状态', index: 'status', format: (item) => {
+                switch (parseInt(item.status)) {
+                    case 1:
+                        return '支付完成';
+                    case 0:
+                        return '已取消';
+                     case -6:
+                        return '申请退款';
+                    case -1:
+                        return '申请退款';
+                    case -2:
+                        return '退款中';
+                    case -9:
+                        return '退款成功';
+                    case -8:
+                        return '待付款';
+                    case -7:
+                        return '待发货';
+                }
+            }},
+    ];
+
+    loadSellList(shop) {
+         this.isLoadingSellList = true;
+        this.sellList = [];
+        this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + shop).subscribe((data) => {
+            if (data) {
+                this.sellList = data;
+            }
+            this.isLoadingSellList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingSellList = false;
         })
     }
 }

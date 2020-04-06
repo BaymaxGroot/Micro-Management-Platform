@@ -8,11 +8,18 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="分销商" [nzExtra]="deliveryExtra" [nzLoading]="isLoadingList" *ngIf="!addOrEditDeliveryModalVisible">
+    <nz-card nzTitle="分销商" [nzExtra]="deliveryExtra" [nzLoading]="isLoadingList" *ngIf="!addOrEditDeliveryModalVisible && !showShopSellModal">
         <st *ngIf="!isLoadingList" [data]="distributorList" [columns]="distributorColumnSetting" [loadingDelay]="1000"></st>
     </nz-card>
     <ng-template #deliveryExtra>
         <button nz-button nzType="primary" (click)="showAddOrDeliveryModal()" [disabled]="isLoadingList"><i nz-icon nzType="plus"></i>添加分销商</button>
+    </ng-template>
+
+    <nz-card nzTitle="分销商"  [nzLoading]="isLoadingSellList" *ngIf="showShopSellModal" [nzExtra]="showSellExtra">
+        <st *ngIf="!isLoadingSellList" [data]="sellList" [columns]="sellColumnSetting" [loadingDelay]="1000"></st>
+    </nz-card>
+    <ng-template #showSellExtra>
+        <button nz-button nzType="primary" (click)="handleHideShopSellModal()">返回</button>
     </ng-template>
 
     <!-- 分销商编辑 -->
