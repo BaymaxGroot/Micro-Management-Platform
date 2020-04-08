@@ -5,6 +5,7 @@ import {RouteRoutingModule} from './routes-routing.module';
 // passport pages
 import {UserLoginComponent} from './passport/login/login.component';
 import { SellComponent } from './sell/sell.component';
+import { OrderItemSellComponent } from './sell/order-item-sell/order-item-sell.component';
 
 const COMPONENTS = [
     // passport pages
@@ -21,7 +22,8 @@ const COMPONENTS_NOROUNT = [];
     ],
     declarations: [
         ...COMPONENTS,
-        ...COMPONENTS_NOROUNT
+        ...COMPONENTS_NOROUNT,
+        OrderItemSellComponent
     ],
     entryComponents: COMPONENTS_NOROUNT
 })

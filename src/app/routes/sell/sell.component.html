@@ -9,6 +9,17 @@
 
 <div class="ant-row">
     <nz-card nzTitle="分销商"  [nzLoading]="isLoadingList">
-        <st *ngIf="!isLoadingList" [data]="sellList" [columns]="sellColumnSetting" [loadingDelay]="1000"></st>
+        <st *ngIf="!isLoadingList" [data]="sellList" [columns]="sellColumnSetting" [expand]="expand"
+        expandRowByClick expandAccordion [loadingDelay]="1000">
+        <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
+            <div nz-row nzType="flex" nzAlign="middle" [nzGutter]="1">
+                <div nz-col [nzSpan]="6" *ngFor="let order of item.goods_list">
+                    <micro-order-item-sell [name]="order.name"
+                                      [imgUrl]="order.pic_url" [price]="order.price"
+                                      [quantity]="order.quantity"></micro-order-item-sell>
+                </div>
+            </div>
+        </ng-template>
+    </st>
     </nz-card>
 </div>

@@ -1,0 +1,22 @@
+<div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle" class="order-item">
+    <div nz-col [nzSpan]="8">
+        <img _src="{{imgUrl}}" [size]="100"/>
+    </div>
+    <div nz-col class="order-desc" [nzSpan]="16">
+        <div>
+            <strong class="text-purple">{{name}}</strong>
+        </div>
+        <div>
+            <small>规格: </small>
+            <small class="text-volcano">默认</small>
+        </div>
+        <div>
+            <small>数量: </small>
+            <small class="ng-star-inserted text-volcano">{{quantity}}份</small>
+        </div>
+        <div>
+            <small>小计: </small>
+            <small class="ng-star-inserted text-volcano">{{price}}元</small>
+        </div>
+    </div>
+</div>

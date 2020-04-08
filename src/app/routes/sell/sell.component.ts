@@ -26,36 +26,25 @@ export class SellComponent implements OnInit {
     isLoadingList: boolean = false;
     sellList = [];
     sellColumnSetting: STColumn[] = [
+        {title: '订单号', index: 'order_number', filter: {
+            type: 'keyword',
+            fn: (filter, record) => {
+                return !filter.value || record.order_number.indexOf(filter.value) !== -1
+            }
+        }},
+        {title: '用户', index: 'member_name'},
+        {title: '下单时间', index: 'pay_time', type: 'date'},
+        {title: '总金额', index: 'total_price'},
+        {title: '运费', index: 'yun_price'},
         {
-            title: '订单编号', index: 'order_number'
-        },
-        {title: '发货时间', index: 'delivery_time'},
-        {title: '总价格', index: 'total_price'},
-        {title: '状态', index: 'status', format: (item) => {
-                switch (parseInt(item.status)) {
-                    case 1:
-                        return '支付完成';
-                    case 0:
-                        return '已取消';
-                     case -6:
-                        return '申请退款';
-                    case -1:
-                        return '申请退款';
-                    case -2:
-                        return '退款中';
-                    case -9:
-                        return '退款成功';
-                    case -8:
-                        return '待付款';
-                    case -7:
-                        return '待发货';
-                }
-            }},
+            title: '订单状态', index: 'status_desc'
+        }
     ];
 
     loadSellList() {
          this.isLoadingList = true;
         this.sellList = [];
+        // this.settingService.user.shop
         this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + this.settingService.user.shop).subscribe((data) => {
             if (data) {
                 this.sellList = data;

@@ -10,7 +10,7 @@ const BADGE: STColumnBadge = {
 };
 
 const ROLEBADGE: STColumnBadge = {
-    0: {text: '普通用户', color: 'default'},
+    2: {text: '普通用户', color: 'default'},
     1: {text: '管理员', color: 'success'},
 };
 

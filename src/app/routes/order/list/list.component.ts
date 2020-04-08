@@ -36,31 +36,17 @@ export class ListComponent implements OnInit {
     isLoadingOrderList: boolean = false;
     orderList = [];
     orderColumnsSetting: STColumn[] = [
-        {title: '订单号', index: 'order_number'},
+        {title: '订单号', index: 'order_number', filter: {
+            type: 'keyword',
+            fn: (filter, record) => {
+                return !filter.value || record.order_number.indexOf(filter.value) !== -1
+            }
+        }},
         {title: '用户', index: 'member_name'},
-        {title: '下单时间', index: 'date', type: 'date'},
+        {title: '下单时间', index: 'pay_time', type: 'date'},
         {title: '总金额', index: 'total_price'},
         {
-            title: '订单状态', index: 'order_status', format: (item) => {
-                switch (parseInt(item.order_status)) {
-                    case 1:
-                        return '支付完成';
-                    case 0:
-                        return '已取消';
-                     case -6:
-                        return '申请退款';
-                    case -1:
-                        return '申请退款';
-                    case -2:
-                        return '退款中';
-                    case -9:
-                        return '退款成功';
-                    case -8:
-                        return '待付款';
-                    case -7:
-                        return '待发货';
-                }
-            }
+            title: '订单状态', index: 'status_desc'
         },
         {
             title: '操作', buttons: [
@@ -80,7 +66,7 @@ export class ListComponent implements OnInit {
                         this.handleRefund(parseInt(record['order_id']));
                     },
                     iif: (item) => {
-                        return item.order_status == 1;
+                        return item.status_desc == '待处理';
                     }
                 }
             ]

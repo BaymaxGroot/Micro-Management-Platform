@@ -43,7 +43,6 @@ export class ManagementComponent implements OnInit {
         this._uploadMainImageService.maxUploadLimit = 1;
         this._uploadIconsService = new UploadIconService(_httpClient, msg);
         this._uploadIconsService.maxUploadLimit = 6;
-        this._uploadIconsService.minUploadLimit = 3;
 
         this._uploadDetailIconService = new UploadIconService(_httpClient, msg);
         this._uploadDetailIconService.maxUploadLimit = 10;
@@ -716,7 +715,7 @@ export class ManagementComponent implements OnInit {
      * Submit 按钮是否可用
      */
     disableCreateOrEditProductSubmitButton(sf: SFComponent) {
-        return this._uploadMainImageService.isUploding || this._uploadIconsService.iconList.length < this._uploadIconsService.minUploadLimit || this._uploadDetailIconService.isUploding;
+        return this._uploadMainImageService.isUploding || this._uploadDetailIconService.isUploding;
     }
 
     /**
