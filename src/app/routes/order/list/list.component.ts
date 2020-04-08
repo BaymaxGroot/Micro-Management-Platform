@@ -36,12 +36,14 @@ export class ListComponent implements OnInit {
     isLoadingOrderList: boolean = false;
     orderList = [];
     orderColumnsSetting: STColumn[] = [
-        {title: '订单号', index: 'order_number', filter: {
-            type: 'keyword',
-            fn: (filter, record) => {
-                return !filter.value || record.order_number.indexOf(filter.value) !== -1
+        {
+            title: '订单号', index: 'order_number', filter: {
+                type: 'keyword',
+                fn: (filter, record) => {
+                    return !filter.value || record.order_number.indexOf(filter.value) !== -1
+                }
             }
-        }},
+        },
         {title: '用户', index: 'member_name'},
         {title: '下单时间', index: 'pay_time', type: 'date'},
         {title: '总金额', index: 'total_price'},
@@ -54,9 +56,9 @@ export class ListComponent implements OnInit {
                     text: '修改发货地址', type: 'none', click: (record, modal, instance) => {
                         this.order_id = record.order_id;
                         this.addressFormData = {
-                          name: record.express_info.nickname,
-                          phone: record.express_info.mobile,
-                          address: record.express_info.address
+                            name: record.express_info.nickname,
+                            phone: record.express_info.mobile,
+                            address: record.express_info.address
                         };
                         this.openChangeAddress = true;
                     }
@@ -179,15 +181,13 @@ export class ListComponent implements OnInit {
         let account = value['member_name'];
         let expressinfo = value['express_info'];
 
-        let content = '';
-        let sum = 0;
+        let content = `
+            商品名称     数量      单价      小计
+        `;
 
         value.goods_list[shop].forEach(item => {
-           content += `
-               商品名称: ${item.name}
-               购买数量: ${item.quantity}
-               单价: ${item.price}元
-           `;
+            content += `    ${item.name}     ${item.quantity}      ${item.price}元      ${item.quantity * parseFloat(item.price)}
+            `;
         });
 
         let mhtml = `
@@ -248,7 +248,7 @@ export class ListComponent implements OnInit {
         this.isPrintOrder = false;
     }
 
-    handleRefund(order_id:number) {
+    handleRefund(order_id: number) {
         let refundTemplate = {
             order_id: order_id
         };
