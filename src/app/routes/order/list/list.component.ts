@@ -45,9 +45,9 @@ export class ListComponent implements OnInit {
             }
         },
         {title: '用户', index: 'member_name'},
-        {title: '下单时间', index: 'pay_time', type: 'date'},
+        {title: '下单时间', index: 'date', type: 'date'},
         {title: '总金额', index: 'total_price'},
-        {title: '支付时间', index: 'date', type: 'date'},
+        {title: '支付时间', index: 'pay_time', type: 'date'},
         {
             title: '订单状态', index: 'status_desc'
         },
