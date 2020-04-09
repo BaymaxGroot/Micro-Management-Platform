@@ -3,6 +3,7 @@ import {STColumn, STColumnBadge, STData} from "@delon/abc";
 import {NzMessageService} from "ng-zorro-antd";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
+import {SFComponent, SFRadioWidgetSchema, SFSchema} from "@delon/form";
 
 const BADGE: STColumnBadge = {
     0: {text: '失效', color: 'default'},
@@ -56,6 +57,11 @@ export class ListComponent implements OnInit {
             title: '操作', buttons: [
                 {
                     text: '编辑', click: (record, modal, instance) => {
+                        this.editUserLabel = record.uid;
+                        this.editUserRole = record.role;
+                        this.isAddModal = false;
+                        this.handleAddOrEditFormDataInit(record);
+                        this.showAddOrEditUserModal();
                     }
                 },
                 {
@@ -78,6 +84,107 @@ export class ListComponent implements OnInit {
         }, (err) => {
             this.msg.error('加载用户列表失败!');
         });
+    }
+
+    addOrEditUserModalVisble: boolean = false;
+    isAddModal = true;
+
+    showAddOrEditUserModal(): void {
+        if(this.isAddModal) {
+            this.handleAddOrEditFormDataInit();
+        }
+        this.addOrEditUserModalVisble = true;
+    }
+
+    hideAddOrEditUserModal() {
+        this.isAddModal = true;
+        this.handleAddOrEditFormDataInit();
+        this.addOrEditUserModalVisble = false;
+    }
+
+    handleAddOrEditFormDataInit(e: any = {}) {
+        if(this.isAddModal) {
+            this.userFormData = {
+                account: '',
+                password: '',
+                mobile: '',
+                email: '',
+                sex: 1
+            };
+        } else {
+            this.userFormData = {
+                account: e.account,
+                password: '',
+                mobile: e.mobile,
+                email: e.email,
+                sex: e.sex
+            };
+        }
+    }
+
+    userFormData: any;
+    userSchema: SFSchema = {
+      properties: {
+          account: {
+              type: 'string',
+              title: '账号'
+          },
+          password: {
+              type: 'string',
+              title: '密码'
+          },
+          mobile: {
+              type: 'string',
+              title: '联系电话'
+          },
+          email: {
+              type: 'string',
+              title: '邮箱'
+          },
+          sex: {
+              type: 'integer',
+              title: '性别',
+              enum: [
+                    {label: '男', value: 1},
+                    {label: '女', value: 0}
+                ],
+                ui: {
+                    widget: 'radio'
+                } as SFRadioWidgetSchema,
+                default: 1
+          }
+      },
+        required: ['account', 'password', 'mobile']
+    };
+    isAddingOrEditingUser: boolean = false;
+    editUserLabel: number = 0;
+    editUserRole: number = 0;
+
+    disableAddOrEditUserSubmitButton(sf: SFComponent): boolean {
+        return !sf.valid;
+    }
+
+    handleAddOrEditUserSubmit(value: any):void {
+        let userTemplate = {
+            uid: this.isAddModal? 0:this.editUserLabel,
+            uaccount: value.account,
+            upassword: value.password,
+            umobile: value.mobile,
+            uemail: value.email,
+            usex: value.sex,
+            ustatus: 1,
+            urole: this.editUserRole
+        };
+        this.isAddingOrEditingUser = true;
+        this._microAppHttpClient.post(Interface.AddOrEditUserEndPoint, userTemplate).subscribe((data) => {
+            this.isAddingOrEditingUser = false;
+            this.msg.info(this.isAddModal? '添加用户成功!': '修改用户信息成功!');
+            this.hideAddOrEditUserModal();
+            this.loadUserList();
+        }, (err) => {
+            this.isAddingOrEditingUser = false;
+            this.msg.error(this.isAddModal? '添加用户失败!':'修改用户恓失败!');
+        })
     }
 
     deleteUser(uid: number) {

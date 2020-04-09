@@ -47,6 +47,7 @@ export class ListComponent implements OnInit {
         {title: '用户', index: 'member_name'},
         {title: '下单时间', index: 'pay_time', type: 'date'},
         {title: '总金额', index: 'total_price'},
+        {title: '支付时间', index: 'date', type: 'date'},
         {
             title: '订单状态', index: 'status_desc'
         },
@@ -189,6 +190,10 @@ export class ListComponent implements OnInit {
             content += `    ${item.name}     ${item.quantity}      ${item.price}元      ${item.quantity * parseFloat(item.price)}
             `;
         });
+
+        content += `
+            合计 ${value.total_price}元
+        `;
 
         let mhtml = `
             订单编号: ${order}

@@ -224,21 +224,9 @@ export class ListComponent implements OnInit {
         {title: '状态', index: 'status', format: (item) => {
                 switch (parseInt(item.status)) {
                     case 1:
-                        return '支付完成';
+                        return '已打款';
                     case 0:
-                        return '已取消';
-                     case -6:
-                        return '申请退款';
-                    case -1:
-                        return '申请退款';
-                    case -2:
-                        return '退款中';
-                    case -9:
-                        return '退款成功';
-                    case -8:
-                        return '待付款';
-                    case -7:
-                        return '待发货';
+                        return '未打款';
                 }
             }},
     ];
@@ -246,7 +234,7 @@ export class ListComponent implements OnInit {
     loadSellList(shop) {
          this.isLoadingSellList = true;
         this.sellList = [];
-        this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + shop).subscribe((data) => {
+        this._microAppHttpClient.get(Interface.SellOrderEndPoint + '?id=' + shop).subscribe((data) => {
             if (data) {
                 this.sellList = data;
             }

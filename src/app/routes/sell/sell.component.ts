@@ -21,6 +21,9 @@ export class SellComponent implements OnInit {
 
     ngOnInit() {
         this.loadSellList();
+        setInterval( () => {
+            this.loadSellList()
+        }, 1000 * 30);
     }
 
     isLoadingList: boolean = false;

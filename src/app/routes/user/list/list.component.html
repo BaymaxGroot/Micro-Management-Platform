@@ -8,10 +8,18 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="用户列表" [nzExtra]="userListRange" [nzLoading]="isLoading">
+    <nz-card nzTitle="用户列表" [nzLoading]="isLoading" *ngIf="!addOrEditUserModalVisble">
         <st [data]="userList" [columns]="columnsSetting" *ngIf="!isLoading" [loadingDelay]="500"></st>
     </nz-card>
-    <ng-template #userListRange>
-        <button nz-button nzType="primary" (click)="showAddCategoryModal()"><i nz-icon nzType="plus"></i>添加用户</button>
-    </ng-template>
+    <nz-card nzTitle="用户基本信息编辑" *ngIf="addOrEditUserModalVisble">
+        <sf #sf [mode]="'edit'" [schema]="userSchema" [formData]="userFormData" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="hideAddOrEditUserModal()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleAddOrEditUserSubmit(sf.value)" [disabled]="disableAddOrEditUserSubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingUser">保存
+            </button>
+        </sf>
+    </nz-card>
+<!--    <ng-template #userListRange>-->
+<!--        <button nz-button nzType="primary" (click)="showAddCategoryModal()"><i nz-icon nzType="plus"></i>添加用户</button>-->
+<!--    </ng-template>-->
 </div>

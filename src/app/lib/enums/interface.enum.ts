@@ -61,5 +61,6 @@ export enum Interface {
     /**
      * 销售明细
      */
-    SellEndPoint = '/order/list/shop/id',
+    SellOrderEndPoint = '/sales/info/id',
+    SellEndPoint = '/order/list/shop/id'
 }
