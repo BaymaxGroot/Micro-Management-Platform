@@ -183,11 +183,11 @@ export class ListComponent implements OnInit {
         let expressinfo = value['express_info'];
 
         let content = `
-            商品名称     数量      单价      小计
+            商品名称 数量 单价 小计
         `;
 
         value.goods_list[shop].forEach(item => {
-            content += `    ${item.name}     ${item.quantity}      ${item.price}元      ${item.quantity * parseFloat(item.price)}
+            content += `    ${item.name} ${item.quantity} ${item.price}元 ${item.quantity * parseFloat(item.price)}
             `;
         });
 
