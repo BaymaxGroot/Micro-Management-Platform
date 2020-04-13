@@ -336,7 +336,7 @@ export class ManagementComponent implements OnInit {
                 ui: {
                     widget: 'upload',
                     validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
-                      return [];
+                        return [];
                     },
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     listType: 'picture-card',
@@ -362,7 +362,7 @@ export class ManagementComponent implements OnInit {
                 ui: {
                     widget: 'upload',
                     validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
-                      return [];
+                        return [];
                     },
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     listType: 'picture-card',
@@ -439,10 +439,17 @@ export class ManagementComponent implements OnInit {
             use_specify: {
                 type: 'array',
                 title: '规格',
-                maxItems: 3,
                 items: {
                     type: 'object',
                     properties: {
+                        id: {
+                            type: 'integer',
+                            title: '编号',
+                            ui: {
+                                hidden: true
+                            },
+                            default: 0
+                        },
                         name: {
                             type: 'string',
                             title: '规格名称'
@@ -547,7 +554,7 @@ export class ManagementComponent implements OnInit {
                 ui: {
                     widget: 'upload',
                     validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
-                      return [];
+                        return [];
                     },
                     action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
                     listType: 'picture-card',
@@ -648,7 +655,7 @@ export class ManagementComponent implements OnInit {
                 purchase: e['min_buy_num'],
                 purchase_limit: e['max_buy_num'],
                 activity_tag: e['tags'],
-                use_specify: [],
+                use_specify: e['specifications'],
                 address: e['address'],
                 delivery_type: parseInt(e['delivery']),
                 product_rec: e['related_product'].split(','),
@@ -733,13 +740,13 @@ export class ManagementComponent implements OnInit {
     handleCreateOrEditProductSubmit(value: any) {
 
         let tag = true;
-        this.productSchema.required.forEach( (item) => {
+        this.productSchema.required.forEach((item) => {
             if (value[item] == '') {
                 tag = false;
             }
-        } );
+        });
 
-        if(!tag) {
+        if (!tag) {
             this.msg.error('请填写必填字段!');
             return;
         }
