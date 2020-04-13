@@ -475,6 +475,15 @@ export class ManagementComponent implements OnInit {
                             title: '限购',
                             minimum: 0
                         }
+                    },
+                    ui: {
+                        spanLabel: 4,
+                        spanControl: 20
+                    }
+                },
+                ui: {
+                    grid: {
+                        span: 24
                     }
                 }
             },
