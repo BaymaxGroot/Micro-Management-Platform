@@ -481,6 +481,11 @@ export class ManagementComponent implements OnInit {
                             type: 'number',
                             title: '限购',
                             minimum: 0
+                        },
+                        min_buy_num: {
+                            type: 'number',
+                            title: '起购',
+                            minimum: 0
                         }
                     },
                     ui: {
