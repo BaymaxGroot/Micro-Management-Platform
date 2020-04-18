@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {STColumn, STData} from "@delon/abc";
+import {STChange, STColumn, STData} from "@delon/abc";
 import {NzMessageService, NzNotificationService} from "ng-zorro-antd";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {SFComponent, SFSchema} from "@delon/form";
 import {Lodop, LodopService} from "@delon/abc";
 import {toTitleCase} from "codelyzer/util/utils";
+import {HttpParams} from "@angular/common/http";
+import {environment} from "@env/environment";
 
 @Component({
     selector: 'micro-list',
@@ -15,7 +17,6 @@ import {toTitleCase} from "codelyzer/util/utils";
 export class ListComponent implements OnInit {
 
     objectKeys = Object.keys;
-    dateFormat = 'yyyy/MM/dd';
 
     constructor(
         public lodopSrv: LodopService,
@@ -30,12 +31,16 @@ export class ListComponent implements OnInit {
         this.loadOrderList();
     }
 
+    checkboxSelectedList: STData[] = [];
+    isPrintingExcel: boolean = false;
     /**
      * 订单列表
      */
     isLoadingOrderList: boolean = false;
     orderList = [];
+    showOrderList = [];
     orderColumnsSetting: STColumn[] = [
+        {title: '编号', index: 'check', type: 'checkbox'},
         {
             title: '订单号', index: 'order_number', filter: {
                 type: 'keyword',
@@ -46,10 +51,22 @@ export class ListComponent implements OnInit {
         },
         {title: '用户', index: 'member_name'},
         {title: '下单时间', index: 'date', type: 'date'},
+        {title: '运费', index: 'yun_price'},
         {title: '总金额', index: 'total_price'},
         {title: '支付时间', index: 'pay_time', type: 'date'},
         {
-            title: '订单状态', index: 'status_desc'
+            title: '订单状态', index: 'status_desc', filter: {
+                menus: [
+                    {text: '已取消', value: '已取消'},
+                    {text: '已完成', value: '已完成'},
+                    {text: '待付款', value: '待付款'},
+                    {text: '待发货', value: '待发货'},
+                    {text: '待收货', value: '待收货'},
+                    {text: '待处理', value: '待处理'}
+                ], fn: (filter, record) => {
+                    return !filter.value || record.status_desc == filter.value;
+                }
+            }
         },
         {
             title: '操作', buttons: [
@@ -85,12 +102,77 @@ export class ListComponent implements OnInit {
         this._microAppHttpClient.get(Interface.LoadOrderListEndPoint).subscribe((data) => {
             if (data) {
                 this.orderList = data;
+                this.orderList.forEach((item) => {
+                    item['check'] = 0;
+                });
+                this.showOrderList = this.orderList;
             }
             this.isLoadingOrderList = false;
         }, (err) => {
             this.msg.error('请求失败, 请重试！');
             this.isLoadingOrderList = false;
         })
+    }
+
+    handleCheckBoxSelected(e: STChange) {
+        if (e.type == 'checkbox') {
+            this.checkboxSelectedList = e.checkbox;
+        }
+    }
+
+    getCheckBoxSelectedIDList(): string[] {
+        let pids: string[] = [];
+        this.checkboxSelectedList.forEach((item) => {
+            pids.push(item['order_number']);
+        });
+        return pids;
+    }
+
+    handlePrintOrder(order_nums: string[]) {
+        this.isPrintingExcel = true;
+
+        window.open(`${environment.SERVER_URL}${Interface.PrintOrderEndPoint}?order_nums=${order_nums.join('-')}`);
+
+        setTimeout( () => {
+            this.isPrintingExcel = false;
+        }, 1000 );
+
+    }
+
+    handleChangeOrderDate(type: number, result: Date[]) {
+        switch (type) {
+            case 0:
+                if (result.length > 0) {
+                    return
+                } else {
+                    this.filterOrderAccordingDate(result);
+                }
+                break;
+            case 1:
+                this.filterOrderAccordingDate(result);
+                break;
+        }
+    }
+
+    filterOrderAccordingDate(result: Date[]) {
+        this.isLoadingOrderList = true;
+        setTimeout(() => {
+
+            if (result.length > 0) {
+                this.showOrderList = this.orderList.filter((value, index) => {
+                    let temDate = (new Date(value['date'])).getTime();
+                    let begin = result[0].getTime();
+                    let end = result[1].getTime();
+
+                    return temDate >= begin && temDate <= end;
+                })
+            } else {
+                this.showOrderList = this.orderList;
+            }
+
+            this.isLoadingOrderList = false;
+
+        }, 1000);
     }
 
     OrderDelivery(order_id: string, shop_id: string) {

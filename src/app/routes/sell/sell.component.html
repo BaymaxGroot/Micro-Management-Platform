@@ -8,18 +8,38 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="分销商"  [nzLoading]="isLoadingList">
-        <st *ngIf="!isLoadingList" [data]="sellList" [columns]="sellColumnSetting" [expand]="expand"
-        expandRowByClick expandAccordion [loadingDelay]="1000">
-        <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
-            <div nz-row nzType="flex" nzAlign="middle" [nzGutter]="1">
-                <div nz-col [nzSpan]="6" *ngFor="let order of item.goods_list">
-                    <micro-order-item-sell [name]="order.name"
-                                      [imgUrl]="order.pic_url" [price]="order.price"
-                                      [quantity]="order.quantity"></micro-order-item-sell>
+    <nz-card nzTitle="分销商" [nzLoading]="isLoadingList" [nzExtra]="OrderListExtra">
+        <st *ngIf="!isLoadingList" [data]="showSellList" [columns]="sellColumnSetting" [expand]="expand"
+            expandRowByClick expandAccordion [loadingDelay]="1000">
+            <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
+                <div nz-row nzType="flex" nzAlign="middle" [nzGutter]="1">
+                    <div nz-col [nzSpan]="6" *ngFor="let order of item.goods_list">
+                        <micro-order-item-sell [name]="order.name"
+                                               [imgUrl]="order.pic_url" [price]="order.price"
+                                               [quantity]="order.quantity"></micro-order-item-sell>
+                    </div>
+                    <div nz-col [nzSpan]="22" [nzOffset]="1" class="templateAddress">
+                        <nz-descriptions nzTitle="" nzColumn="1">
+                            <nz-descriptions-item nzTitle="收件人">{{item.express_info.nickname}}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="联系电话">{{item.express_info.mobile}}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="收件地址">{{item.express_info.address}}</nz-descriptions-item>
+                        </nz-descriptions>
+                    </div>
                 </div>
-            </div>
-        </ng-template>
-    </st>
+            </ng-template>
+        </st>
     </nz-card>
+
+    <ng-template #OrderListExtra>
+
+        <span class="extraOrder">下单时间</span>
+        <nz-range-picker [disabled]="isLoadingList"
+                         nzShowTime
+                         nzFormat="yyyy-MM-dd HH:mm:ss"
+                         ngModel
+                         (ngModelChange)="handleChangeOrderDate(0,$event)"
+                         (nzOnOk)="handleChangeOrderDate(1,$event)"
+        ></nz-range-picker>
+
+    </ng-template>
 </div>

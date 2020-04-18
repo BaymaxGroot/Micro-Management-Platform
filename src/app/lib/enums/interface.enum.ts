@@ -2,65 +2,65 @@ export enum Interface {
     /**
      * 上传图片
      */
-    UploadImage = '/upload',
+    UploadImage = '/api/upload',
     /**
      * 登录
      */
-    LoginEndPoint = '/login',
+    LoginEndPoint = '/api/login',
     /**
      * 商品管理
      */
-    LoadProductCategoryListEndPoint = '/category/list',
-    AddOrEditProductCategoryInfoEndPoint = '/category/set',
-    RemoveProductCategoryEndPoint = '/category/remove',
-    LoadProductListEndPoint = '/product/list',
-    AddOrEditProductInfoEndPoint = '/product/set',
-    RemoveProductEndPoint = '/product/delete',
-    ChangeProductStatusEndPoint = '/product/status/change',
-    ChangeProductStockEndPoint = '/product/stock/change',
-    LoadProductWantedListEndPoint = '/load/good/wanted',
+    LoadProductCategoryListEndPoint = '/api/category/list',
+    AddOrEditProductCategoryInfoEndPoint = '/api/category/set',
+    RemoveProductCategoryEndPoint = '/api/category/remove',
+    LoadProductListEndPoint = '/api/product/list',
+    AddOrEditProductInfoEndPoint = '/api/product/set',
+    RemoveProductEndPoint = '/api/product/delete',
+    ChangeProductStatusEndPoint = '/api/product/status/change',
+    ChangeProductStockEndPoint = '/api/product/stock/change',
+    LoadProductWantedListEndPoint = '/api/load/good/wanted',
     /**
      * 订单管理
      */
-    LoadOrderListEndPoint = "/order/list",
-    ChangeOrderDeliveryStatus = '/express/state/set',
-    ChangeOrderAddress = '/express/info/set',
+    LoadOrderListEndPoint = "/api/order/list",
+    ChangeOrderDeliveryStatus = '/api/express/state/set',
+    ChangeOrderAddress = '/api/express/info/set',
+    PrintOrderEndPoint = '/api/order/print',
+    OrderRefundEndPoint = '/api/order/refund',
 
-    OrderRefundEndPoint = '/order/refund',
-
-    LoadEvaluateListEndPoint = '/comment/list',
-    ChangeEvaluateStatusEndPoint = '/comment/status/set',
+    LoadEvaluateListEndPoint = '/api/comment/list',
+    ChangeEvaluateStatusEndPoint = '/api/comment/status/set',
     DeleteEvaluateEndPoint = '',
     /**
      * 用户管理
      */
-    LoadUserEndPoint = "/user/list",
-    DeleteUserEndPoint = '/delete/user',
-    AddOrEditUserEndPoint = '/user/info',
+    LoadUserEndPoint = "/api/user/list",
+    DeleteUserEndPoint = '/api/delete/user',
+    AddOrEditUserEndPoint = '/api/user/info',
 
     /**
      * 分销中心
      */
-    LoadDistributorListEndPoint = '/shop/list',
-    AddDistributorEndPoint = '/shop/info/set',
-    DeleteDistributorEndPoint = '/shop/delete',
-    DistributorStatusSetEndPoint = '/shop/status/set',
+    LoadDistributorListEndPoint = '/api/shop/list',
+    AddDistributorEndPoint = '/api/shop/info/set',
+    DeleteDistributorEndPoint = '/api/shop/delete',
+    DistributorStatusSetEndPoint = '/api/shop/status/set',
     /**
      * 设置中心
      */
-    GetParamsEndPoint = '/setting/info',
-    SettingParamsEndPoint = '/setting/info/set',
-    LoadCarouselListEndPoint = '/banner/list',
-    DeleteCarouselEndPoint = '/banner/delete',
-    AddOrEditCarouselEndPoint = '/banner/info/set',
+    GetParamsEndPoint = '/api/setting/info',
+    SettingParamsEndPoint = '/api/setting/info/set',
+    LoadCarouselListEndPoint = '/api/banner/list',
+    DeleteCarouselEndPoint = '/api/banner/delete',
+    AddOrEditCarouselEndPoint = '/api/banner/info/set',
 
-    LoadBlockerListEndPoint = '/cube/list',
-    DeleteBlockerEndPoint = '/cube/delete',
-    AddOrEditBlockerEndPoint = '/cube/info/set',
+    LoadBlockerListEndPoint = '/api/cube/list',
+    DeleteBlockerEndPoint = '/api/cube/delete',
+    AddOrEditBlockerEndPoint = '/api/cube/info/set',
 
     /**
      * 销售明细
      */
-    SellOrderEndPoint = '/sales/info/id',
-    SellEndPoint = '/order/list/shop/id'
+    SellOrderEndPoint = '/api/sales/info/id',
+    SellEndPoint = '/api/order/list/shop/id'
 }
