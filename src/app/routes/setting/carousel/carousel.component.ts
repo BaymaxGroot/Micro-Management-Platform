@@ -153,7 +153,7 @@ export class CarouselComponent implements OnInit {
                 title: '轮播图',
                 ui: {
                     widget: 'upload',
-                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
                     listType: 'picture-card',
                     showUploadList: true,
                     beforeUpload: (file, fileList) => {

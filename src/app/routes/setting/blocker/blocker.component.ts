@@ -152,7 +152,7 @@ export class BlockerComponent implements OnInit {
                 title: '版块图片',
                 ui: {
                     widget: 'upload',
-                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
                     listType: 'picture-card',
                     showUploadList: true,
                     beforeUpload: (file, fileList) => {

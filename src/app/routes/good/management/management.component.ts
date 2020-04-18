@@ -338,7 +338,7 @@ export class ManagementComponent implements OnInit {
                     validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
                         return [];
                     },
-                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
                     listType: 'picture-card',
                     showUploadList: true,
                     beforeUpload: (file, fileList) => {
@@ -364,7 +364,7 @@ export class ManagementComponent implements OnInit {
                     validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
                         return [];
                     },
-                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
                     listType: 'picture-card',
                     optionalHelp: '最少上传三张',
                     showUploadList: true,
@@ -498,7 +498,7 @@ export class ManagementComponent implements OnInit {
                     validator: (value: any, formProperty: FormProperty, form: PropertyGroup) => {
                         return [];
                     },
-                    action: `${environment.SERVER_URL}/api${Interface.UploadImage}`,
+                    action: `${environment.SERVER_URL}${Interface.UploadImage}`,
                     listType: 'picture-card',
                     showUploadList: true,
                     beforeUpload: (file, fileList) => {

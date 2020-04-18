@@ -1,0 +1,31 @@
+<page-header [title]="''" [breadcrumb]="breadcrumb">
+    <ng-template #breadcrumb>
+        <nz-breadcrumb>
+            <nz-breadcrumb-item>商品管理</nz-breadcrumb-item>
+            <nz-breadcrumb-item>商品规格管理</nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </ng-template>
+</page-header>
+
+<div class="ant-row">
+    <!-- 商品规格列表 -->
+    <nz-card nzTitle="商品规格列表" [nzExtra]="specifyAction" [nzLoading]="isLoadingList" *ngIf="!addOrEditSpecifyModalVisible">
+        <st *ngIf="!isLoadingList" [data]="specifyListData" [columns]="columnsSetting" [loadingDelay]="500"></st>
+    </nz-card>
+    <ng-template #specifyAction>
+        <button nz-button nzType="primary" (click)="showAddSpecifyModal()" [disabled]="isLoadingList"><i nz-icon nzType="plus"></i>添加规格</button>
+    </ng-template>
+
+    <!-- 商品规格编辑 -->
+    <nz-card nzTitle="商品规格编辑" [nzExtra]="specifyEditAction" *ngIf="addOrEditSpecifyModalVisible">
+        <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="specifySchema" [formData]="specifyFormData" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="handleCreateSpecifyCancel()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditSpecifySubmit(sf.value)" [disabled]="disableCreateOrEditSpecifySubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingSpecify">保存
+            </button>
+        </sf>
+    </nz-card>
+    <ng-template #specifyEditAction>
+        <button nz-button nzType="primary" (click)="handleCreateSpecifyCancel()">返回规格列表</button>
+    </ng-template>
+</div>

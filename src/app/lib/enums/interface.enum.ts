@@ -19,6 +19,10 @@ export enum Interface {
     ChangeProductStatusEndPoint = '/api/product/status/change',
     ChangeProductStockEndPoint = '/api/product/stock/change',
     LoadProductWantedListEndPoint = '/api/load/good/wanted',
+
+    LoadSpecifyListEndPoint = '/api/spec/list',
+    AddOrModifySpecifyEndPoint = '/api/spec/info/set',
+    DeleteSpecifyEndPoint = '/api/spec/delete',
     /**
      * 订单管理
      */

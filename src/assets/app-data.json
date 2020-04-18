@@ -24,6 +24,11 @@
                             "text": "商品管理",
                             "link": "/good/management",
                             "i18n": "商品管理"
+                        },
+                        {
+                            "text": "商品规格管理",
+                            "link": "/good/specify",
+                            "i18n": "商品规格管理"
                         }
                     ]
                 },
