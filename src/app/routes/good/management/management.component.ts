@@ -436,69 +436,6 @@ export class ManagementComponent implements OnInit {
                     }
                 }
             },
-            use_specify: {
-                type: 'array',
-                title: '规格',
-                items: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            title: '编号',
-                            ui: {
-                                hidden: true
-                            },
-                            default: 0
-                        },
-                        name: {
-                            type: 'string',
-                            title: '规格名称'
-                        },
-                        price: {
-                            type: 'number',
-                            title: '售价',
-                            minimum: 0
-                        },
-                        original_price: {
-                            type: 'number',
-                            title: '原价',
-                            minimum: 0
-                        },
-                        stock: {
-                            type: 'integer',
-                            title: '库存',
-                            minimum: 0
-                        },
-                        weight: {
-                            type: 'number',
-                            title: '重量',
-                            minimum: 0,
-                            ui: {
-                                unit: '克'
-                            }
-                        },
-                        max_buy_num: {
-                            type: 'number',
-                            title: '限购',
-                            minimum: 0
-                        },
-                        min_buy_num: {
-                            type: 'number',
-                            title: '起购',
-                            minimum: 0
-                        }
-                    },
-                    ui: {
-                        spanLabel: 4,
-                        spanControl: 20
-                    }
-                },
-                ui: {
-                    grid: {
-                        span: 24
-                    }
-                }
-            },
             address: {
                 type: 'string',
                 title: '发货地址',
@@ -633,7 +570,6 @@ export class ManagementComponent implements OnInit {
                 purchase: 0,
                 purchase_limit: 0,
                 activity_tag: '',
-                use_specify: [],
                 address: '',
                 delivery_type: 0,
                 product_rec: '',
@@ -660,7 +596,6 @@ export class ManagementComponent implements OnInit {
                 purchase: e['min_buy_num'],
                 purchase_limit: e['max_buy_num'],
                 activity_tag: e['tags'],
-                use_specify: e['specifications'],
                 address: e['address'],
                 delivery_type: parseInt(e['delivery']),
                 product_rec: e['related_product'].split(','),
@@ -769,8 +704,6 @@ export class ManagementComponent implements OnInit {
             'stock': value.stock ? value.stock : 0,
             'min_buy_num': value.purchase ? value.purchase : 0,
             'max_buy_num': value.purchase_limit ? value.purchase_limit : 0,
-            'show_specification': value.use_specify.length > 0 ? 1 : 0,
-            'specifications': value.use_specify,
             'is_recommend': value.add_home_rec ? value.add_home_rec : 0,
             'weight': value.weight ? value.weight : 0,
             'price': value.price ? value.price : 0,
