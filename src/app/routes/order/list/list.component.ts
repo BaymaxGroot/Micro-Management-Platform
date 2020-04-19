@@ -131,7 +131,7 @@ export class ListComponent implements OnInit {
     handlePrintOrder(order_nums: string[]) {
         this.isPrintingExcel = true;
 
-        window.open(`${environment.SERVER_URL}${Interface.PrintOrderEndPoint}?order_nums=${order_nums.join('-')}`);
+        window.open(`${environment.SERVER_URL}${Interface.PrintOrderEndPoint}?order_nums=${order_nums.join('-')}&auth=${environment.AUTH}123456`);
 
         setTimeout( () => {
             this.isPrintingExcel = false;
@@ -269,7 +269,7 @@ export class ListComponent implements OnInit {
         `;
 
         value.goods_list[shop].forEach(item => {
-            content += `    ${item.name} ${item.quantity} ${item.price}元 ${item.quantity * parseFloat(item.price)}
+            content += `    ${item.name} ${item.quantity} ${item.price}元 ${item.subtotal_price}
             `;
         });
 

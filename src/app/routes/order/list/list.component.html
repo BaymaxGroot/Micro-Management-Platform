@@ -21,13 +21,13 @@
                     </div>
                     <div nz-col nzSpan="6" [nzOffset]="1">
                         <micro-order-item *ngFor="let order of item.goods_list[shop]" [name]="order.name"
-                                          [imgUrl]="order.pic_url" [price]="order.price"
+                                          [imgUrl]="order.pic_url" [price]="order.subtotal_price"
                                           [quantity]="order.quantity"></micro-order-item>
                     </div>
                     <div nz-col nzSpan="6">
                         <div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle">
                             <div nz-col [nzSpan]="24" class="operations">
-                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id, shop)">发货
+                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id, shop)" *ngIf="item.status_desc == '待发货'">发货
                                 </button>
                             </div>
                             <div nz-col [nzSpan]="24" class="operations">
@@ -41,6 +41,7 @@
                             <nz-descriptions-item nzTitle="收件人">{{item.express_info.nickname}}</nz-descriptions-item>
                             <nz-descriptions-item nzTitle="联系电话">{{item.express_info.mobile}}</nz-descriptions-item>
                             <nz-descriptions-item nzTitle="收件地址">{{item.express_info.address}}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="备注">{{item.note}}</nz-descriptions-item>
                         </nz-descriptions>
                     </div>
                 </div>

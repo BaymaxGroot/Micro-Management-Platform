@@ -51,7 +51,7 @@ export class ParamsComponent implements OnInit {
                 type: 'integer',
                 title: '时间',
                 ui: {
-                    optionalHelp: '超过此时间自动退款',
+                    optionalHelp: '超过此时间不自动退款',
                     unit: '小时'
                 }
             }

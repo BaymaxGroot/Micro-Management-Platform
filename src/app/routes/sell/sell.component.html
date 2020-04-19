@@ -8,21 +8,33 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="分销商" [nzLoading]="isLoadingList" [nzExtra]="OrderListExtra">
+    <nz-card nzTitle="分销商" [nzLoading]="isLoadingList" [nzExtra]="OrderListExtra" *ngIf="!isPrintOrder">
         <st *ngIf="!isLoadingList" [data]="showSellList" [columns]="sellColumnSetting" [expand]="expand"
             expandRowByClick expandAccordion [loadingDelay]="1000">
             <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
                 <div nz-row nzType="flex" nzAlign="middle" [nzGutter]="1">
                     <div nz-col [nzSpan]="6" *ngFor="let order of item.goods_list">
                         <micro-order-item-sell [name]="order.name"
-                                               [imgUrl]="order.pic_url" [price]="order.price"
+                                               [imgUrl]="order.pic_url" [price]="order.subtotal_price"
                                                [quantity]="order.quantity"></micro-order-item-sell>
+                    </div>
+                     <div nz-col nzSpan="6">
+                        <div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle">
+                            <div nz-col [nzSpan]="24" class="operations">
+                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id)" *ngIf="item.status_desc == '待发货'">发货
+                                </button>
+                            </div>
+                            <div nz-col [nzSpan]="24" class="operations">
+                                <button nz-button nzType="primary" (click)="printOrder(item)">打印小票</button>
+                            </div>
+                        </div>
                     </div>
                     <div nz-col [nzSpan]="22" [nzOffset]="1" class="templateAddress">
                         <nz-descriptions nzTitle="" nzColumn="1">
                             <nz-descriptions-item nzTitle="收件人">{{item.express_info.nickname}}</nz-descriptions-item>
                             <nz-descriptions-item nzTitle="联系电话">{{item.express_info.mobile}}</nz-descriptions-item>
                             <nz-descriptions-item nzTitle="收件地址">{{item.express_info.address}}</nz-descriptions-item>
+                            <nz-descriptions-item nzTitle="备注">{{item.note}}</nz-descriptions-item>
                         </nz-descriptions>
                     </div>
                 </div>
@@ -42,4 +54,78 @@
         ></nz-range-picker>
 
     </ng-template>
+
+
+    <nz-card nzTitle="打印订单" *ngIf="isPrintOrder" [nzExtra]="printAction">
+        <nz-alert *ngIf="error" [nzType]="'warning'" [nzMessage]="message">
+            <ng-template #message>
+                请先下载
+                <a href="http://c-lodop.com/download.html" target="_blank">Lodop插件</a>。
+            </ng-template>
+        </nz-alert>
+        <form *ngIf="!error" nz-form>
+            <nz-form-item nz-row>
+                <nz-form-label nz-col [nzSm]="6">打印服务器</nz-form-label>
+                <nz-form-control nz-col [nzSm]="18">
+                    <nz-input-group>
+                        <div nz-col [nzSpan]="16">
+                            <input nz-input nzPlaceHolder="https://localhost:8443/CLodopfuncs.js" [(ngModel)]="cog.url"
+                                   name="url"/>
+                        </div>
+                        <div nz-col [nzSpan]="8">
+                            <button nz-button (click)="reload(null)">重新加载打印机</button>
+                        </div>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                <nz-form-label nz-col [nzSm]="6">打印机</nz-form-label>
+                <nz-form-control nz-col [nzSm]="18">
+                    <nz-select
+                        style="width:90%;"
+                        nzPlaceHolder="请选择打印机"
+                        nzShowSearch
+                        nzAllowClear
+                        [(ngModel)]="cog.printer"
+                        name="printer"
+                        (ngModelChange)="changePinter($event)"
+                    >
+                        <nz-option *ngFor="let name of pinters" [nzLabel]="name" [nzValue]="name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                <nz-form-label nz-col [nzSm]="6">纸张类型</nz-form-label>
+                <nz-form-control nz-col [nzSm]="18">
+                    <nz-select
+                        style="width:90%;"
+                        nzPlaceHolder="请选择纸张类型"
+                        nzShowSearch
+                        nzAllowClear
+                        [(ngModel)]="cog.paper"
+                        name="paper"
+                    >
+                        <nz-option *ngFor="let name of papers" [nzLabel]="name" [nzValue]="name"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                <nz-form-label nz-col [nzSm]="6">打印内容</nz-form-label>
+                <nz-form-control nz-col [nzSm]="18">
+                    <textarea nz-input [(ngModel)]="cog.html" name="html" nzAutosize></textarea>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                <nz-form-control nz-col [nzSm]="18" [nzOffset]="6">
+                    <button nz-button (click)="print(true)" [nzLoading]="printing">打印预览</button>
+                    <button nz-button (click)="print()" [nzLoading]="printing">直接打印</button>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </nz-card>
+
+    <ng-template #printAction>
+        <button nz-button nzType="primary" (click)="handleHidePrintOrder()">返回</button>
+    </ng-template>
+
 </div>
