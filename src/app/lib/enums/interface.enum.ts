@@ -29,7 +29,7 @@ export enum Interface {
     LoadOrderListEndPoint = "/api/order/list",
     ChangeOrderDeliveryStatus = '/api/express/state/set',
     ChangeOrderAddress = '/api/express/info/set',
-    PrintOrderEndPoint = '/api/order/print',
+    PrintOrderEndPoint = '/api/download/excel',
     OrderRefundEndPoint = '/api/order/refund',
 
     LoadEvaluateListEndPoint = '/api/comment/list',

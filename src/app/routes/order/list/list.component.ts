@@ -131,11 +131,24 @@ export class ListComponent implements OnInit {
     handlePrintOrder(order_nums: string[]) {
         this.isPrintingExcel = true;
 
-        window.open(`${environment.SERVER_URL}${Interface.PrintOrderEndPoint}?order_nums=${order_nums.join('-')}&auth=${environment.AUTH}123456`);
+        let downloadExcelTemplate = {
+            ids: order_nums.join('-')
+        };
 
-        setTimeout( () => {
+        this._microAppHttpClient.post(Interface.PrintOrderEndPoint, downloadExcelTemplate).subscribe((data) => {
+
+            this.msg.info('订单信息下载中....');
+
+            window.open(data);
+
+            setTimeout(() => {
+                this.isPrintingExcel = false;
+            }, 1000);
+
+        }, (err) => {
+            this.msg.error('下载订单信息失败，请重试!');
             this.isPrintingExcel = false;
-        }, 1000 );
+        });
 
     }
 
