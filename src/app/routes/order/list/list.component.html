@@ -52,7 +52,7 @@
     <ng-template #OrderListExtra>
 
         <button nz-button nzType="primary" (click)="handlePrintOrder(getCheckBoxSelectedIDList())"
-                [disabled]="isLoadingOrderList || checkboxSelectedList.length <= 0 || isPrintingExcel">批量打印
+                [disabled]="isLoadingOrderList || checkboxSelectedList.length <= 0 || isPrintingExcel">批量导出
         </button>
 
         <span class="extraOrder">下单时间</span>
