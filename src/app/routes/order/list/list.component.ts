@@ -123,7 +123,7 @@ export class ListComponent implements OnInit {
     getCheckBoxSelectedIDList(): string[] {
         let pids: string[] = [];
         this.checkboxSelectedList.forEach((item) => {
-            pids.push(item['order_number']);
+            pids.push(item['order_id']);
         });
         return pids;
     }
