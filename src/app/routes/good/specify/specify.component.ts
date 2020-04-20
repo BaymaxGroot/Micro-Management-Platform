@@ -149,6 +149,7 @@ export class SpecifyComponent implements OnInit {
     }
 
     handleAddOrEditFormDataInit(e: any = {}): void {
+        this._uploadIconService.emptyIconList();
         if (this.isAddModal) {
             this.specifyFormData = {
                 product_id: 0,

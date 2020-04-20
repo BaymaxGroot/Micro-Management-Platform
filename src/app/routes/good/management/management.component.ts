@@ -316,7 +316,7 @@ export class ManagementComponent implements OnInit {
             v_sales: {
                 type: 'integer',
                 title: '虚拟销量',
-                minimum: 1,
+                minimum: 0,
                 ui: {
                     optionalHelp: '前端展示的销量=实际销量+虚拟销量'
                 }
@@ -324,7 +324,7 @@ export class ManagementComponent implements OnInit {
             v_visit: {
                 type: 'integer',
                 title: '虚拟浏览量',
-                minimum: 1,
+                minimum: 0,
                 ui: {
                     optionalHelp: '前端展示的浏览量=实际浏览量+虚拟浏览量'
                 }
@@ -385,7 +385,7 @@ export class ManagementComponent implements OnInit {
             price: {
                 type: 'number',
                 title: '售价(元)',
-                minimum: 1,
+                minimum: 0,
                 ui: {
                     unit: '元',
                     grid: {
@@ -396,7 +396,7 @@ export class ManagementComponent implements OnInit {
             ori_price: {
                 type: 'number',
                 title: '原价(元)',
-                minimum: 1,
+                minimum: 0,
                 ui: {
                     unit: '元',
                     grid: {
@@ -407,7 +407,7 @@ export class ManagementComponent implements OnInit {
             purchase: {
                 type: 'integer',
                 title: '起购',
-                minimum: 1,
+                minimum: 0,
                 ui: {
                     optionalHelp: '限制每人购买最低购买数量, 默认为1',
                     grid: {
@@ -418,7 +418,7 @@ export class ManagementComponent implements OnInit {
             purchase_limit: {
                 type: 'integer',
                 title: '限购',
-                minimum: 1,
+                minimum: 0,
                 ui: {
                     optionalHelp: '限制每人购买次数, 设置 0 为不限购',
                     grid: {
@@ -553,6 +553,9 @@ export class ManagementComponent implements OnInit {
      * 添加商品 / 修改商品 表单数据初始化
      */
     handleAddOrEditProductFormDataInit(e: any = {}) {
+        this._uploadDetailIconService.emptyIconList();
+        this._uploadIconsService.emptyIconList();
+        this._uploadMainImageService.emptyIconList();
         if (this.isAddModal) {
             this.productFormData = {
                 category: '',
@@ -575,9 +578,6 @@ export class ManagementComponent implements OnInit {
                 product_rec: '',
                 add_home_rec: 0
             };
-            this._uploadDetailIconService.emptyIconList();
-            this._uploadIconsService.emptyIconList();
-            this._uploadMainImageService.emptyIconList();
         } else {
             this.editProductLabel = parseInt(e['id']);
             this.productFormData = {

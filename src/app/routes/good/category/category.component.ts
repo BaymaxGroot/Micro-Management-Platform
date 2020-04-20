@@ -166,13 +166,13 @@ export class CategoryComponent implements OnInit {
      * @param e
      */
     handleAddOrEditFormDataInit(e: any = {}): void {
+        this._uploadIconService.emptyIconList();
         if (this.isAddModal) {
             this.categoryFormData = {
                 category: 0,
                 rank: 1,
                 show: false
             };
-            this._uploadIconService.emptyIconList();
         } else {
             this.editCategoryLabel = parseInt(e['clabel']);
             this.categoryFormData = {
