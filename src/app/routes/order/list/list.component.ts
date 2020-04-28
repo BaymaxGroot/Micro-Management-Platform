@@ -82,7 +82,10 @@ export class ListComponent implements OnInit {
                     }
                 },
                 {
-                    text: '退款', type: 'none', click: (record, modal, instance) => {
+                    text: '退款', type: 'del', pop: {
+                        title: '确认退款？',
+                        okType: 'danger'
+                      },click: (record, modal, instance) => {
                         this.handleRefund(parseInt(record['order_id']));
                     },
                     iif: (item) => {
