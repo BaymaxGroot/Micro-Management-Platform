@@ -21,7 +21,11 @@
                      <div nz-col nzSpan="6">
                         <div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle">
                             <div nz-col [nzSpan]="24" class="operations">
-                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id)" *ngIf="item.status_desc == '待发货'">发货
+                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id, 1)" *ngIf="item.goods_list[0].express_status == 0">发货
+                                </button>
+                            </div>
+                            <div nz-col [nzSpan]="24" class="operations">
+                                <button nz-button nzType="primary" (click)="OrderDelivery(item.order_id, 2)" *ngIf="item.goods_list[0].express_status == 1">收货
                                 </button>
                             </div>
                             <div nz-col [nzSpan]="24" class="operations">

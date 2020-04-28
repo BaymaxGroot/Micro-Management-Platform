@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import { environment } from '@env/environment';
 
 @Component({
     selector: 'micro-order-item-sell',
@@ -11,6 +12,10 @@ export class OrderItemSellComponent implements OnInit {
     @Input() name: string = '';
     @Input() price: number = 0;
     @Input() quantity: number = 0;
+
+    getUrl(): string {
+        return environment.SERVER_URL + '/static/upload/' + this.imgUrl;
+    }
 
     constructor() {
     }

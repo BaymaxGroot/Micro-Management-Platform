@@ -112,11 +112,11 @@ export class SellComponent implements OnInit {
         }, 1000);
     }
 
-    OrderDelivery(order_id: string) {
+    OrderDelivery(order_id: string, state: number) {
         let OrderDeliveryTemplate = {
             'order_id': parseInt(order_id),
             'shop_id': parseInt(this.settingService.user.shop),
-            'state': 1
+            'state': state
         };
         this._microAppHttpClient.post(Interface.ChangeOrderDeliveryStatus, OrderDeliveryTemplate).subscribe((data) => {
             this.msg.info('修改发货状态成功！');
