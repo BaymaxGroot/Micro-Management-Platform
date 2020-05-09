@@ -63,7 +63,7 @@
         <nz-range-picker [disabled]="isLoadingOrderList"
                          nzShowTime
                          nzFormat="yyyy-MM-dd HH:mm:ss"
-                         ngModel
+                         [(ngModel)]="orderDateRange"
                          (ngModelChange)="handleChangeOrderDate(0,$event)"
                          (nzOnOk)="handleChangeOrderDate(1,$event)"
         ></nz-range-picker>

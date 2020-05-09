@@ -5,9 +5,6 @@ import {MicroAppService} from "@core/net/micro-app.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {SFComponent, SFSchema} from "@delon/form";
 import {Lodop, LodopService} from "@delon/abc";
-import {toTitleCase} from "codelyzer/util/utils";
-import {HttpParams} from "@angular/common/http";
-import {environment} from "@env/environment";
 
 @Component({
     selector: 'micro-list',
@@ -17,6 +14,7 @@ import {environment} from "@env/environment";
 export class ListComponent implements OnInit {
 
     objectKeys = Object.keys;
+    orderDateRange: Date[];
 
     constructor(
         public lodopSrv: LodopService,
@@ -109,6 +107,7 @@ export class ListComponent implements OnInit {
                     item['check'] = 0;
                 });
                 this.showOrderList = this.orderList;
+                this.filterOrderAccordingDate(this.orderDateRange);
             }
             this.isLoadingOrderList = false;
         }, (err) => {

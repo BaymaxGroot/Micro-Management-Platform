@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SettingsService} from "@delon/theme";
-import {Lodop, LodopService, STColumn} from "@delon/abc";
+import {Lodop, LodopService, STChange, STColumn, STData} from "@delon/abc";
 import {Interface} from "../../lib/enums/interface.enum";
 import {NzMessageService} from "ng-zorro-antd";
 import {MicroAppService} from "@core/net/micro-app.service";
@@ -11,6 +11,8 @@ import {MicroAppService} from "@core/net/micro-app.service";
     styleUrls: ['./sell.component.less']
 })
 export class SellComponent implements OnInit {
+
+    orderDateRange: Date[];
 
     constructor(
         public lodopSrv: LodopService,
@@ -27,10 +29,14 @@ export class SellComponent implements OnInit {
         }, 1000 * 60 * 2);
     }
 
+    checkboxSelectedList: STData[] = [];
+    isPrintingExcel: boolean = false;
+
     isLoadingList: boolean = false;
     sellList = [];
     showSellList = [];
     sellColumnSetting: STColumn[] = [
+        {title: '编号', index: 'check', type: 'checkbox'},
         {
             title: '订单号', index: 'order_number', filter: {
                 type: 'keyword',
@@ -67,13 +73,55 @@ export class SellComponent implements OnInit {
         this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + this.settingService.user.shop).subscribe((data) => {
             if (data) {
                 this.sellList = data;
+                this.sellList.forEach((item) => {
+                    item['check'] = 0;
+                });
                 this.showSellList = this.sellList;
+                this.filterOrderAccordingDate(this.orderDateRange);
             }
             this.isLoadingList = false;
         }, (err) => {
             this.msg.error('请求失败, 请重试！');
             this.isLoadingList = false;
         })
+    }
+
+    handleCheckBoxSelected(e: STChange) {
+        if (e.type == 'checkbox') {
+            this.checkboxSelectedList = e.checkbox;
+        }
+    }
+
+    getCheckBoxSelectedIDList(): string[] {
+        let pids: string[] = [];
+        this.checkboxSelectedList.forEach((item) => {
+            pids.push(item['order_id']);
+        });
+        return pids;
+    }
+
+    handlePrintOrder(order_nums: string[]) {
+        this.isPrintingExcel = true;
+
+        let downloadExcelTemplate = {
+            ids: order_nums.join('-')
+        };
+
+        this._microAppHttpClient.post(Interface.PrintOrderEndPoint, downloadExcelTemplate).subscribe((data) => {
+
+            this.msg.info('订单信息下载中....');
+
+            window.open(data);
+
+            setTimeout(() => {
+                this.isPrintingExcel = false;
+            }, 1000);
+
+        }, (err) => {
+            this.msg.error('下载订单信息失败，请重试!');
+            this.isPrintingExcel = false;
+        });
+
     }
 
     handleChangeOrderDate(type: number, result: Date[]) {
