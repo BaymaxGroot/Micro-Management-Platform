@@ -75,6 +75,7 @@ export class SellComponent implements OnInit {
                 this.sellList = data;
                 this.sellList.forEach((item) => {
                     item['check'] = 0;
+                    item['expand'] = true;
                 });
                 this.showSellList = this.sellList;
                 this.filterOrderAccordingDate(this.orderDateRange);
@@ -143,7 +144,7 @@ export class SellComponent implements OnInit {
         this.isLoadingList = true;
         setTimeout(() => {
 
-            if (result.length > 0) {
+            if (result && result.length > 0) {
                 this.showSellList = this.sellList.filter((value, index) => {
                     let temDate = (new Date(value['date'])).getTime();
                     let begin = result[0].getTime();

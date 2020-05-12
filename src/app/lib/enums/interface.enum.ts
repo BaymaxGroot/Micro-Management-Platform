@@ -29,6 +29,7 @@ export enum Interface {
     LoadOrderListEndPoint = "/api/order/list",
     ChangeOrderDeliveryStatus = '/api/express/state/set',
     ChangeOrderAddress = '/api/express/info/set',
+    ChangeMultiOrderDeliveryStatus = '/api/express/state/batch/set',
     PrintOrderEndPoint = '/api/download/excel',
     OrderRefundEndPoint = '/api/order/refund',
 

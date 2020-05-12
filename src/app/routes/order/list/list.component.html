@@ -11,7 +11,7 @@
     <nz-card nzTitle="订单列表" [nzLoading]="isLoadingOrderList" *ngIf="!openChangeAddress && !isPrintOrder"
              [nzExtra]="OrderListExtra">
         <st *ngIf="!isLoadingOrderList" [data]="showOrderList" [columns]="orderColumnsSetting" [expand]="expand"
-            expandRowByClick expandAccordion [loadingDelay]="1000" (change)="handleCheckBoxSelected($event)">
+            expandRowByClick [loadingDelay]="1000" (change)="handleCheckBoxSelected($event)">
             <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
                 <div nz-row nzType="flex" nzAlign="middle"
                      *ngFor="let shop of objectKeys(item.goods_list)">
@@ -54,6 +54,10 @@
     </nz-card>
 
     <ng-template #OrderListExtra>
+
+        <button nz-button nzType="primary" (click)="handleMultiDelivery(getCheckBoxSelectedIDList())"
+                [disabled]="isLoadingOrderList || checkboxSelectedList.length <= 0 || isPrintingExcel">批量发货
+        </button>
 
         <button nz-button nzType="primary" (click)="handlePrintOrder(getCheckBoxSelectedIDList())"
                 [disabled]="isLoadingOrderList || checkboxSelectedList.length <= 0 || isPrintingExcel">批量导出

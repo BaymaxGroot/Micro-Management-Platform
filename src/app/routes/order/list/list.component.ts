@@ -30,6 +30,7 @@ export class ListComponent implements OnInit {
     }
 
     checkboxSelectedList: STData[] = [];
+    isMultiDelivery: boolean = false;
     isPrintingExcel: boolean = false;
     /**
      * 订单列表
@@ -105,6 +106,7 @@ export class ListComponent implements OnInit {
                 this.orderList = data;
                 this.orderList.forEach((item) => {
                     item['check'] = 0;
+                    item['expand'] = true;
                 });
                 this.showOrderList = this.orderList;
                 this.filterOrderAccordingDate(this.orderDateRange);
@@ -128,6 +130,24 @@ export class ListComponent implements OnInit {
             pids.push(item['order_id']);
         });
         return pids;
+    }
+
+    handleMultiDelivery(order_nums: string[]) {
+        this.isMultiDelivery = true;
+
+        let multiDeliveryTemplate = {
+            order_ids: order_nums.join('-'),
+            state: 1
+        };
+
+        this._microAppHttpClient.post(Interface.ChangeMultiOrderDeliveryStatus, multiDeliveryTemplate).subscribe( (data) => {
+
+            this.msg.info('成功批量发货!');
+            this.loadOrderList();
+
+        }, (err) => {
+            this.msg.error('批量发货失败！');
+        })
     }
 
     handlePrintOrder(order_nums: string[]) {
@@ -173,7 +193,7 @@ export class ListComponent implements OnInit {
         this.isLoadingOrderList = true;
         setTimeout(() => {
 
-            if (result.length > 0) {
+            if (result && result.length > 0) {
                 this.showOrderList = this.orderList.filter((value, index) => {
                     let temDate = (new Date(value['date'])).getTime();
                     let begin = result[0].getTime();

@@ -10,7 +10,7 @@
 <div class="ant-row">
     <nz-card nzTitle="分销商" [nzLoading]="isLoadingList" [nzExtra]="OrderListExtra" *ngIf="!isPrintOrder">
         <st *ngIf="!isLoadingList" [data]="showSellList" [columns]="sellColumnSetting" [expand]="expand"
-            expandRowByClick expandAccordion [loadingDelay]="1000" (change)="handleCheckBoxSelected($event)">
+            expandRowByClick [loadingDelay]="1000" (change)="handleCheckBoxSelected($event)">
             <ng-template #expand let-item let-index="index" let-key="key" let-column="column">
                 <div nz-row nzType="flex" nzAlign="middle" [nzGutter]="1">
                     <div nz-col [nzSpan]="6" *ngFor="let order of item.goods_list">
