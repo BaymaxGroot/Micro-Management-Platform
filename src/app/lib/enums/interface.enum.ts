@@ -67,5 +67,12 @@ export enum Interface {
      * 销售明细
      */
     SellOrderEndPoint = '/api/sales/info/id',
-    SellEndPoint = '/api/order/list/shop/id'
+    SellEndPoint = '/api/order/list/shop/id',
+
+    /**
+     * 企业管理
+     */
+    EnterpriseListEndPoint = '/api/enterprise/list',
+    EnterpriseAddOrEditEndPoint = '/api/enterprise/info/set',
+    EnterpriseRemoveEndPoint = '/api/enterprise/delete',
 }

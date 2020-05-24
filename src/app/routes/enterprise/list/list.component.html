@@ -6,3 +6,32 @@
         </nz-breadcrumb>
     </ng-template>
 </page-header>
+
+<div class="ant-row">
+
+    <!-- 企业列表 -->
+    <nz-card nzTitle="企业列表" [nzExtra]="enterpriseAction" [nzLoading]="isLoadingList"
+             *ngIf="!addOrEditEnterpriseModalVisible">
+        <st *ngIf="!isLoadingList" [data]="enterpriseListData" [columns]="columnSetting" [loadingDelay]="500"></st>
+    </nz-card>
+    <ng-template #enterpriseAction>
+        <button nz-button nzType="primary" (click)="showAddOrEditEnterpriseModal()" [disabled]="isLoadingList"><i
+            nz-icon
+            nzType="plus"></i>添加企业
+        </button>
+    </ng-template>
+
+    <!-- 企业添加/编辑 -->
+    <nz-card nzTitle="商品分类编辑" [nzExtra]="categoryEditAction" *ngIf="addOrEditEnterpriseModalVisible">
+        <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="enterpriseSchema" [formData]="enterpriseFormData" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="hideAddOrEditEnterpriseModal()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleAddOrEditEnterpriseSubmit(sf.value)" [disabled]="disableAddOrEditEnterpriseSubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingEnterprise">保存
+            </button>
+        </sf>
+    </nz-card>
+    <ng-template #categoryEditAction>
+        <button nz-button nzType="primary" (click)="hideAddOrEditEnterpriseModal()">返回分类列表</button>
+    </ng-template>
+
+</div>
