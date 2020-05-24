@@ -5,16 +5,16 @@
     },
     "menu": [
         {
-            "text": "商城",
-            "i18n": "商城",
+            "text": "企业管理",
+            "i18n": "企业管理",
             "group": true,
             "hideInBreadcrumb": true,
             "children": [
                 {
-                    "text": "销售明细",
-                    "i18n": "销售明细",
-                    "icon": "anticon-shopping-cart",
-                    "link": "/sell"
+                    "text": "企业列表",
+                    "i18n": "企业列表",
+                    "icon": "anticon-appstore",
+                    "link": "/enterprise/list"
                 }
             ]
         }

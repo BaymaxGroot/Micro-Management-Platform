@@ -70,15 +70,14 @@ const routes: Routes = [
                 component: SellComponent
             },
 
-
             /**
              * 会员路由设置
              */
             {
-                path: 'vip',
+                path: 'enterprise',
                 canActivate: [VipGuard],
                 canActivateChild: [VipGuard],
-                loadChildren: () => import('./vip/vip.module').then(m => m.VipModule)
+                loadChildren: () => import('./enterprise/enterprise.module').then(m => m.EnterpriseModule)
             },
 
             /**
