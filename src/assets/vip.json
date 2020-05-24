@@ -1,0 +1,22 @@
+{
+    "app": {
+        "name": "畅享新零售",
+        "description": "畅享新零售v1."
+    },
+    "menu": [
+        {
+            "text": "商城",
+            "i18n": "商城",
+            "group": true,
+            "hideInBreadcrumb": true,
+            "children": [
+                {
+                    "text": "销售明细",
+                    "i18n": "销售明细",
+                    "icon": "anticon-shopping-cart",
+                    "link": "/sell"
+                }
+            ]
+        }
+    ]
+}

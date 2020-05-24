@@ -28,9 +28,20 @@ export class StartupService {
         iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
     }
 
+    private getNavigationJson() {
+        switch (this.settingService.user.role) {
+            case 1:
+                return 'assets/admin.json';
+            case 2:
+                return 'assets/distributor.json';
+            case 3:
+                return 'assets/vip.json';
+        }
+    }
+
     private viaHttp(resolve: any, reject: any) {
         zip(
-            this.httpClient.get(this.settingService.user.role == 1? 'assets/app-data.json':'assets/user.json')
+            this.httpClient.get(this.getNavigationJson())
         ).pipe(
             catchError(([appData]) => {
                 resolve(null);

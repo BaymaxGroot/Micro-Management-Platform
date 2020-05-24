@@ -12,6 +12,9 @@ import {UserLoginComponent} from './passport/login/login.component';
 import {MicroAppGuard} from "@core/net/micro-app.guard";
 import {SettingsService} from "@delon/theme";
 import {SellComponent} from "./sell/sell.component";
+import {AdminGuard} from "@core/net/admin.guard";
+import {DistributorGuard} from "@core/net/distributor.guard";
+import {VipGuard} from "@core/net/vip.guard";
 
 const routes: Routes = [
     {
@@ -21,22 +24,66 @@ const routes: Routes = [
         canActivate: [MicroAppGuard],
         canActivateChild: [MicroAppGuard],
         children: [
-            // {path: '', redirectTo: 'good', pathMatch: 'full'},
-            {path: 'sell', component: SellComponent},
+            /**
+             * 普通管理员路由设置
+             */
             // 商品管理模块
-            {path: 'good', loadChildren: () => import('./good/good.module').then(m => m.GoodModule)},
+            {
+                path: 'good',
+                canActivate: [AdminGuard],
+                canActivateChild: [AdminGuard],
+                loadChildren: () => import('./good/good.module').then(m => m.GoodModule)
+            },
             // 订单管理模块
-            {path: 'order', loadChildren: () => import('./order/order.module').then(m => m.OrderModule)},
+            {
+                path: 'order',
+                canActivate: [AdminGuard],
+                canActivateChild: [AdminGuard],
+                loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
+            },
             // 用户管理模块
-            {path: 'user', loadChildren: () => import('./user/user.module').then(m => m.UserModule)},
+            {
+                path: 'user',
+                canActivate: [AdminGuard],
+                canActivateChild: [AdminGuard],
+                loadChildren: () => import('./user/user.module').then(m => m.UserModule)
+            },
             // 分销中心模块
             {
-                path: 'distribution',
+                path: 'distribution', canActivate: [AdminGuard], canActivateChild: [AdminGuard],
                 loadChildren: () => import('./distribution/distribution.module').then(m => m.DistributionModule)
             },
-            {path: 'setting', loadChildren: () => import('./setting/setting.module').then(m => m.SettingModule)},
+            {
+                path: 'setting',
+                canActivate: [AdminGuard],
+                canActivateChild: [AdminGuard],
+                loadChildren: () => import('./setting/setting.module').then(m => m.SettingModule)
+            },
 
-            // { path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard' } },
+            /**
+             * 分销商路由设置
+             */
+            {
+                path: 'sell',
+                canActivate: [DistributorGuard],
+                canActivateChild: [DistributorGuard],
+                component: SellComponent
+            },
+
+
+            /**
+             * 会员路由设置
+             */
+            {
+                path: 'vip',
+                canActivate: [VipGuard],
+                canActivateChild: [VipGuard],
+                loadChildren: () => import('./vip/vip.module').then(m => m.VipModule)
+            },
+
+            /**
+             * 其余路由设置
+             */
             {
                 path: 'exception',
                 loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule)
