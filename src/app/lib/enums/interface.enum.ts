@@ -75,4 +75,5 @@ export enum Interface {
     EnterpriseListEndPoint = '/api/enterprise/list',
     EnterpriseAddOrEditEndPoint = '/api/enterprise/info/set',
     EnterpriseRemoveEndPoint = '/api/enterprise/delete',
+    EnterpriseBuyRecordEndPoint = '/api/enterprise/id/recharge/log',
 }

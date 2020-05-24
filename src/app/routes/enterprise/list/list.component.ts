@@ -48,6 +48,13 @@ export class ListComponent implements OnInit {
                     }
                 },
                 {
+                    text: '充值记录',
+                    type: 'none',
+                    click: (e: any) => {
+                        this.showBuyRecordModal(e);
+                    }
+                },
+                {
                     text: '删除',
                     type: 'del',
                     click: (e: any) => {
@@ -152,6 +159,44 @@ export class ListComponent implements OnInit {
             this.loadEnterpriseList();
         }, (err) => {
             this.msg.error('删除企业信息失败, 请重新删除!');
+        });
+    }
+
+    buyRecordModalVisible: boolean = false;
+    enterpriseBuyRecordLabel: number;
+    enterpriseBuyRecordName: string;
+    isLoadingBuyRecordList: boolean = false;
+    buyRecordColumnSetting: STColumn[] = [
+        {title: '优惠券面值', index: 'avg_amount'},
+        {title: '数量', index: 'count'},
+        {title: '备注', index: 'note'},
+        {title: '充值日期', index: 'recharge_time', type: 'date'}
+    ];
+    buyRecordListData: STData[] = [];
+
+    showBuyRecordModal(e: any): void {
+        this.enterpriseBuyRecordLabel = parseInt(e['id']);
+        this.enterpriseBuyRecordName = e['name'];
+        this.buyRecordModalVisible = true;
+        this.loadBuyRecordList();
+    }
+
+    hideBuyRecordModal(): void {
+        this.buyRecordModalVisible = false;
+    }
+
+    loadBuyRecordList(): void {
+        this.isLoadingBuyRecordList = true;
+        this.buyRecordListData = [];
+        this._microAppHttpClient.get(`${Interface.EnterpriseBuyRecordEndPoint}?id=${this.enterpriseBuyRecordLabel}`).subscribe((data) =>{
+           if(data) {
+               this.buyRecordListData = data;
+           }
+           this.isLoadingBuyRecordList = false;
+        }, (err) => {
+            this.msg.error('请求失败， 请重试!');
+            this.isLoadingBuyRecordList = false;
+            this.hideBuyRecordModal();
         });
     }
 }

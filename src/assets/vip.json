@@ -15,6 +15,12 @@
                     "i18n": "企业列表",
                     "icon": "anticon-appstore",
                     "link": "/enterprise/list"
+                },
+                {
+                    "text": "充值管理",
+                    "i18n": "充值管理",
+                    "icon": "anticon-credit-card",
+                    "link": "/enterprise/coupon"
                 }
             ]
         }
