@@ -3,11 +3,11 @@ import {NgModule} from '@angular/core';
 import {EnterpriseRoutingModule} from './enterprise-routing.module';
 import {SharedModule} from "@shared";
 import {ListComponent} from "./list/list.component";
-import {CouponComponent} from './coupon/coupon.component';
+import { RechargeComponent } from './recharge/recharge.component';
 
 const COMPONENTS = [
     ListComponent,
-    CouponComponent
+    RechargeComponent
 ];
 
 const COMPONENTS_NOROUNT = [];

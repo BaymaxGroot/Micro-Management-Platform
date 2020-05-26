@@ -6,6 +6,10 @@ import {
     ProfileOutline,
     ExceptionOutline,
     LinkOutline,
+    CreditCardOutline,
+    AccountBookOutline,
+    PayCircleOutline,
+    RollbackOutline
 } from '@ant-design/icons-angular/icons';
 
-export const ICONS = [InfoOutline, BulbOutline, ProfileOutline, ExceptionOutline, LinkOutline];
+export const ICONS = [InfoOutline, BulbOutline, ProfileOutline, ExceptionOutline, LinkOutline, CreditCardOutline, AccountBookOutline, PayCircleOutline, RollbackOutline];

@@ -19,8 +19,8 @@
                 {
                     "text": "充值管理",
                     "i18n": "充值管理",
-                    "icon": "anticon-credit-card",
-                    "link": "/enterprise/coupon"
+                    "icon": "anticon-account-book",
+                    "link": "/enterprise/recharge"
                 }
             ]
         }
