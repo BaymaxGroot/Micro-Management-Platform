@@ -80,5 +80,6 @@ export enum Interface {
     EnterpriseBuyRecordEndPoint = '/api/enterprise/id/recharge/log',
     EnterpriseRechargeLogEndPoint = '/api/enterprise/recharge/log/summary',
     EnterpriseRechargeListEndPoint = '/api/enterprise/employee/list/log/id',
-    EnterpriseRechargeUploadEndPoint = '',
+    EnterpriseRechargeUploadEndPoint = '/api/enterprise/batch/import/employee',
+    EnterpriseBatchRechargingEndPint = '/api/enterprise/batch/recharge',
 }

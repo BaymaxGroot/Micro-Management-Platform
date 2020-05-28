@@ -12,7 +12,7 @@
     <!-- 充值记录列表 -->
     <nz-card nzTitle="充值列表" [nzExtra]="rechargeAction" [nzLoading]="isLoadingList"
              *ngIf="!isBatchUploadModalVisible">
-        <st *ngIf="!isLoadingList" [data]="rechargeListData" [columns]="columnSetting" [loadingDelay]="500"></st>
+        <st *ngIf="!isLoadingList" [data]="rechargeListData" (change)="handleCheckBoxSelected($event)" [columns]="columnSetting" [loadingDelay]="500"></st>
     </nz-card>
     <ng-template #rechargeAction>
         <div class="ant-form ant-form-inline">
@@ -55,7 +55,7 @@
             </nz-form-item>
             <nz-form-item>
                 <nz-form-control>
-                    <button nz-button nzType="primary" (click)="handleBatchRecharge()" [disabled]="isLoadingList"><i
+                    <button nz-button nzType="primary" (click)="handleBatchRecharge(getCheckBoxSelectedIDList())" [disabled]="isLoadingList || checkboxSelectedList.length == 0"><i
                         nz-icon
                         nzType="anticon-pay-circle"></i>批量充值
                     </button>
@@ -106,7 +106,7 @@
             </nz-form-control>
             <nz-form-control>
                 <nz-form-control style="text-align: center; margin-top: 20px">
-                    <button nz-button nzType="primary" (click)="handleBatchUploadSubmitEvent()" [nzLoading]="isBatchUploading">保存</button>
+                    <button nz-button nzType="primary" (click)="handleBatchUploadSubmitEvent()" [nzLoading]="isBatchUploading" [disabled]="disableSubmitButton()">保存</button>
                 </nz-form-control>
             </nz-form-control>
         </div>
