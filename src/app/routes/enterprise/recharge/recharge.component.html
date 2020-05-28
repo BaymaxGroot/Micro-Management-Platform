@@ -33,7 +33,8 @@
                         [nzDisabled]="enterpriseSelectedLabel === '' || isLoadingList"
                         (ngModelChange)="generateRechargeLogSelectList()"
                         style="width: 100px;">
-                        <nz-option *ngFor="let enter of Object(enterpriseList)" [nzLabel]="enterpriseList[enter]" [nzValue]="enter"></nz-option>
+                        <nz-option *ngFor="let enter of Object(enterpriseList)" [nzLabel]="enterpriseList[enter]"
+                                   [nzValue]="enter"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
@@ -47,7 +48,8 @@
                         [nzDisabled]="enterpriseSelectedLabel === '' || isLoadingList"
                         (ngModelChange)="loadRechargeList()"
                         style="width: 300px;">
-                        <nz-option *ngFor="let log of rechargeLog" [nzLabel]="log['label']" [nzValue]="log['value']"></nz-option>
+                        <nz-option *ngFor="let log of rechargeLog" [nzLabel]="log['label']"
+                                   [nzValue]="log['value']"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
@@ -62,13 +64,52 @@
         </div>
     </ng-template>
 
-    <nz-card nzTitle="批量导入" *ngIf="isBatchUploadModalVisible" [nzExtra]="batchUploadAction">
+    <nz-card nzTitle="批量导入" *ngIf="isBatchUploadModalVisible" [nzExtra]="batchUploadAction"
+             [nzLoading]="isLoadingEnterpriseList">
 
-        <nz-steps [nzCurrent]="current">
-          <nz-step nzTitle="Finished"></nz-step>
-          <nz-step nzTitle="In Progress"></nz-step>
-          <nz-step nzTitle="Waiting"></nz-step>
-        </nz-steps>
+        <div class="ant-form">
+            <nz-form-item>
+                <nz-form-label [nzSm]="10" [nzXs]="24">企业名称</nz-form-label>
+                <nz-form-control [nzSm]="10" [nzXs]="24">
+                    <nz-select
+                        [(ngModel)]="batchRechargeSelectedEnterpriseLabel"
+                        [nzPlaceHolder]="'企业名称'"
+                        [nzShowSearch]="true"
+                        [nzDisabled]="enterpriseSelectedLabel === '' || isLoadingList"
+                        (ngModelChange)="generateRechargeLogSelectList()"
+                        style="width: 100px;">
+                        <nz-option *ngFor="let enter of batchRechargeEnterpriseArray" [nzLabel]="enter['name']"
+                                   [nzValue]="enter['id']"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="10" [nzXs]="24">面值</nz-form-label>
+                <nz-form-control [nzSm]="10" [nzXs]="24">
+                    <nz-input-group nzSuffix="RMB" nzPrefix="￥">
+                        <input [(ngModel)]="batchRechargeValue" nz-input/>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="10" [nzXs]="24">数量</nz-form-label>
+                <nz-form-control [nzSm]="10" [nzXs]="24">
+                    <nz-input-number [(ngModel)]="batchRechargeCount" [nzPrecision]="0" [nzMin]="1"
+                                     nz-input></nz-input-number>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-control>
+                <nz-form-label [nzSm]="10" [nzXs]="24">充值列表</nz-form-label>
+                <nz-form-control [nzSm]="10" [nzXs]="24">
+                    <input type="file" (change)="handleUploadExcel($event)" multiple="false" class="ml-sm" />
+                </nz-form-control>
+            </nz-form-control>
+            <nz-form-control>
+                <nz-form-control style="text-align: center; margin-top: 20px">
+                    <button nz-button nzType="primary" (click)="handleBatchUploadSubmitEvent()" [nzLoading]="isBatchUploading">保存</button>
+                </nz-form-control>
+            </nz-form-control>
+        </div>
 
     </nz-card>
     <ng-template #batchUploadAction>

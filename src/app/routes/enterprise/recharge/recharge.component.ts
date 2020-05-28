@@ -1,9 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {NzMessageService} from "ng-zorro-antd";
+import {NzMessageService, UploadFile} from "ng-zorro-antd";
 import {MicroAppService} from "@core/net/micro-app.service";
-import {STColumn, STData} from "@delon/abc";
+import {STColumn, STData, XlsxService} from "@delon/abc";
 import {Interface} from "../../../lib/enums/interface.enum";
-import {SFSchema} from "@delon/form";
+import { XlsxModule } from '@delon/abc/xlsx';
 
 
 @Component({
@@ -16,6 +16,7 @@ export class RechargeComponent implements OnInit {
     constructor(
         private msg: NzMessageService,
         private cdr: ChangeDetectorRef,
+        private xlsx: XlsxService,
         private _microAppHttpClient: MicroAppService
     ) {
     }
@@ -123,31 +124,52 @@ export class RechargeComponent implements OnInit {
     }
 
     /**
+     * 加载企业名单
+     */
+    isLoadingEnterpriseList: boolean = false;
+    batchRechargeEnterpriseArray: any[];
+    batchRechargeSelectedEnterpriseLabel: number;
+    batchRechargeValue: number;
+    batchRechargeCount: number;
+
+    loadEnterpriseArray(): void {
+        this.isLoadingEnterpriseList = true;
+        this._microAppHttpClient.get(Interface.EnterpriseListEndPoint).subscribe((data) => {
+            if(data) {
+                this.batchRechargeEnterpriseArray = data;
+            }
+            this.isLoadingEnterpriseList = false;
+            if(this.batchRechargeEnterpriseArray.length == 0) {
+                this.msg.info('请先录入企业!');
+                this.hideBatchUploadModal();
+            } else {
+                this.batchRechargeSelectedEnterpriseLabel = this.batchRechargeEnterpriseArray[0]['id'];
+            }
+        }, (err) => {
+           this.isLoadingEnterpriseList = false;
+           this.msg.error('加载企业列表失败!');
+           this.hideBatchUploadModal();
+        });
+    }
+
+    /**
+     * 上传Excel
+     */
+    excelData: any;
+    handleUploadExcel(e: Event): void {
+        const node = e.target as HTMLInputElement;
+        this.xlsx.import(node.files![0]).then(res => this.excelData = res);
+    }
+
+    /**
      * 批量导入
      */
     isBatchUploadModalVisible: boolean = false;
     isBatchUploading: boolean = false;
-    batchUploadFormData: any;
-    batchUploadSchema: SFSchema = {
-        properties: {
-            enterprise: {
-                title: '企业名称',
-                type: 'number'
-            },
-            value: {
-                title: '面额',
-                type: 'number'
-            },
-            nums: {
-                title: '数量',
-                type: 'integer'
-            }
-        },
-        required: ['enterprise', 'value', 'nums']
-    };
 
     showBatchUploadModal(): void {
         this.isBatchUploadModalVisible = true;
+        this.loadEnterpriseArray();
     }
 
     hideBatchUploadModal(): void {
@@ -156,6 +178,28 @@ export class RechargeComponent implements OnInit {
 
     handleBatchUploadSubmitEvent(): void {
 
+        Object.keys(this.excelData).forEach( (pa) => {
+            let res = this.excelData[pa];
+            let title = res.shift();
+
+        } );
+
+        let batchUploadTemplate = {
+            enterprise_id: this.batchRechargeSelectedEnterpriseLabel,
+            value: this.batchRechargeValue,
+            count: this.batchRechargeCount,
+            // list:
+        };
+
+        this.isBatchUploading = true;
+        this._microAppHttpClient.post(Interface.EnterpriseRechargeUploadEndPoint, batchUploadTemplate).subscribe((data) => {
+            this.isBatchUploading = false;
+            this.msg.info('批量录入成功!');
+            this.hideBatchUploadModal();
+        }, (err) => {
+            this.isBatchUploading = false;
+           this.msg.error('批量录入失败, 请重试');
+        });
     }
 
     /**
