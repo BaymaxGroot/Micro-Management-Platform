@@ -57,9 +57,14 @@
                     "shortcutRoot": true,
                     "children": [
                         {
-                            "text": "用户列表",
+                            "text": "管理员列表",
                             "link": "/user/list",
-                            "i18n": "用户列表"
+                            "i18n": "管理员列表"
+                        },
+                        {
+                            "text": "会员列表",
+                            "link": "/user/vip",
+                            "i18n": "会员列表"
                         }
                     ]
                 },

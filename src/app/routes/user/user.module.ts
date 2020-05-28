@@ -3,9 +3,11 @@ import {NgModule} from '@angular/core';
 import {UserRoutingModule} from './user-routing.module';
 import {ListComponent} from './list/list.component';
 import {SharedModule} from "@shared";
+import { MemberComponent } from './member/member.component';
 
 const COMPONENTS = [
-    ListComponent
+    ListComponent,
+    MemberComponent
 ];
 
 const COMPONENTS_NOROUNT = [];

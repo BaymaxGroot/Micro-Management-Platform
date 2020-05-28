@@ -27,11 +27,13 @@
                 <nz-form-label nzFor="rate">企业名称</nz-form-label>
                 <nz-form-control>
                     <nz-select
-                        name="user"
-                        [nzPlaceHolder]="'不限'"
+                        [(ngModel)]="enterpriseSelectedLabel"
+                        [nzPlaceHolder]="'企业名称'"
                         [nzShowSearch]="true"
+                        [nzDisabled]="enterpriseSelectedLabel === '' || isLoadingList"
+                        (ngModelChange)="generateRechargeLogSelectList()"
                         style="width: 100px;">
-                        <nz-option [nzLabel]="'李三'" [nzValue]="'lisa'"></nz-option>
+                        <nz-option *ngFor="let enter of Object(enterpriseList)" [nzLabel]="enterpriseList[enter]" [nzValue]="enter"></nz-option>
                     </nz-select>
                 </nz-form-control>
             </nz-form-item>
@@ -39,20 +41,14 @@
                 <nz-form-label nzFor="rate">购买批次</nz-form-label>
                 <nz-form-control>
                     <nz-select
-                        name="rate"
-                        [nzPlaceHolder]="'不限'"
+                        [(ngModel)]="rechargeLogSelectedLabel"
+                        [nzPlaceHolder]="'购买批次'"
                         [nzShowSearch]="true"
-                        style="width: 100px;">
-                        <nz-option [nzLabel]="'优秀'" [nzValue]="'good'"></nz-option>
+                        [nzDisabled]="enterpriseSelectedLabel === '' || isLoadingList"
+                        (ngModelChange)="loadRechargeList()"
+                        style="width: 300px;">
+                        <nz-option *ngFor="let log of rechargeLog" [nzLabel]="log['label']" [nzValue]="log['value']"></nz-option>
                     </nz-select>
-                </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-                <nz-form-control>
-                    <button nz-button nzType="primary" (click)="loadRechargeList()" [disabled]="isLoadingList"><i
-                        nz-icon
-                        nzType="anticon-search"></i>查询
-                    </button>
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>

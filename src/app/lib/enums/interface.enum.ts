@@ -40,6 +40,8 @@ export enum Interface {
      * 用户管理
      */
     LoadUserEndPoint = "/api/user/list",
+    LoadVIPListEndPoint = "/api/member/list",
+    GenerateAccountDetailEndPoint = "/api/member/purse/log/id",
     DeleteUserEndPoint = '/api/delete/user',
     AddOrEditUserEndPoint = '/api/user/info',
 
@@ -76,6 +78,6 @@ export enum Interface {
     EnterpriseAddOrEditEndPoint = '/api/enterprise/info/set',
     EnterpriseRemoveEndPoint = '/api/enterprise/delete',
     EnterpriseBuyRecordEndPoint = '/api/enterprise/id/recharge/log',
-    EnterpriseRechargeLogEndPoint = '',
-    EnterpriseRechargeListEndPoint = '',
+    EnterpriseRechargeLogEndPoint = '/api/enterprise/recharge/log/summary',
+    EnterpriseRechargeListEndPoint = '/api/enterprise/employee/list/log/id',
 }

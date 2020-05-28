@@ -5,14 +5,15 @@ import {STColumn, STData} from "@delon/abc";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {SFSchema} from "@delon/form";
 
+
 @Component({
-  selector: 'micro-recharge',
-  templateUrl: './recharge.component.html',
-  styleUrls: ['./recharge.component.less']
+    selector: 'micro-recharge',
+    templateUrl: './recharge.component.html',
+    styleUrls: ['./recharge.component.less']
 })
 export class RechargeComponent implements OnInit {
 
-  constructor(
+    constructor(
         private msg: NzMessageService,
         private cdr: ChangeDetectorRef,
         private _microAppHttpClient: MicroAppService
@@ -20,25 +21,29 @@ export class RechargeComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loadEnterpriseRechargeLog();
     }
 
     /**
      * 加载企业购买记录
      */
     isLoadingEnterpriseRechargeLog: boolean = true;
-    enterpriseRechargeLog: [] = [];
-    enterpriseList: [] = [];
-    rechargeLog: [] = [];
+    enterpriseRechargeLog: any;
+    enterpriseList: any;
+    enterpriseSelectedLabel: string = '';
+    rechargeLogSelectedLabel: string = '';
+    rechargeLog: any[] = [];
+    Object = Object.keys;
 
     loadEnterpriseRechargeLog(): void {
         this.isLoadingEnterpriseRechargeLog = true;
-        this.enterpriseRechargeLog = [];
-        this.enterpriseList = [];
+        this.enterpriseRechargeLog = {};
+        this.enterpriseList = {};
         this.rechargeLog = [];
         this._microAppHttpClient.get(Interface.EnterpriseRechargeLogEndPoint).subscribe((data) => {
-            if(data) {
+            if (data) {
                 this.enterpriseRechargeLog = data;
-                this.generateEnterpriseAndRechargeLogSelectList();
+                this.generateEnterpriseSelectList();
             }
             this.isLoadingEnterpriseRechargeLog = false;
         }, (err) => {
@@ -47,30 +52,71 @@ export class RechargeComponent implements OnInit {
         })
     }
 
-    generateEnterpriseAndRechargeLogSelectList() {
+    generateEnterpriseSelectList() {
+        Object.keys(this.enterpriseRechargeLog).forEach((item) => {
 
+            this.enterpriseRechargeLog[item].forEach((log) => {
+
+                this.enterpriseList[item] = log['enterprise_name'];
+
+            });
+
+        });
+        if(this.enterpriseSelectedLabel === '') {
+            this.enterpriseSelectedLabel = Object.keys(this.enterpriseRechargeLog).length > 0 ? Object.keys(this.enterpriseRechargeLog)[0] : '';
+        }
+        this.generateRechargeLogSelectList();
+    }
+
+    generateRechargeLogSelectList() {
+        this.rechargeLog = [];
+        this.rechargeLogSelectedLabel = '';
+        if (this.enterpriseSelectedLabel !== '') {
+            this.enterpriseRechargeLog[this.enterpriseSelectedLabel].forEach((item) => {
+                this.rechargeLog.push({
+                    label: item['datetime'] + ' - ' + item['count'] + ' - ' + item['price'],
+                    value: item['log_id']
+                });
+            });
+            if( this.rechargeLogSelectedLabel === '' ) {
+                this.rechargeLogSelectedLabel = this.rechargeLog[0]['value'];
+            }
+        }
+        this.loadRechargeList();
     }
 
     /**
      * 充值列表设置
      */
-    isLoadingList: boolean = true;
-    selectedRechargeLogId: number;
-    columnSetting: STColumn[] = [];
+    isLoadingList: boolean = false;
+    columnSetting: STColumn[] = [
+        {title: '姓名', index: 'employee_name'},
+        {title: '充值手机号', index: 'phone_number'},
+        {
+            title: '状态', index: 'status', type: 'badge', badge: {
+                0: {text: '未激活', color: 'default'},
+                1: {text: '未领取', color: 'processing'},
+                2: {text: '已领取', color: 'success'}
+            }
+        }
+    ];
     rechargeListData: STData[] = [];
 
     /**
      * 加载充值列表
      */
     loadRechargeList(): void {
+        if (this.rechargeLogSelectedLabel === '') {
+            return;
+        }
         this.isLoadingList = true;
         this.rechargeListData = [];
-        this._microAppHttpClient.get(Interface.EnterpriseRechargeListEndPoint).subscribe((data)=>{
-            if(data) {
+        this._microAppHttpClient.get(`${Interface.EnterpriseRechargeListEndPoint}?id=${Number(this.rechargeLogSelectedLabel)}`).subscribe((data) => {
+            if (data) {
                 this.rechargeListData = data;
             }
             this.isLoadingList = false;
-        }, (err) =>{
+        }, (err) => {
             this.msg.error('请求失败，请重试!');
             this.isLoadingList = false;
         })
@@ -83,21 +129,21 @@ export class RechargeComponent implements OnInit {
     isBatchUploading: boolean = false;
     batchUploadFormData: any;
     batchUploadSchema: SFSchema = {
-      properties: {
-          enterprise: {
-              title: '企业名称',
-              type: 'number'
-          },
-          value: {
-              title: '面额',
-              type: 'number'
-          },
-          nums: {
-              title: '数量',
-              type: 'integer'
-          }
-      },
-      required: ['enterprise', 'value', 'nums']
+        properties: {
+            enterprise: {
+                title: '企业名称',
+                type: 'number'
+            },
+            value: {
+                title: '面额',
+                type: 'number'
+            },
+            nums: {
+                title: '数量',
+                type: 'integer'
+            }
+        },
+        required: ['enterprise', 'value', 'nums']
     };
 
     showBatchUploadModal(): void {
