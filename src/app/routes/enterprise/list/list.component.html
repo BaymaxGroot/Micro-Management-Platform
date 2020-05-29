@@ -11,7 +11,7 @@
 
     <!-- 企业列表 -->
     <nz-card nzTitle="企业列表" [nzExtra]="enterpriseAction" [nzLoading]="isLoadingList"
-             *ngIf="!addOrEditEnterpriseModalVisible && !buyRecordModalVisible">
+             *ngIf="!addOrEditEnterpriseModalVisible">
         <st *ngIf="!isLoadingList" [data]="enterpriseListData" [columns]="columnSetting" [loadingDelay]="500"></st>
     </nz-card>
     <ng-template #enterpriseAction>
@@ -32,14 +32,6 @@
     </nz-card>
     <ng-template #enterpriseEditAction>
         <button nz-button nzType="primary" (click)="hideAddOrEditEnterpriseModal()">返回企业列表</button>
-    </ng-template>
-
-    <!-- 企业购买记录列表 -->
-    <nz-card nzTitle="企业充值记录 - {{enterpriseBuyRecordName}}" [nzExtra]="buyRecordAction" *ngIf="buyRecordModalVisible">
-        <st [loading]="isLoadingBuyRecordList" [data]="buyRecordListData" [columns]="buyRecordColumnSetting" [loadingDelay]="500"></st>
-    </nz-card>
-    <ng-template #buyRecordAction>
-        <button nz-button nzType="primary" (click)="hideBuyRecordModal()">返回企业列表</button>
     </ng-template>
 
 </div>
