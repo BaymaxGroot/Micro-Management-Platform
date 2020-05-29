@@ -56,6 +56,7 @@ export class RechargeComponent implements OnInit {
                     {text: '已领取', value: 2}
                 ],
                 fn: (filter, record) => {
+                    // tslint:disable-next-line:triple-equals
                     return record.status == filter.value;
                 }
             }
@@ -144,7 +145,7 @@ export class RechargeComponent implements OnInit {
         if (this.enterpriseSelectedLabel !== '') {
             this.enterpriseRechargeLog[this.enterpriseSelectedLabel].forEach((item) => {
                 this.rechargeLog.push({
-                    label: item.datetime + ' - ' + item.count + ' - ' + item.price,
+                    label: item.datetime + ' - 人数: ' + item.count + ' - 金额: ' + item.price,
                     value: item.log_id
                 });
             });

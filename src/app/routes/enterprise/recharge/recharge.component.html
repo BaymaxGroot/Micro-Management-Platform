@@ -47,7 +47,7 @@
                         [nzShowSearch]="true"
                         [nzDisabled]="enterpriseSelectedLabel === '' || isLoadingList"
                         (ngModelChange)="loadRechargeList()"
-                        style="width: 300px;">
+                        style="width: 350px;">
                         <nz-option *ngFor="let log of rechargeLog" [nzLabel]="log['label']"
                                    [nzValue]="log['value']"></nz-option>
                     </nz-select>
