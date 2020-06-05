@@ -49,6 +49,9 @@ export class SellComponent implements OnInit {
         {title: '下单时间', index: 'pay_time', type: 'date'},
         {title: '运费', index: 'yun_price'},
         {title: '总金额', index: 'total_price'},
+        {title: '支付方式', index: 'pay_type'},
+        {title: '余额抵扣', index: 'purse_price'},
+        {title: '微信支付', index: 'wx_price'},
         {title: '支付时间', index: 'pay_time', type: 'date'},
         {
             title: '订单状态', index: 'status_desc', filter: {

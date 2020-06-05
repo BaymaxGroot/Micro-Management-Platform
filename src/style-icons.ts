@@ -9,7 +9,8 @@ import {
     CreditCardOutline,
     AccountBookOutline,
     PayCircleOutline,
-    RollbackOutline
+    RollbackOutline,
+    MinusOutline
 } from '@ant-design/icons-angular/icons';
 
-export const ICONS = [InfoOutline, BulbOutline, ProfileOutline, ExceptionOutline, LinkOutline, CreditCardOutline, AccountBookOutline, PayCircleOutline, RollbackOutline];
+export const ICONS = [InfoOutline, BulbOutline, ProfileOutline, ExceptionOutline, LinkOutline, CreditCardOutline, AccountBookOutline, PayCircleOutline, RollbackOutline, MinusOutline];

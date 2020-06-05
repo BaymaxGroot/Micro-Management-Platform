@@ -192,10 +192,12 @@ export class ManagementComponent implements OnInit {
         this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
             if (data) {
                 data.forEach((item) => {
-                    this.categoryRootList.push({
-                        label: item['cname'],
-                        value: parseInt(item['clabel'])
-                    });
+                    if (Number(item['cparent']) !== 0) {
+                        this.categoryRootList.push({
+                            label: item['cname'],
+                            value: parseInt(item['clabel'])
+                        });
+                    }
                 });
             }
             this.isLoadingCategoryList = false;
