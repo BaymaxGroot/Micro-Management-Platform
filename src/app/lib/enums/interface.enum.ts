@@ -65,6 +65,10 @@ export enum Interface {
     DeleteBlockerEndPoint = '/api/cube/delete',
     AddOrEditBlockerEndPoint = '/api/cube/info/set',
 
+    LoadRechargeReduceListEndPoint = '/api/recharge/list',
+    DeleteRechargeReduceEndPoint = '/api/recharge/delete',
+    AddOrEditRechargeReduceEndPoint = '/api/recharge/info/set',
+
     /**
      * 销售明细
      */

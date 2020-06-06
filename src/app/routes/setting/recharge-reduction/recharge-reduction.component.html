@@ -1,0 +1,30 @@
+<page-header [title]="''" [breadcrumb]="breadcrumb">
+    <ng-template #breadcrumb>
+        <nz-breadcrumb>
+            <nz-breadcrumb-item>系统设置</nz-breadcrumb-item>
+            <nz-breadcrumb-item>充值优惠设置</nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </ng-template>
+</page-header>
+
+<div class="ant-row">
+    <nz-card nzTitle="充值优惠列表" [nzExtra]="rechargeExtra" [nzLoading]="isLoadingList" *ngIf="!addOrEditRechargeModalVisible">
+        <st *ngIf="!isLoadingList" [data]="rechargeList" [columns]="rechargeColumnSetting" [loadingDelay]="1000"></st>
+    </nz-card>
+    <ng-template #rechargeExtra>
+        <button nz-button nzType="primary" (click)="showAddOrEditRechargeModal()" [disabled]="isLoadingList"><i nz-icon nzType="plus"></i>添加充值优惠</button>
+    </ng-template>
+
+    <!-- 充值优惠编辑 -->
+    <nz-card nzTitle="充值优惠编辑" [nzExtra]="rechargeEditAction" *ngIf="addOrEditRechargeModalVisible">
+        <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="rechargeSchema" [formData]="rechargeFormData" [button]="null" [noColon]="true">
+            <button nz-button type="button" (click)="handleCreateOrEditRechargeCancel()">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditRechargeSubmit(sf.value)" [disabled]="disableCreateOrEditRechargeSubmitButton(sf)"
+                    [nzLoading]="isAddingOrEditingRecharge">保存
+            </button>
+        </sf>
+    </nz-card>
+    <ng-template #rechargeEditAction>
+        <button nz-button nzType="primary" (click)="handleCreateOrEditRechargeCancel()">返回充值优惠列表</button>
+    </ng-template>
+</div>

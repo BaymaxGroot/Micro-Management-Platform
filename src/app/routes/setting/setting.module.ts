@@ -5,12 +5,14 @@ import {CarouselComponent} from './carousel/carousel.component';
 import {BlockerComponent} from './blocker/blocker.component';
 import {ParamsComponent} from './params/params.component';
 import {SharedModule} from "@shared";
+import { RechargeReductionComponent } from './recharge-reduction/recharge-reduction.component';
 
 
 const COMPONENTS = [
     CarouselComponent,
     BlockerComponent,
-    ParamsComponent
+    ParamsComponent,
+    RechargeReductionComponent
 ];
 
 const COMPONENTS_NOROUNT = [];
