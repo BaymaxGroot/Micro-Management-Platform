@@ -5,12 +5,14 @@ import {ListComponent} from './list/list.component';
 import {SharedModule} from "@shared";
 import { OrderItemComponent } from './list/order-item/order-item.component';
 import { EvaluateComponent } from './evaluate/evaluate.component';
+import { AccountRechargeComponent } from './account-recharge/account-recharge.component';
 
 const COMPONENTS = [
     ListComponent,
     EvaluateComponent,
     //
-    OrderItemComponent
+    OrderItemComponent,
+    AccountRechargeComponent
 ];
 
 const COMPONENTS_NOROUNT = [];
@@ -18,7 +20,7 @@ const COMPONENTS_NOROUNT = [];
 @NgModule({
     declarations: [
         ...COMPONENTS,
-        ...COMPONENTS_NOROUNT,
+        ...COMPONENTS_NOROUNT
     ],
     imports: [
         SharedModule,

@@ -36,6 +36,9 @@ export enum Interface {
     LoadEvaluateListEndPoint = '/api/comment/list',
     ChangeEvaluateStatusEndPoint = '/api/comment/status/set',
     DeleteEvaluateEndPoint = '',
+
+    LoadAccountRechargeOrderListEndPoint = '/api/purse/order/list',
+    PrintAccountRechargeOrderEndPoint = '/api/download/purse/excel',
     /**
      * 用户管理
      */

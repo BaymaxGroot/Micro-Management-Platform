@@ -1,0 +1,34 @@
+<page-header [title]="''" [breadcrumb]="breadcrumb">
+    <ng-template #breadcrumb>
+        <nz-breadcrumb>
+            <nz-breadcrumb-item>订单管理</nz-breadcrumb-item>
+            <nz-breadcrumb-item>账户充值订单列表</nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </ng-template>
+</page-header>
+
+<div class="ant-row">
+    <nz-card nzTitle="账户充值列表" [nzLoading]="isLoadingOrderList"
+             [nzExtra]="OrderListExtra">
+        <st *ngIf="!isLoadingOrderList" [data]="showOrderList" [columns]="orderColumnsSetting"
+            [loadingDelay]="1000" (change)="handleCheckBoxSelected($event)">
+        </st>
+    </nz-card>
+
+    <ng-template #OrderListExtra>
+
+        <button nz-button nzType="primary" (click)="handlePrintOrder(getCheckBoxSelectedIDList())"
+                [disabled]="isLoadingOrderList || checkboxSelectedList.length <= 0">批量导出
+        </button>
+
+        <span class="extraOrder">下单时间</span>
+        <nz-range-picker [disabled]="isLoadingOrderList"
+                         nzShowTime
+                         nzFormat="yyyy-MM-dd HH:mm:ss"
+                         [(ngModel)]="orderDateRange"
+                         (ngModelChange)="handleChangeOrderDate(0,$event)"
+                         (nzOnOk)="handleChangeOrderDate(1,$event)"></nz-range-picker>
+
+    </ng-template>
+
+</div>

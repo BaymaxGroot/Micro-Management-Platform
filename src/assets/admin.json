@@ -47,6 +47,11 @@
                             "text": "评价管理",
                             "link": "/order/evaluate",
                             "i18n": "评价管理"
+                        },
+                        {
+                            "text": "账户充值订单",
+                            "link": "/order/account-recharge",
+                            "i18n": "账户充值订单"
                         }
                     ]
                 },
