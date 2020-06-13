@@ -36,6 +36,8 @@ export class StartupService {
                 return 'assets/distributor.json';
             case 3:
                 return 'assets/vip.json';
+            default:
+                return 'assets/admin.json';
         }
     }
 
