@@ -41,6 +41,9 @@ export class MemberComponent implements OnInit {
         {
             title: '头像', index: 'avatar', type: 'img'
         },
+        {
+            title: '电话', index: 'phone'
+        },
         {title: '性别', index: 'sex', type: 'badge', badge: SEX},
         {title: '账户余额', index: 'recharge'},
         {

@@ -49,6 +49,7 @@ export class ListComponent implements OnInit {
             }
         },
         {title: '用户', index: 'member_name'},
+        {title: '电话', index: 'phone'},
         {title: '下单时间', index: 'date', type: 'date'},
         {title: '运费', index: 'yun_price'},
         {title: '总金额', index: 'total_price'},
