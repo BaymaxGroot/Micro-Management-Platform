@@ -6,6 +6,7 @@ import {MicroAppService} from "@core/net/micro-app.service";
 // @ts-ignore
 import {STChange, STColumn, STData, XlsxService} from "@delon/abc";
 import {Interface} from "../../../lib/enums/interface.enum";
+import {SettingsService} from "@delon/theme";
 
 
 // @ts-ignore
@@ -21,8 +22,10 @@ export class RechargeComponent implements OnInit {
         private msg: NzMessageService,
         private cdr: ChangeDetectorRef,
         private xlsx: XlsxService,
-        private _microAppHttpClient: MicroAppService
+        private _microAppHttpClient: MicroAppService,
+        private settingService: SettingsService,
     ) {
+        this.phone = this.settingService.user.phone;
     }
 
     /**
@@ -65,7 +68,7 @@ export class RechargeComponent implements OnInit {
             title: '操作', buttons: [
                 {
                     text: '充值', type: 'none', click: (record, modal, instance) => {
-                        this.handleBatchRecharge([parseInt(record.employee_id)]);
+                        this.showPhoneCodeModal([parseInt(record.employee_id)]);
                     },
                     iif: (item) => {
                         return item.status == 0;
@@ -282,24 +285,73 @@ export class RechargeComponent implements OnInit {
             this.msg.error('批量录入失败, 请重试');
         });
     }
-    handleBatchRecharge(value: any): void {
+
+    employee_ids: string;
+    handleBatchRecharge(): void {
 
         this.isBatchRecharging = true;
         const batchRechargingTemplate = {
             log_id: Number(this.rechargeLogSelectedLabel),
-            employee_ids: value.join(','),
+            employee_ids: this.employee_ids,
             amount: 1,
-            note: ''
+            note: '',
+            user_id: this.settingService.user.id,
+            verify_code: this.code
         };
 
         this._microAppHttpClient.post(Interface.EnterpriseBatchRechargingEndPint, batchRechargingTemplate).subscribe((data) =>{
             this.msg.info('充值成功!');
+            this.hidePhoneCodeModal();
+            this.isBatchRecharging = false;
             this.loadRechargeList();
         }, (error) => {
            this.msg.error('充值失败, 请重试!');
            this.isBatchRecharging = false;
         });
 
+    }
+
+    /**
+     * 手机验证码过程
+     */
+    isPhoneCodeVisible = false;
+    isRetrievingPhoneCode = false;
+    isSuccessGeneratePhoneCode = false;
+    phone: string = null;
+    code: string = null;
+
+    showPhoneCodeModal(value: any): void {
+        this.employee_ids = value.join(',');
+        this.isPhoneCodeVisible = true;
+    }
+
+    hidePhoneCodeModal(): void {
+        this.isRetrievingPhoneCode = false;
+        this.isSuccessGeneratePhoneCode = false;
+        this.code = null;
+        this.isPhoneCodeVisible = false;
+    }
+
+    disableRechargeButton(): boolean {
+        return this.code == null;
+    }
+
+    handleRetrievePhoneCode(): void {
+        this.isRetrievingPhoneCode = true;
+
+        const retrivePhoneCodeTemplate = {
+            user_id: this.settingService.user.id,
+            phone_number: this.phone
+        }
+
+        this._microAppHttpClient.post(Interface.GeneratePhoneCodeEndPoint, retrivePhoneCodeTemplate).subscribe( (data) => {
+            this.msg.info('获取验证码成功!');
+            this.isRetrievingPhoneCode = false;
+            this.isSuccessGeneratePhoneCode = true;
+        }, (err) => {
+            this.msg.error('获取验证码失败, 请重试!');
+            this.isRetrievingPhoneCode = false;
+        } );
     }
 
     /**

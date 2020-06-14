@@ -82,6 +82,8 @@ export class UserLoginComponent implements OnDestroy {
                     name: res.user,
                     role: res.role,
                     shop: res.shop_id,
+                    id: res.user_id,
+                    phone: res.phone_number,
                     avatar: './assets/images/avatar.jpg'
                 });
                 // 设置用户Token信息

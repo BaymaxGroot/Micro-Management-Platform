@@ -89,4 +89,6 @@ export enum Interface {
     EnterpriseRechargeListEndPoint = '/api/enterprise/employee/list/log/id',
     EnterpriseRechargeUploadEndPoint = '/api/enterprise/batch/import/employee',
     EnterpriseBatchRechargingEndPint = '/api/enterprise/batch/recharge',
+
+    GeneratePhoneCodeEndPoint = '/api/send/verify/code',
 }
