@@ -24,9 +24,9 @@ export class SellComponent implements OnInit {
 
     ngOnInit() {
         this.loadSellList();
-        setInterval(() => {
-            this.loadSellList()
-        }, 1000 * 60 * 2);
+        // setInterval(() => {
+        //     this.loadSellList()
+        // }, 1000 * 60 * 2);
     }
 
     checkboxSelectedList: STData[] = [];
