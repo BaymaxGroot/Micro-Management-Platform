@@ -245,7 +245,7 @@ export class RechargeComponent implements OnInit {
         Object.keys(this.excelData).forEach((pa) => {
             let res = this.excelData[pa];
             res = res.filter( (s) => {
-                return s != [];
+                return s.length == 3;
             } );
             excelLength = res.length;
         });
