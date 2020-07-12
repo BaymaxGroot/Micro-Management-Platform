@@ -35,7 +35,7 @@ export class BlockerComponent implements OnInit {
             if (data) {
                 this.blockerList = data;
                 this.blockerList.forEach((item) => {
-                    item['cover'] = environment.SERVER_URL + '/static/upload/' + item['main_image'];
+                    item['cover'] = environment.ICON_URL + '/' + item['main_image'];
                 });
             }
             this.isLoadingList = false;

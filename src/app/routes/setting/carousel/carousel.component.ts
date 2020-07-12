@@ -34,7 +34,7 @@ export class CarouselComponent implements OnInit {
             if (data) {
                 this.bannerList = data;
                 this.bannerList.forEach((item) => {
-                    item['cover'] = environment.SERVER_URL + '/static/upload/' + item['main_image'];
+                    item['cover'] = environment.ICON_URL + '/' + item['main_image'];
                 });
             }
             this.isLoadingList = false;

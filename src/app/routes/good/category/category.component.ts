@@ -96,7 +96,7 @@ export class CategoryComponent implements OnInit {
                 this.categoryListData.forEach((item) => {
                     item['iconname'] = item['cicon'];
                     if (item['cicon']) {
-                        item['cicon'] = environment.SERVER_URL + '/static/upload/' + item['cicon'];
+                        item['cicon'] = environment.ICON_URL + '/' + item['cicon'];
                     }
                     if (!item['cparent'] || parseInt(item['cparent']) == 0) {
                         this.categoryRootList.push({

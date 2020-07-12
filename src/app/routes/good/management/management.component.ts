@@ -151,7 +151,7 @@ export class ManagementComponent implements OnInit {
                     });
                     item['check'] = 0;
                     if (item['main_image']) {
-                        item['main_image_url'] = environment.SERVER_URL + '/static/upload/' + item['main_image'];
+                        item['main_image_url'] = environment.ICON_URL + '/' + item['main_image'];
                     }
                     if (item['cname']) {
                         let flag = true;
@@ -624,7 +624,7 @@ export class ManagementComponent implements OnInit {
                 uid: Math.ceil(Math.random() * 10000000),
                 name: 'xxx.png',
                 status: 'done',
-                url: environment.SERVER_URL + '/static/upload/' + e['main_image'],
+                url: environment.ICON_URL + '/' + e['main_image'],
                 response: {
                     resource_id: 1,
                 },
@@ -640,7 +640,7 @@ export class ManagementComponent implements OnInit {
                     uid: Math.ceil(Math.random() * 10000000),
                     name: 'xxx.png',
                     status: 'done',
-                    url: environment.SERVER_URL + '/static/upload/' + item,
+                    url: environment.ICON_URL + '/' + item,
                     response: {
                         resource_id: 1,
                     },
@@ -657,7 +657,7 @@ export class ManagementComponent implements OnInit {
                     uid: Math.ceil(Math.random() * 10000000),
                     name: 'xxx.png',
                     status: 'done',
-                    url: environment.SERVER_URL + '/static/upload/' + item,
+                    url: environment.ICON_URL + '/' + item,
                     response: {
                         resource_id: 1,
                     },

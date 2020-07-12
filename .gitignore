@@ -48,3 +48,5 @@ Thumbs.db
 
 # Prod Config
 /src/environments/environment.prod.ts
+/src/environments/environment.hmr.ts
+/src/environments/environment.ts

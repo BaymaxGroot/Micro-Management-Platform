@@ -14,7 +14,7 @@ export class OrderItemComponent implements OnInit {
     @Input() quantity: number = 0;
 
     getUrl(): string {
-        return environment.SERVER_URL + '/static/upload/' + this.imgUrl;
+        return environment.ICON_URL + '/' + this.imgUrl;
     }
 
     constructor() {

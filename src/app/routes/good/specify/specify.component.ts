@@ -98,7 +98,7 @@ export class SpecifyComponent implements OnInit {
                 this.specifyListData.forEach((item) => {
                     if (item['image']) {
                         item['imagename'] = item['image'];
-                        item['image'] = environment.SERVER_URL + '/static/upload/' + item['image'];
+                        item['image'] = environment.ICON_URL + '/' + item['image'];
                     }
                 });
             }
