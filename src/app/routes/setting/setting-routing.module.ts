@@ -4,6 +4,7 @@ import {ParamsComponent} from "./params/params.component";
 import {CarouselComponent} from "./carousel/carousel.component";
 import {BlockerComponent} from "./blocker/blocker.component";
 import {RechargeReductionComponent} from "./recharge-reduction/recharge-reduction.component";
+import {RecommendComponent} from "./recommend/recommend.component";
 
 
 const routes: Routes = [
@@ -11,7 +12,8 @@ const routes: Routes = [
     {path: 'params', component: ParamsComponent},
     {path: 'carousel', component: CarouselComponent},
     {path: 'blocker', component: BlockerComponent},
-    {path: 'recharge-reduction', component: RechargeReductionComponent}
+    {path: 'recharge-reduction', component: RechargeReductionComponent},
+    {path: 'recommend', component: RecommendComponent}
 ];
 
 @NgModule({

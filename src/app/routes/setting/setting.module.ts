@@ -6,13 +6,15 @@ import {BlockerComponent} from './blocker/blocker.component';
 import {ParamsComponent} from './params/params.component';
 import {SharedModule} from "@shared";
 import { RechargeReductionComponent } from './recharge-reduction/recharge-reduction.component';
+import { RecommendComponent } from './recommend/recommend.component';
 
 
 const COMPONENTS = [
     CarouselComponent,
     BlockerComponent,
     ParamsComponent,
-    RechargeReductionComponent
+    RechargeReductionComponent,
+    RecommendComponent
 ];
 
 const COMPONENTS_NOROUNT = [];

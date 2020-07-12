@@ -108,6 +108,11 @@
                             "i18n": "图片魔方设置"
                         },
                         {
+                            "text": "首页分类设置",
+                            "link": "/setting/recommend",
+                            "i18n": "首页分类设置"
+                        },
+                        {
                             "text": "充值优惠设置",
                             "link": "/setting/recharge-reduction",
                             "i18n": "充值优惠设置"
