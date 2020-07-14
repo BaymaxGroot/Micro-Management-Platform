@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NzMessageService} from "ng-zorro-antd";
 import {MicroAppService} from "@core/net/micro-app.service";
 import {UploadIconService} from "@shared/service/upload-icon.service";
 import {Interface} from "../../../lib/enums/interface.enum";
 import {environment} from "@env/environment";
-import {SFCascaderWidgetSchema, SFComponent, SFSchema, SFSelectWidgetSchema, SFUploadWidgetSchema} from "@delon/form";
+import {
+    SFCascaderWidgetSchema,
+    SFComponent,
+    SFSchema,
+    SFSelectWidgetSchema,
+    SFStringWidgetSchema,
+    SFUploadWidgetSchema
+} from "@delon/form";
 
 @Component({
-  selector: 'micro-recommend',
-  templateUrl: './recommend.component.html',
-  styleUrls: ['./recommend.component.less']
+    selector: 'micro-recommend',
+    templateUrl: './recommend.component.html',
+    styleUrls: ['./recommend.component.less']
 })
 export class RecommendComponent implements OnInit {
 
-  constructor(
+    constructor(
         private msg: NzMessageService,
         private _microAppHttpClient: MicroAppService,
         private _uploadIconService: UploadIconService
@@ -47,16 +54,19 @@ export class RecommendComponent implements OnInit {
     }
 
     isLoadingCategory: boolean = false;
+
     loadCategoryList() {
         this.isLoadingCategory = true;
         this.typeList = [];
         this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
             if (data) {
                 data.forEach((item) => {
-                    if(parseInt(item['cparent']) != 0) {
+                    if (parseInt(item['cparent']) != 0) {
                         this.typeList.push({
                             label: item['cname'],
                             value: parseInt(item['clabel']),
+                            main_image: item['cicon'],
+                            cover: environment.ICON_URL + '/' + item['cicon']
                         })
                     }
                 });
@@ -95,23 +105,30 @@ export class RecommendComponent implements OnInit {
     typeList = [];
     isAddingOrEditingRecommend: boolean = false;
     editRecommendLabel: number = 0;
+    @ViewChild('sf', { static: false }) sf: SFComponent;
     recommendSchema: SFSchema = {
         properties: {
+            type: {
+                type: 'number',
+                title: '选择分类',
+                enum: [],
+                ui: {
+                    widget: 'select',
+                    change: ngModel => {
+                        this.syncTitleAndIcon(ngModel)
+                    }
+                } as SFSelectWidgetSchema
+            },
             title: {
                 type: 'string',
-                title: '标题'
+                title: '标题',
+                ui: {
+                    change: val => console.log(val),
+                } as SFStringWidgetSchema
             },
             rank: {
                 type: 'integer',
                 title: '排序'
-            },
-            type: {
-                type: 'number',
-                title: '跳转类型',
-                enum: [],
-                ui: {
-                    widget: 'select',
-                } as SFSelectWidgetSchema
             },
             icon: {
                 type: 'string',
@@ -222,6 +239,42 @@ export class RecommendComponent implements OnInit {
             this.isAddingOrEditingRecommend = false;
             this.msg.error(this.isAddModal ? '添加首页分类信息失败!' : '修改首页分类信息失败!');
         })
+    }
+
+    private syncTitleAndIcon(catLabel: number): void {
+        const titleProperty = this.sf.getProperty('/title');
+        const iconProperty = this.sf.getProperty('/icon');
+
+        var category;
+
+        this.typeList.forEach((item) => {
+            if (item.value == catLabel) {
+                category = item;
+            }
+        });
+
+        if (category.main_image) {
+            this._uploadIconService.emptyIconList();
+            this._uploadIconService.addIcon(category.main_image);
+
+            let icons = [];
+            icons.push({
+                uid: -1,
+                name: 'xxx.png',
+                status: 'done',
+                url: category.cover,
+                response: {
+                    resource_id: 1,
+                },
+            });
+            // iconProperty.schema.enum = icons;
+            iconProperty.resetValue(icons, false);
+        }
+
+        titleProperty.setValue(category.label, true);
+
+
+
     }
 
 }
