@@ -61,14 +61,12 @@ export class RecommendComponent implements OnInit {
         this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
             if (data) {
                 data.forEach((item) => {
-                    if (parseInt(item['cparent']) != 0) {
-                        this.typeList.push({
-                            label: item['cname'],
-                            value: parseInt(item['clabel']),
-                            main_image: item['cicon'],
-                            cover: environment.ICON_URL + '/' + item['cicon']
-                        })
-                    }
+                    this.typeList.push({
+                        label: item['cname'],
+                        value: parseInt(item['clabel']),
+                        main_image: item['cicon'],
+                        cover: environment.ICON_URL + '/' + item['cicon']
+                    });
                 });
             }
             this.isLoadingCategory = false;
@@ -105,7 +103,7 @@ export class RecommendComponent implements OnInit {
     typeList = [];
     isAddingOrEditingRecommend: boolean = false;
     editRecommendLabel: number = 0;
-    @ViewChild('sf', { static: false }) sf: SFComponent;
+    @ViewChild('sf', {static: false}) sf: SFComponent;
     recommendSchema: SFSchema = {
         properties: {
             type: {
@@ -272,7 +270,6 @@ export class RecommendComponent implements OnInit {
         }
 
         titleProperty.setValue(category.label, true);
-
 
 
     }
