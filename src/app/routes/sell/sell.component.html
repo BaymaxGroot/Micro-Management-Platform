@@ -16,7 +16,7 @@
                     <div nz-col [nzSpan]="6" *ngFor="let order of item.goods_list">
                         <micro-order-item-sell [name]="order.name"
                                                [imgUrl]="order.pic_url" [price]="order.subtotal_price"
-                                               [quantity]="order.quantity"></micro-order-item-sell>
+                                               [quantity]="order.quantity" [specify]="order.spec_name"></micro-order-item-sell>
                     </div>
                      <div nz-col nzSpan="6">
                         <div nz-row nzGutter="10" nzType="flex" nzJustify="center" nzAlign="middle">

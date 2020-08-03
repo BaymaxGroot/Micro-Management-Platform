@@ -11,6 +11,7 @@ export class OrderItemSellComponent implements OnInit {
     @Input() imgUrl: string = '';
     @Input() name: string = '';
     @Input() price: number = 0;
+    @Input() specify: string = '';
     @Input() quantity: number = 0;
 
     getUrl(): string {
