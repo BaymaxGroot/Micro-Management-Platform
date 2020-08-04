@@ -62,7 +62,8 @@ export class SellComponent implements OnInit {
                     {text: '待付款', value: '待付款'},
                     {text: '待发货', value: '待发货'},
                     {text: '待收货', value: '待收货'},
-                    {text: '待处理', value: '待处理'}
+                    {text: '待处理', value: '待处理'},
+                    {text: '已退款', value: '已退款'}
                 ], fn: (filter, record) => {
                     return !filter.value || record.status_desc == filter.value;
                 }
