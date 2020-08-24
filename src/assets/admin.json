@@ -116,6 +116,11 @@
                             "text": "充值优惠设置",
                             "link": "/setting/recharge-reduction",
                             "i18n": "充值优惠设置"
+                        },
+                        {
+                            "text": "运费设置",
+                            "link": "/setting/carriage",
+                            "i18n": "运费设置"
                         }
                     ]
                 }

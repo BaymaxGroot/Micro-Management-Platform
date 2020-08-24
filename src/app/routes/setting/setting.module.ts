@@ -7,6 +7,7 @@ import {ParamsComponent} from './params/params.component';
 import {SharedModule} from "@shared";
 import { RechargeReductionComponent } from './recharge-reduction/recharge-reduction.component';
 import { RecommendComponent } from './recommend/recommend.component';
+import { CarriageComponent } from './carriage/carriage.component';
 
 
 const COMPONENTS = [
@@ -14,7 +15,8 @@ const COMPONENTS = [
     BlockerComponent,
     ParamsComponent,
     RechargeReductionComponent,
-    RecommendComponent
+    RecommendComponent,
+    CarriageComponent
 ];
 
 const COMPONENTS_NOROUNT = [];

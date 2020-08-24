@@ -76,6 +76,12 @@ export enum Interface {
     DeleteRechargeReduceEndPoint = '/api/recharge/delete',
     AddOrEditRechargeReduceEndPoint = '/api/recharge/info/set',
 
+    LoadCarriageListEndPoint = '/api/carriage_rule/list',
+    LoadCarriageShopListEndPoint = '/api/shop/list',
+    LoadCarriageProductListEndPoint = '/api/product/list',
+    DeleteCarriageEndPoint = '/api/carriage_rule/delete',
+    AddOrEditCarriageEndPoint = '/api/carriage_rule/info/set',
+
     /**
      * 销售明细
      */
