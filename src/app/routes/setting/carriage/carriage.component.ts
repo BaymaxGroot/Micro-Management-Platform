@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from "ng-zorro-antd";
-import { MicroAppService } from "@core/net/micro-app.service";
-import { Interface } from "../../../lib/enums/interface.enum";
-import { STColumn, STColumnBadge, STData } from "@delon/abc";
-import { SFSchema, SFSelectWidgetSchema, SFStringWidgetSchema } from "@delon/form";
+import {Component, OnInit} from '@angular/core';
+import {NzMessageService} from "ng-zorro-antd";
+import {MicroAppService} from "@core/net/micro-app.service";
+import {Interface} from "../../../lib/enums/interface.enum";
+import {STColumn, STColumnBadge, STData} from "@delon/abc";
+import {SFSchema, SFSelectWidgetSchema, SFStringWidgetSchema} from "@delon/form";
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
 
 const BADGE: STColumnBadge = {
-    0: { text: '失效', color: 'default' },
-    1: { text: '生效', color: 'success' },
+    0: {text: '失效', color: 'default'},
+    1: {text: '生效', color: 'success'},
 };
 
 @Component({
@@ -24,7 +24,7 @@ export class CarriageComponent implements OnInit {
         private _microAppHttpClient: MicroAppService
     ) {
     }
-;
+    ;
 
     isLoadingList = false;
     carriageList = [];
@@ -34,7 +34,7 @@ export class CarriageComponent implements OnInit {
                 return 'D' + item.shop_id;
             }
         },
-        { title: '分销商名称', index: 'shop_name' },
+        {title: '分销商名称', index: 'shop_name'},
         {
             title: '分销商级别运费规则', buttons: [
                 {
@@ -79,7 +79,7 @@ export class CarriageComponent implements OnInit {
                 return 'R' + item.rule_id;
             }
         },
-        { title: '规则名称', index: 'rule_name' },
+        {title: '规则名称', index: 'rule_name'},
         {
             title: '邮费类型', index: 'type', format: item => {
                 switch (item.type) {
@@ -94,19 +94,19 @@ export class CarriageComponent implements OnInit {
                 }
             }
         },
-        { title: '地区名称（省市）', index: 'region' },
-        { title: '订单基准金额', index: 'base_order_price' },
-        { title: '订单基准重量（克）', index: 'base_weight' },
-        { title: '低于订单基准金额首重运费', index: 'lower_base_carriage' },
-        { title: '低于订单基准金额续重运费/斤', index: 'lower_extra_carriage' },
-        { title: '不低于订单基准金额首重运费', index: 'higher_base_carriage' },
-        { title: '不低于订单基准金额续重运费/斤', index: 'higher_extra_carriage' },
-        { title: '状态', index: 'status', type: 'badge', badge: BADGE },
+        {title: '地区名称（省市）', index: 'region'},
+        {title: '订单基准金额', index: 'base_order_price'},
+        {title: '订单基准重量（克）', index: 'base_weight'},
+        {title: '低于订单基准金额首重运费', index: 'lower_base_carriage'},
+        {title: '低于订单基准金额续重运费/斤', index: 'lower_extra_carriage'},
+        {title: '不低于订单基准金额首重运费', index: 'higher_base_carriage'},
+        {title: '不低于订单基准金额续重运费/斤', index: 'higher_extra_carriage'},
+        {title: '状态', index: 'status', type: 'badge', badge: BADGE},
         {
             title: '操作', buttons: [
                 {
                     text: '编辑', type: 'none', click: record => {
-
+                        this.handleShowEditCarriageModal(record);
                     }
                 },
                 {
@@ -124,7 +124,7 @@ export class CarriageComponent implements OnInit {
                 return 'R' + item.rule_id;
             }
         },
-        { title: '规则名称', index: 'rule_name' },
+        {title: '规则名称', index: 'rule_name'},
         {
             title: '邮费类型', index: 'type', format: item => {
                 switch (item.type) {
@@ -139,19 +139,19 @@ export class CarriageComponent implements OnInit {
                 }
             }
         },
-        { title: '地区名称（省市）', index: 'region' },
-        { title: '订单基准金额', index: 'base_order_price' },
-        { title: '订单基准重量（克）', index: 'base_weight' },
-        { title: '低于订单基准金额首重运费', index: 'lower_base_carriage' },
-        { title: '低于订单基准金额续重运费/斤', index: 'lower_extra_carriage' },
-        { title: '不低于订单基准金额首重运费', index: 'higher_base_carriage' },
-        { title: '不低于订单基准金额续重运费/斤', index: 'higher_extra_carriage' },
-        { title: '状态', index: 'status', type: 'badge', badge: BADGE },
+        {title: '地区名称（省市）', index: 'region'},
+        {title: '订单基准金额', index: 'base_order_price'},
+        {title: '订单基准重量（克）', index: 'base_weight'},
+        {title: '低于订单基准金额首重运费', index: 'lower_base_carriage'},
+        {title: '低于订单基准金额续重运费/斤', index: 'lower_extra_carriage'},
+        {title: '不低于订单基准金额首重运费', index: 'higher_base_carriage'},
+        {title: '不低于订单基准金额续重运费/斤', index: 'higher_extra_carriage'},
+        {title: '状态', index: 'status', type: 'badge', badge: BADGE},
         {
             title: '操作', buttons: [
                 {
                     text: '编辑', type: 'none', click: record => {
-
+                        this.handleShowEditCarriageModal(record);
                     }
                 },
                 {
@@ -167,7 +167,7 @@ export class CarriageComponent implements OnInit {
     addCarriageModalVisible = false;
     addCarriageSchema: SFSchema = {
         properties: {
-            type: { type: 'string', title: '规则级别', enum: ['供应商运费规则', '特殊商品运费规则'], default: '供应商运费规则'},
+            type: {type: 'string', title: '规则级别', enum: ['供应商运费规则', '特殊商品运费规则'], default: '供应商运费规则'},
             shop: {
                 type: 'number', title: '供应商', ui: {
                     widget: 'select',
@@ -182,13 +182,13 @@ export class CarriageComponent implements OnInit {
                         of(this.prodctList).pipe(delay(10)),
                 } as SFSelectWidgetSchema
             },
-            rule_name: { type: 'string', title: '规则名称' },
+            rule_name: {type: 'string', title: '规则名称'},
             rule_type: {
                 type: 'number', title: '规则类型', enum: [
-                    { label: '江阴城区', value: 1 },
-                    { label: '江阴乡镇', value: 2 },
-                    { label: '外省市', value: 3 },
-                    { label: '特殊省市', value: 4 }
+                    {label: '江阴城区', value: 1},
+                    {label: '江阴乡镇', value: 2},
+                    {label: '外省市', value: 3},
+                    {label: '特殊省市', value: 4}
                 ], default: 1,
                 ui: {
                     widget: 'select'
@@ -196,57 +196,57 @@ export class CarriageComponent implements OnInit {
             },
             special_region: {
                 type: 'string', title: '地区名称（省市）', enum: [
-                    { label: '北京市', value: '北京市' },
-                    { label: '天津市', value: '天津市' },
-                    { label: '河北省', value: '河北省' },
-                    { label: '山西省', value: '山西省' },
-                    { label: '内蒙古自治区', value: '内蒙古自治区' },
-                    { label: '辽宁省', value: '辽宁省' },
-                    { label: '吉林省', value: '吉林省' },
-                    { label: '黑龙江省', value: '黑龙江省' },
-                    { label: '上海市', value: '上海市' },
-                    { label: '江苏省', value: '江苏省' },
-                    { label: '浙江省', value: '浙江省' },
-                    { label: '安徽省', value: '安徽省' },
-                    { label: '福建省', value: '福建省' },
-                    { label: '江西省', value: '江西省' },
-                    { label: '山东省', value: '山东省' },
-                    { label: '河南省', value: '河南省' },
-                    { label: '湖北省', value: '湖北省' },
-                    { label: '湖南省', value: '湖南省' },
-                    { label: '广东省', value: '广东省' },
-                    { label: '广西壮族自治区', value: '广西壮族自治区' },
-                    { label: '海南省', value: '海南省' },
-                    { label: '重庆市', value: '重庆市' },
-                    { label: '四川省', value: '四川省' },
-                    { label: '贵州省', value: '贵州省' },
-                    { label: '云南省', value: '云南省' },
-                    { label: '西藏自治区', value: '西藏自治区' },
-                    { label: '陕西省', value: '陕西省' },
-                    { label: '甘肃省', value: '甘肃省' },
-                    { label: '青海省', value: '青海省' },
-                    { label: '宁夏回族自治区', value: '宁夏回族自治区' },
-                    { label: '新疆维吾尔自治区', value: '新疆维吾尔自治区' },
-                    { label: '台湾省', value: '台湾省' },
-                    { label: '香港特别行政区', value: '香港特别行政区' },
-                    { label: '澳门特别行政区', value: '澳门特别行政区' }
+                    {label: '北京市', value: '北京市'},
+                    {label: '天津市', value: '天津市'},
+                    {label: '河北省', value: '河北省'},
+                    {label: '山西省', value: '山西省'},
+                    {label: '内蒙古自治区', value: '内蒙古自治区'},
+                    {label: '辽宁省', value: '辽宁省'},
+                    {label: '吉林省', value: '吉林省'},
+                    {label: '黑龙江省', value: '黑龙江省'},
+                    {label: '上海市', value: '上海市'},
+                    {label: '江苏省', value: '江苏省'},
+                    {label: '浙江省', value: '浙江省'},
+                    {label: '安徽省', value: '安徽省'},
+                    {label: '福建省', value: '福建省'},
+                    {label: '江西省', value: '江西省'},
+                    {label: '山东省', value: '山东省'},
+                    {label: '河南省', value: '河南省'},
+                    {label: '湖北省', value: '湖北省'},
+                    {label: '湖南省', value: '湖南省'},
+                    {label: '广东省', value: '广东省'},
+                    {label: '广西壮族自治区', value: '广西壮族自治区'},
+                    {label: '海南省', value: '海南省'},
+                    {label: '重庆市', value: '重庆市'},
+                    {label: '四川省', value: '四川省'},
+                    {label: '贵州省', value: '贵州省'},
+                    {label: '云南省', value: '云南省'},
+                    {label: '西藏自治区', value: '西藏自治区'},
+                    {label: '陕西省', value: '陕西省'},
+                    {label: '甘肃省', value: '甘肃省'},
+                    {label: '青海省', value: '青海省'},
+                    {label: '宁夏回族自治区', value: '宁夏回族自治区'},
+                    {label: '新疆维吾尔自治区', value: '新疆维吾尔自治区'},
+                    {label: '台湾省', value: '台湾省'},
+                    {label: '香港特别行政区', value: '香港特别行政区'},
+                    {label: '澳门特别行政区', value: '澳门特别行政区'}
                 ], ui: {
                     widget: 'select'
                 } as SFSelectWidgetSchema
             },
-            base_order_price: { type: 'number', title: '订单基准金额' },
+            base_order_price: {type: 'number', title: '订单基准金额'},
             base_weight: {
                 type: 'number', title: '订单基准重量', ui: {
                     unit: '克'
                 } as SFStringWidgetSchema
             },
-            lower_base_carriage: { type: 'number', title: '低于订单基准金额首重运费' },
+            lower_base_carriage: {type: 'number', title: '低于订单基准金额首重运费'},
             lower_extra_carriage: {
                 type: 'number', title: '低于订单基准金额续重运费', ui: {
                     unit: '斤'
                 } as SFStringWidgetSchema
             },
-            higher_base_carriage: { type: 'number', title: '不低于订单基准金额首重运费' },
+            higher_base_carriage: {type: 'number', title: '不低于订单基准金额首重运费'},
             higher_extra_carriage: {
                 type: 'number', title: '不低于订单基准金额续重运费', ui: {
                     unit: '斤'
@@ -263,7 +263,7 @@ export class CarriageComponent implements OnInit {
         },
         required: ['type', 'rule_name', 'base_order_price', 'base_weight', 'lower_base_carriage', 'lower_extra_carriage', 'higher_base_carriage', 'higher_extra_carriage'],
         if: {
-            properties: { type: { enum: ['供应商运费规则'] } }
+            properties: {type: {enum: ['供应商运费规则']}}
         },
         then: {
             required: ['shop']
@@ -272,7 +272,8 @@ export class CarriageComponent implements OnInit {
             required: ['product']
         }
     };
-    shopList: STData[] = [];    prodctList: STData[] = [];
+    shopList: STData[] = [];
+    prodctList: STData[] = [];
     isAddingCarriageRule = false;
 
     ngOnInit() {
@@ -312,8 +313,8 @@ export class CarriageComponent implements OnInit {
             }
             this.loadProductList();
         }, err => {
-                this.handleAddCarriageHideEvent();
-                this.msg.error('初始化添加模板失败!');
+            this.handleAddCarriageHideEvent();
+            this.msg.error('初始化添加模板失败!');
         })
     }
 
@@ -328,8 +329,8 @@ export class CarriageComponent implements OnInit {
                 });
             }
         }, err => {
-                this.handleAddCarriageHideEvent();
-                this.msg.error('初始化添加模板失败!');
+            this.handleAddCarriageHideEvent();
+            this.msg.error('初始化添加模板失败!');
         })
     }
 
@@ -359,13 +360,12 @@ export class CarriageComponent implements OnInit {
             "higher_extra_carriage": value.higher_extra_carriage,
             "status": value.status ? 1 : 0,
         };
-        console.log(12);
         this._microAppHttpClient.post(Interface.AddOrEditCarriageEndPoint, addCarriageRuleTemplate).subscribe(data => {
             this.isAddingCarriageRule = false;
             this.loadCarriageList();
         }, err => {
-                this.isAddingCarriageRule = false;
-                this.msg.error('添加运费规则失败, 请重试!');
+            this.isAddingCarriageRule = false;
+            this.msg.error('添加运费规则失败, 请重试!');
         });
     }
 
@@ -382,5 +382,109 @@ export class CarriageComponent implements OnInit {
         });
     }
 
+    editCarriageModalVisible = false;
+    editCarriageModalSubTitle: string;
+    editCarriageModalFormData: any;
+    editCarriageSchema: SFSchema = {
+        properties: {
+            rule_name: {type: 'string', title: '规则名称'},
+            rule_type: {
+                type: 'number', title: '规则类型', enum: [
+                    {label: '江阴城区', value: 1},
+                    {label: '江阴乡镇', value: 2},
+                    {label: '外省市', value: 3},
+                    {label: '特殊省市', value: 4}
+                ], default: 1,
+                ui: {
+                    widget: 'select'
+                } as SFSelectWidgetSchema
+            },
+            special_region: {
+                type: 'string', title: '地区名称（省市）', enum: [
+                    {label: '北京市', value: '北京市'},
+                    {label: '天津市', value: '天津市'},
+                    {label: '河北省', value: '河北省'},
+                    {label: '山西省', value: '山西省'},
+                    {label: '内蒙古自治区', value: '内蒙古自治区'},
+                    {label: '辽宁省', value: '辽宁省'},
+                    {label: '吉林省', value: '吉林省'},
+                    {label: '黑龙江省', value: '黑龙江省'},
+                    {label: '上海市', value: '上海市'},
+                    {label: '江苏省', value: '江苏省'},
+                    {label: '浙江省', value: '浙江省'},
+                    {label: '安徽省', value: '安徽省'},
+                    {label: '福建省', value: '福建省'},
+                    {label: '江西省', value: '江西省'},
+                    {label: '山东省', value: '山东省'},
+                    {label: '河南省', value: '河南省'},
+                    {label: '湖北省', value: '湖北省'},
+                    {label: '湖南省', value: '湖南省'},
+                    {label: '广东省', value: '广东省'},
+                    {label: '广西壮族自治区', value: '广西壮族自治区'},
+                    {label: '海南省', value: '海南省'},
+                    {label: '重庆市', value: '重庆市'},
+                    {label: '四川省', value: '四川省'},
+                    {label: '贵州省', value: '贵州省'},
+                    {label: '云南省', value: '云南省'},
+                    {label: '西藏自治区', value: '西藏自治区'},
+                    {label: '陕西省', value: '陕西省'},
+                    {label: '甘肃省', value: '甘肃省'},
+                    {label: '青海省', value: '青海省'},
+                    {label: '宁夏回族自治区', value: '宁夏回族自治区'},
+                    {label: '新疆维吾尔自治区', value: '新疆维吾尔自治区'},
+                    {label: '台湾省', value: '台湾省'},
+                    {label: '香港特别行政区', value: '香港特别行政区'},
+                    {label: '澳门特别行政区', value: '澳门特别行政区'}
+                ], ui: {
+                    widget: 'select'
+                } as SFSelectWidgetSchema
+            },
+            base_order_price: {type: 'number', title: '订单基准金额'},
+            base_weight: {
+                type: 'number', title: '订单基准重量', ui: {
+                    unit: '克'
+                } as SFStringWidgetSchema
+            },
+            lower_base_carriage: {type: 'number', title: '低于订单基准金额首重运费'},
+            lower_extra_carriage: {
+                type: 'number', title: '低于订单基准金额续重运费', ui: {
+                    unit: '斤'
+                } as SFStringWidgetSchema
+            },
+            higher_base_carriage: {type: 'number', title: '不低于订单基准金额首重运费'},
+            higher_extra_carriage: {
+                type: 'number', title: '不低于订单基准金额续重运费', ui: {
+                    unit: '斤'
+                } as SFStringWidgetSchema
+            },
+            status: {
+                type: 'boolean',
+                title: '是否生效',
+                ui: {
+                    checkedChildren: '是',
+                    unCheckedChildren: '否',
+                }
+            }
+        },
+        required: ['rule_name', 'base_order_price', 'base_weight', 'lower_base_carriage', 'lower_extra_carriage', 'higher_base_carriage', 'higher_extra_carriage'],
+        if: {
+            properties: {rule_type: {enum: [4]}}
+        },
+        then: {
+            required: ['special_region']
+        },
+        else: {
+            required: []
+        }
+    };
+
+    handleShowEditCarriageModal(data) {
+        this.editCarriageModalVisible = true;
+        this.editCarriageModalFormData = data;
+    }
+
+    handleHideEditCarriageModal() {
+        this.editCarriageModalVisible = false;
+    }
 
 }

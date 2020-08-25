@@ -26,7 +26,7 @@
     </ng-template>
 
     <nz-card nzTitle="供应商 - {{carriageRuleListShopName}} - {{carriageRuleListSubTitle}}运费规则"
-        [nzExtra]="carriageDetailListExtra" *ngIf="isCarriageDetailListVisible">
+        [nzExtra]="carriageDetailListExtra" *ngIf="isCarriageDetailListVisible && !editCarriageModalVisible">
         <st [data]="carriageRuleListType == 1? carriageRuleListShopRuleList:carriageRuleListProductRuleList"
             [columns]="carriageRuleListType == 1? carriageRuleListShopRuleColumnSettings:carriageRuleListProductRuleColumnSettings"
             [loadingDelay]="50"></st>
@@ -35,13 +35,23 @@
         <button nz-button nzType="primary" (click)="handleHideShopOrProductRuleList()">返回</button>
     </ng-template>
 
-    <!-- 运费规则编辑 -->
+    <!-- 运费规则添加 -->
     <nz-card nzTitle="添加运费规则" [nzExtra]="carriageAddExtra" *ngIf="addCarriageModalVisible">
-        <sf *ngIf="true" [mode]="'edit'" [schema]="addCarriageSchema" [noColon]="true"
+        <sf [mode]="'edit'" [schema]="addCarriageSchema" [noColon]="true"
             (formSubmit)="handleAddCarriageSubmit($event)">
         </sf>
     </nz-card>
     <ng-template #carriageAddExtra>
         <button nz-button nzType="primary" (click)="handleAddCarriageHideEvent()">返回</button>
+    </ng-template>
+
+    <!-- 运费规则编辑 -->
+    <nz-card nzTitle="编辑运费规则" [nzExtra]="carriageEditExtra" *ngIf="editCarriageModalVisible && !addCarriageModalVisible">
+        <sf [mode]="'edit'" [schema]="editCarriageSchema" [formData]="editCarriageModalFormData" [noColon]="true"
+            (formSubmit)="handleAddCarriageSubmit($event)">
+        </sf>
+    </nz-card>
+    <ng-template #carriageEditExtra>
+        <button nz-button nzType="primary" (click)="handleHideEditCarriageModal()">返回</button>
     </ng-template>
 </div>
