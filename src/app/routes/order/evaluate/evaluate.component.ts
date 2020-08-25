@@ -22,11 +22,7 @@ export class EvaluateComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.loadEvaluateList();
-    }
-
-    isLoadingList: boolean = false;
+    isLoadingList = false;
     evaluateList = [];
     evaluateColumnSetting: STColumn[] = [
         {title: '用户', index: 'member_name'},
@@ -40,7 +36,7 @@ export class EvaluateComponent implements OnInit {
                     text: (record) => {
                         return record.status == 1 ? '隐藏' : '显示';
                     }, type: 'none', click: ((record) => {
-                      this.handleChangeEvaluateStatus(parseInt(record['id']), record['status'] == 0);
+                      this.handleChangeEvaluateStatus(parseInt(record.id), record.status == 0);
                     })
                 },
                 // {
@@ -53,6 +49,10 @@ export class EvaluateComponent implements OnInit {
             ]
         }
     ];
+
+    ngOnInit() {
+        this.loadEvaluateList();
+    }
 
     loadEvaluateList() {
         this.isLoadingList = true;
@@ -69,7 +69,7 @@ export class EvaluateComponent implements OnInit {
     }
 
     handleChangeEvaluateStatus(e_id: number, status: boolean) {
-        let changeEvaluateStatusTemplate = {
+        const changeEvaluateStatusTemplate = {
             id: e_id,
             status: status? 1:0
         };
@@ -84,7 +84,7 @@ export class EvaluateComponent implements OnInit {
 
     handleRemoveEvaluate(label: number) {
         this.isLoadingList = true;
-        let removeEvaluateTemplate = {
+        const removeEvaluateTemplate = {
             shop_id: label
         };
         this._microAppHttpClient.post(Interface.DeleteEvaluateEndPoint, removeEvaluateTemplate).subscribe((data) => {

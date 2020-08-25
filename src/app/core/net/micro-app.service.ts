@@ -47,8 +47,8 @@ export class MicroAppService {
      * @param params
      */
     public get(url: string, params?: HttpParams): Observable<any> {
-        let httpParams = params ? params : new HttpParams();
-        let httpHeaders: HttpHeaders = this.generateHeader(url);
+        const httpParams = params ? params : new HttpParams();
+        const httpHeaders: HttpHeaders = this.generateHeader(url);
         return this._http.get<any>(`${SERVER}${url}`, {headers: httpHeaders, params: httpParams});
     }
 
@@ -60,7 +60,7 @@ export class MicroAppService {
      * @param params
      */
     public post(url: string, body: any | null, params?: HttpParams): Observable<any> {
-        let httpParams = params ? params : new HttpParams();
+        const httpParams = params ? params : new HttpParams();
         const httpHeaders: HttpHeaders = this.generateHeader(url);
         return this._http.post(`${SERVER}${url}`, body, {headers: httpHeaders, params: httpParams});
     }

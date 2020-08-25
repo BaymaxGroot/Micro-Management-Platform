@@ -22,17 +22,13 @@ const ROLEBADGE: STColumnBadge = {
 })
 export class ListComponent implements OnInit {
 
-    dateFormat = 'yyyy/MM/dd';
-
     constructor(
         private msg: NzMessageService,
         private _microAppHttpClient: MicroAppService,
     ) {
     }
 
-    ngOnInit() {
-        this.loadUserList();
-    }
+    dateFormat = 'yyyy/MM/dd';
 
     /**
      * 用户列表
@@ -40,14 +36,14 @@ export class ListComponent implements OnInit {
     columnsSetting: STColumn[] = [
         {
             title: 'ID', index: 'uid', format: (item) => {
-                return 'U' + item['uid'];
+                return 'U' + item.uid;
             }
         },
         {
             title: '基本信息', index: 'mobile', format: (item, col, index) => {
-                let nike = item.account;
-                let phone = item.mobile == '' ? '暂无' : item.mobile;
-                let name = item.email == '' ? '暂无' : item.email;
+                const nike = item.account;
+                const phone = item.mobile == '' ? '暂无' : item.mobile;
+                const name = item.email == '' ? '暂无' : item.email;
                 return nike + '<br/>' + '电话: ' + phone + '<br/>' + '邮箱: ' + name;
             }
         },
@@ -66,7 +62,7 @@ export class ListComponent implements OnInit {
                 },
                 {
                     text: '删除', type: 'del', click: (e) => {
-                        this.deleteUser(parseInt(e['uid']));
+                        this.deleteUser(parseInt(e.uid));
                     }
                 }
             ]
@@ -74,53 +70,11 @@ export class ListComponent implements OnInit {
 
     ];
 
-    isLoading: boolean = false;
+    isLoading = false;
     userList = [];
-    loadUserList() {
-        this.isLoading = true;
-        this._microAppHttpClient.get(Interface.LoadUserEndPoint).subscribe((data) => {
-           this.userList = data;
-           this.isLoading = false;
-        }, (err) => {
-            this.msg.error('加载用户列表失败!');
-        });
-    }
 
-    addOrEditUserModalVisble: boolean = false;
+    addOrEditUserModalVisble = false;
     isAddModal = true;
-
-    showAddOrEditUserModal(): void {
-        if(this.isAddModal) {
-            this.handleAddOrEditFormDataInit();
-        }
-        this.addOrEditUserModalVisble = true;
-    }
-
-    hideAddOrEditUserModal() {
-        this.isAddModal = true;
-        this.handleAddOrEditFormDataInit();
-        this.addOrEditUserModalVisble = false;
-    }
-
-    handleAddOrEditFormDataInit(e: any = {}) {
-        if(this.isAddModal) {
-            this.userFormData = {
-                account: '',
-                password: '',
-                mobile: '',
-                email: '',
-                sex: 1
-            };
-        } else {
-            this.userFormData = {
-                account: e.account,
-                password: '',
-                mobile: e.mobile,
-                email: e.email,
-                sex: e.sex
-            };
-        }
-    }
 
     userFormData: any;
     userSchema: SFSchema = {
@@ -156,16 +110,62 @@ export class ListComponent implements OnInit {
       },
         required: ['account', 'password', 'mobile']
     };
-    isAddingOrEditingUser: boolean = false;
-    editUserLabel: number = 0;
-    editUserRole: number = 0;
+    isAddingOrEditingUser = false;
+    editUserLabel = 0;
+    editUserRole = 0;
+
+    ngOnInit() {
+        this.loadUserList();
+    }
+    loadUserList() {
+        this.isLoading = true;
+        this._microAppHttpClient.get(Interface.LoadUserEndPoint).subscribe((data) => {
+           this.userList = data;
+           this.isLoading = false;
+        }, (err) => {
+            this.msg.error('加载用户列表失败!');
+        });
+    }
+
+    showAddOrEditUserModal(): void {
+        if(this.isAddModal) {
+            this.handleAddOrEditFormDataInit();
+        }
+        this.addOrEditUserModalVisble = true;
+    }
+
+    hideAddOrEditUserModal() {
+        this.isAddModal = true;
+        this.handleAddOrEditFormDataInit();
+        this.addOrEditUserModalVisble = false;
+    }
+
+    handleAddOrEditFormDataInit(e: any = {}) {
+        if(this.isAddModal) {
+            this.userFormData = {
+                account: '',
+                password: '',
+                mobile: '',
+                email: '',
+                sex: 1
+            };
+        } else {
+            this.userFormData = {
+                account: e.account,
+                password: '',
+                mobile: e.mobile,
+                email: e.email,
+                sex: e.sex
+            };
+        }
+    }
 
     disableAddOrEditUserSubmitButton(sf: SFComponent): boolean {
         return !sf.valid;
     }
 
     handleAddOrEditUserSubmit(value: any):void {
-        let userTemplate = {
+        const userTemplate = {
             uid: this.isAddModal? 0:this.editUserLabel,
             uaccount: value.account,
             upassword: value.password,
@@ -188,8 +188,8 @@ export class ListComponent implements OnInit {
     }
 
     deleteUser(uid: number) {
-        let userTemplate = {
-            uid: uid
+        const userTemplate = {
+            uid
         };
         this._microAppHttpClient.post(Interface.DeleteUserEndPoint, userTemplate).subscribe((data) => {
            this.msg.info('删除用户成功!');

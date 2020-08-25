@@ -18,12 +18,8 @@ export class RechargeReductionComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.isLoadingRechargeList();
-    }
-
     // 加载充值优惠列表
-    isLoadingList: boolean = false;
+    isLoadingList = false;
     rechargeList = [];
     rechargeColumnSetting: STColumn[] = [
         {
@@ -48,29 +44,15 @@ export class RechargeReductionComponent implements OnInit {
                     text: '删除',
                     type: 'del',
                     click: (record) => {
-                        this.handleRemoveRecharge(parseInt(record['id']));
+                        this.handleRemoveRecharge(parseInt(record.id));
                     }
                 }
             ]
         }
     ];
 
-    isLoadingRechargeList() {
-        this.isLoadingList = true;
-        this.rechargeList = [];
-        this._microAppHttpClient.get(Interface.LoadRechargeReduceListEndPoint).subscribe((data) => {
-            if (data) {
-                this.rechargeList = data;
-            }
-            this.isLoadingList = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingList = false;
-        })
-    }
-
     // 添加/修改 充值优惠 计划
-    addOrEditRechargeModalVisible: boolean = false;
+    addOrEditRechargeModalVisible = false;
     isAddModal = true;
     rechargeFormData: any;
     rechargeSchema: SFSchema = {
@@ -86,8 +68,26 @@ export class RechargeReductionComponent implements OnInit {
         },
         required: ['face_value', 'price']
     };
-    isAddingOrEditingRecharge: boolean = false;
-    editRechargeLabel: number = 0;
+    isAddingOrEditingRecharge = false;
+    editRechargeLabel = 0;
+
+    ngOnInit() {
+        this.isLoadingRechargeList();
+    }
+
+    isLoadingRechargeList() {
+        this.isLoadingList = true;
+        this.rechargeList = [];
+        this._microAppHttpClient.get(Interface.LoadRechargeReduceListEndPoint).subscribe((data) => {
+            if (data) {
+                this.rechargeList = data;
+            }
+            this.isLoadingList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingList = false;
+        })
+    }
 
     showAddOrEditRechargeModal(): void {
         if (this.isAddModal) {
@@ -109,10 +109,10 @@ export class RechargeReductionComponent implements OnInit {
                 price: 0
             }
         } else {
-            this.editRechargeLabel = e['id'];
+            this.editRechargeLabel = e.id;
             this.rechargeFormData = {
-                face_value: e['face_value'],
-                price: e['price']
+                face_value: e.face_value,
+                price: e.price
             }
         }
     }
@@ -122,10 +122,10 @@ export class RechargeReductionComponent implements OnInit {
     }
 
     handleCreateOrEditRechargeSubmit(value: any): void {
-        let rechargeTemplate = {
+        const rechargeTemplate = {
             recharge_id: this.isAddModal ? 0 : this.editRechargeLabel,
-            face_value: value['face_value'],
-            price: value['price']
+            face_value: value.face_value,
+            price: value.price
         };
         this.isAddingOrEditingRecharge = true;
         this._microAppHttpClient.post(Interface.AddOrEditRechargeReduceEndPoint, rechargeTemplate).subscribe((data) => {
@@ -142,7 +142,7 @@ export class RechargeReductionComponent implements OnInit {
 
     handleRemoveRecharge(label: number) {
         this.isLoadingList = true;
-        let removeRechargeTemplate = {
+        const removeRechargeTemplate = {
             recharge_id: label
         };
         this._microAppHttpClient.post(Interface.DeleteRechargeReduceEndPoint, removeRechargeTemplate).subscribe((data) => {

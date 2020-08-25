@@ -83,7 +83,7 @@ export class MicroAppInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // 统一加上服务端前缀
-        let url = req.url;
+        const url = req.url;
         const newReq = req.clone({url});
 
         return next.handle(newReq).pipe(

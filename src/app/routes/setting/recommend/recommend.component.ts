@@ -29,80 +29,18 @@ export class RecommendComponent implements OnInit {
         this._uploadIconService.minUploadLimit = 1;
     }
 
-    ngOnInit() {
-        this.loadRecommendList();
-    }
-
-    isLoadingList: boolean = false;
+    isLoadingList = false;
     recommendList = [];
 
-    loadRecommendList() {
-        this.isLoadingList = true;
-        this._microAppHttpClient.get(Interface.LoadRecommendListEndPoint).subscribe((data) => {
-            if (data) {
-                this.recommendList = data;
-                this.recommendList.forEach((item) => {
-                    item['cover'] = environment.ICON_URL + '/' + item['main_image'];
-                });
-            }
-            this.isLoadingList = false;
-        }, (err) => {
-            this.msg.error('加载首页分类列表失败!');
-        }, () => {
-            this.loadCategoryList();
-        });
-    }
-
-    isLoadingCategory: boolean = false;
-
-    loadCategoryList() {
-        this.isLoadingCategory = true;
-        this.typeList = [];
-        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
-            if (data) {
-                data.forEach((item) => {
-                    this.typeList.push({
-                        label: item['cname'],
-                        value: parseInt(item['clabel']),
-                        main_image: item['cicon'],
-                        cover: environment.ICON_URL + '/' + item['cicon']
-                    });
-                });
-            }
-            this.isLoadingCategory = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingCategory = false;
-        })
-    }
-
-    deleteRecommend(id: number) {
-        let deleteRecommendTemplate = {
-            home_cat_id: id
-        };
-        this.isLoadingList = true;
-        this._microAppHttpClient.post(Interface.DeleteRecommendEndPoint, deleteRecommendTemplate).subscribe((data) => {
-            this.msg.info('删除首页分类成功!');
-            this.loadRecommendList();
-        }, (err) => {
-            this.isLoadingList = false;
-            this.msg.error('删除首页分类失败，请重试!');
-        })
-    }
-
-    editRecommend(item: any) {
-        this.isAddModal = false;
-        this.handleAddOrEditRecommendFormDataInit(item);
-        this.handleShowAddOrEditRecommendModal();
-    }
+    isLoadingCategory = false;
 
     // 添加/修改 轮播图设置
-    addOrEditRecommendModalVisible: boolean = false;
+    addOrEditRecommendModalVisible = false;
     isAddModal = true;
     recommendFormData: any;
     typeList = [];
-    isAddingOrEditingRecommend: boolean = false;
-    editRecommendLabel: number = 0;
+    isAddingOrEditingRecommend = false;
+    editRecommendLabel = 0;
     @ViewChild('sf', {static: false}) sf: SFComponent;
     recommendSchema: SFSchema = {
         properties: {
@@ -162,6 +100,68 @@ export class RecommendComponent implements OnInit {
         required: ['title', 'rank', 'type', 'icon']
     };
 
+    ngOnInit() {
+        this.loadRecommendList();
+    }
+
+    loadRecommendList() {
+        this.isLoadingList = true;
+        this._microAppHttpClient.get(Interface.LoadRecommendListEndPoint).subscribe((data) => {
+            if (data) {
+                this.recommendList = data;
+                this.recommendList.forEach((item) => {
+                    item.cover = environment.ICON_URL + '/' + item.main_image;
+                });
+            }
+            this.isLoadingList = false;
+        }, (err) => {
+            this.msg.error('加载首页分类列表失败!');
+        }, () => {
+            this.loadCategoryList();
+        });
+    }
+
+    loadCategoryList() {
+        this.isLoadingCategory = true;
+        this.typeList = [];
+        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
+            if (data) {
+                data.forEach((item) => {
+                    this.typeList.push({
+                        label: item.cname,
+                        value: parseInt(item.clabel),
+                        main_image: item.cicon,
+                        cover: environment.ICON_URL + '/' + item.cicon
+                    });
+                });
+            }
+            this.isLoadingCategory = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingCategory = false;
+        })
+    }
+
+    deleteRecommend(id: number) {
+        const deleteRecommendTemplate = {
+            home_cat_id: id
+        };
+        this.isLoadingList = true;
+        this._microAppHttpClient.post(Interface.DeleteRecommendEndPoint, deleteRecommendTemplate).subscribe((data) => {
+            this.msg.info('删除首页分类成功!');
+            this.loadRecommendList();
+        }, (err) => {
+            this.isLoadingList = false;
+            this.msg.error('删除首页分类失败，请重试!');
+        })
+    }
+
+    editRecommend(item: any) {
+        this.isAddModal = false;
+        this.handleAddOrEditRecommendFormDataInit(item);
+        this.handleShowAddOrEditRecommendModal();
+    }
+
     handleShowAddOrEditRecommendModal() {
         if (this.isAddModal) {
             this.handleAddOrEditRecommendFormDataInit();
@@ -185,25 +185,25 @@ export class RecommendComponent implements OnInit {
             };
             this._uploadIconService.emptyIconList();
         } else {
-            this.editRecommendLabel = parseInt(e['id']);
-            let linkurl = e['link'];
+            this.editRecommendLabel = parseInt(e.id);
+            const linkurl = e.link;
             this.recommendFormData = {
-                title: e['title'],
-                rank: e['sort'],
+                title: e.title,
+                rank: e.sort,
                 type: parseInt(linkurl.split('=')[1]),
-                status: e['status'] == 1
+                status: e.status == 1
             };
-            if (e['main_image']) {
-                this._uploadIconService.addIcon(e['main_image']);
+            if (e.main_image) {
+                this._uploadIconService.addIcon(e.main_image);
             }
         }
-        if (e['main_image']) {
-            let icons = [];
+        if (e.main_image) {
+            const icons = [];
             icons.push({
                 uid: -1,
                 name: 'xxx.png',
                 status: 'done',
-                url: e['cover'],
+                url: e.cover,
                 response: {
                     resource_id: 1,
                 },
@@ -219,7 +219,7 @@ export class RecommendComponent implements OnInit {
     }
 
     handleCreateOrEditRecommendSubmit(value: any): void {
-        let recommendTemplate = {
+        const recommendTemplate = {
             home_cat_id: this.isAddModal ? 0 : this.editRecommendLabel,
             title: value.title,
             sort: value.rank,
@@ -243,7 +243,7 @@ export class RecommendComponent implements OnInit {
         const titleProperty = this.sf.getProperty('/title');
         const iconProperty = this.sf.getProperty('/icon');
 
-        var category;
+        let category;
 
         this.typeList.forEach((item) => {
             if (item.value == catLabel) {
@@ -255,7 +255,7 @@ export class RecommendComponent implements OnInit {
             this._uploadIconService.emptyIconList();
             this._uploadIconService.addIcon(category.main_image);
 
-            let icons = [];
+            const icons = [];
             icons.push({
                 uid: -1,
                 name: 'xxx.png',

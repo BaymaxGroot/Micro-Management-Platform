@@ -34,11 +34,6 @@ export class SpecifyComponent implements OnInit {
         this._uploadIconService.maxUploadLimit = 1;
     }
 
-    ngOnInit() {
-        this.loadSpecifyList();
-        this.loadProductList();
-    }
-
     /**
      *
      */
@@ -46,7 +41,7 @@ export class SpecifyComponent implements OnInit {
     columnsSetting: STColumn[] = [
         {
             title: 'ID', index: 'spec_id', format: (item) => {
-                return 'S' + item['spec_id'];
+                return 'S' + item.spec_id;
             }
         },
         {title: '图标', index: 'image', type: 'img', width: 100},
@@ -81,7 +76,7 @@ export class SpecifyComponent implements OnInit {
                     text: '删除',
                     type: 'del',
                     click: (e: any) => {
-                        this.handleRemoveSpecify(parseInt(e['spec_id']));
+                        this.handleRemoveSpecify(parseInt(e.spec_id));
                     }
                 },
             ]
@@ -89,110 +84,14 @@ export class SpecifyComponent implements OnInit {
     ];
     specifyListData: STData[] = [];
 
-    loadSpecifyList(): void {
-        this.isLoadingList = true;
-        this.specifyListData = [];
-        this._microAppHttpClient.get(Interface.LoadSpecifyListEndPoint).subscribe((data) => {
-            if (data) {
-                this.specifyListData = data;
-                this.specifyListData.forEach((item) => {
-                    if (item['image']) {
-                        item['imagename'] = item['image'];
-                        item['image'] = environment.ICON_URL + '/' + item['image'];
-                    }
-                });
-            }
-            this.isLoadingList = false;
-        }, (err) => {
-
-        })
-    }
-
     productListData = [];
-    isLoadingProduct: boolean = false;
-
-    loadProductList(): void {
-        this.isLoadingProduct = true;
-        this._microAppHttpClient.get(Interface.LoadProductListEndPoint).subscribe((data) => {
-            if (data) {
-                data.forEach((item) => {
-                    this.productListData.push({
-                        label: item['name'],
-                        value: parseInt(item['id'])
-                    });
-                });
-            }
-            this.isLoadingProduct = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingProduct = false;
-        });
-    }
+    isLoadingProduct = false;
 
     /**
      * 添加 、 编辑 规格
      */
-    addOrEditSpecifyModalVisible: boolean = false;
+    addOrEditSpecifyModalVisible = false;
     isAddModal = true;
-
-    showAddSpecifyModal(): void {
-        if (this.isAddModal) {
-            this.handleAddOrEditFormDataInit();
-        }
-        this.addOrEditSpecifyModalVisible = true;
-    }
-
-    handleCreateSpecifyCancel(): void {
-        this.isAddModal = true;
-        this.handleAddOrEditFormDataInit();
-        this.addOrEditSpecifyModalVisible = false;
-    }
-
-    handleAddOrEditFormDataInit(e: any = {}): void {
-        this._uploadIconService.emptyIconList();
-        if (this.isAddModal) {
-            this.specifyFormData = {
-                product_id: 0,
-                name: '',
-                price: 0,
-                original_price: 0,
-                stock: 0,
-                weight: 0,
-                max_buy_num: 0,
-                min_buy_num: 0
-            }
-        } else {
-            this.editSpecifyLabel = parseInt(e['spec_id']);
-            this.specifyFormData = {
-                product_id: e['product_id'],
-                name: e['spec_name'],
-                price: e['price'],
-                original_price: e['original_price'],
-                stock: e['stock'],
-                weight: e['weight'],
-                max_buy_num: e['max_buy_num'],
-                min_buy_num: e['min_buy_num']
-            };
-            if (e['imagename']) {
-                this._uploadIconService.addIcon(e['imagename']);
-            }
-        }
-        if (e['imagename']) {
-            let icons = [];
-            icons.push({
-                uid: -1,
-                name: e['imagename'],
-                status: 'done',
-                url: e['image'],
-                response: {
-                    resource_id: 1,
-                },
-            });
-            this.specifySchema.properties.image.enum = icons;
-        } else {
-            this.specifySchema.properties.image.enum = null;
-        }
-    }
 
     specifyFormData: any;
     specifySchema: SFSchema = {
@@ -273,25 +172,126 @@ export class SpecifyComponent implements OnInit {
         ui: {},
         required: ['product_id', 'name', 'price', 'ori_price', 'stock', 'weight', 'max_buy_num', 'min_buy_num']
     };
-    isAddingOrEditingSpecify: boolean = false;
-    editSpecifyLabel: number = 0;
+    isAddingOrEditingSpecify = false;
+    editSpecifyLabel = 0;
+
+    ngOnInit() {
+        this.loadSpecifyList();
+        this.loadProductList();
+    }
+
+    loadSpecifyList(): void {
+        this.isLoadingList = true;
+        this.specifyListData = [];
+        this._microAppHttpClient.get(Interface.LoadSpecifyListEndPoint).subscribe((data) => {
+            if (data) {
+                this.specifyListData = data;
+                this.specifyListData.forEach((item) => {
+                    if (item.image) {
+                        item.imagename = item.image;
+                        item.image = environment.ICON_URL + '/' + item.image;
+                    }
+                });
+            }
+            this.isLoadingList = false;
+        }, (err) => {
+
+        })
+    }
+
+    loadProductList(): void {
+        this.isLoadingProduct = true;
+        this._microAppHttpClient.get(Interface.LoadProductListEndPoint).subscribe((data) => {
+            if (data) {
+                data.forEach((item) => {
+                    this.productListData.push({
+                        label: item.name,
+                        value: parseInt(item.id)
+                    });
+                });
+            }
+            this.isLoadingProduct = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingProduct = false;
+        });
+    }
+
+    showAddSpecifyModal(): void {
+        if (this.isAddModal) {
+            this.handleAddOrEditFormDataInit();
+        }
+        this.addOrEditSpecifyModalVisible = true;
+    }
+
+    handleCreateSpecifyCancel(): void {
+        this.isAddModal = true;
+        this.handleAddOrEditFormDataInit();
+        this.addOrEditSpecifyModalVisible = false;
+    }
+
+    handleAddOrEditFormDataInit(e: any = {}): void {
+        this._uploadIconService.emptyIconList();
+        if (this.isAddModal) {
+            this.specifyFormData = {
+                product_id: 0,
+                name: '',
+                price: 0,
+                original_price: 0,
+                stock: 0,
+                weight: 0,
+                max_buy_num: 0,
+                min_buy_num: 0
+            }
+        } else {
+            this.editSpecifyLabel = parseInt(e.spec_id);
+            this.specifyFormData = {
+                product_id: e.product_id,
+                name: e.spec_name,
+                price: e.price,
+                original_price: e.original_price,
+                stock: e.stock,
+                weight: e.weight,
+                max_buy_num: e.max_buy_num,
+                min_buy_num: e.min_buy_num
+            };
+            if (e.imagename) {
+                this._uploadIconService.addIcon(e.imagename);
+            }
+        }
+        if (e.imagename) {
+            const icons = [];
+            icons.push({
+                uid: -1,
+                name: e.imagename,
+                status: 'done',
+                url: e.image,
+                response: {
+                    resource_id: 1,
+                },
+            });
+            this.specifySchema.properties.image.enum = icons;
+        } else {
+            this.specifySchema.properties.image.enum = null;
+        }
+    }
 
     disableCreateOrEditSpecifySubmitButton(sf: SFComponent): boolean {
         return !sf.valid || this._uploadIconService.isUploding;
     }
 
     handleCreateOrEditSpecifySubmit(value): void {
-        let specifyTemplate = {
-            product_id: value['product_id'],
+        const specifyTemplate = {
+            product_id: value.product_id,
             spec_id: this.isAddModal ? 0 : this.editSpecifyLabel,
-            name: value['name'],
-            price: value['price'],
-            original_price: value['original_price'],
-            stock: value['stock'],
-            max_buy_num: value['max_buy_num'],
-            min_buy_num: value['min_buy_num'],
+            name: value.name,
+            price: value.price,
+            original_price: value.original_price,
+            stock: value.stock,
+            max_buy_num: value.max_buy_num,
+            min_buy_num: value.min_buy_num,
             image: this._uploadIconService.iconList[0] ? this._uploadIconService.iconList[0] : '',
-            weight: value['weight']
+            weight: value.weight
         };
         this.isAddingOrEditingSpecify = true;
         this._microAppHttpClient.post(Interface.AddOrModifySpecifyEndPoint, specifyTemplate).subscribe((data) => {
@@ -307,7 +307,7 @@ export class SpecifyComponent implements OnInit {
 
     handleRemoveSpecify(label: number): void {
         this.isLoadingList = true;
-        let removeSpecifyTemplate = {
+        const removeSpecifyTemplate = {
             spec_id: label
         };
         this._microAppHttpClient.post(Interface.DeleteSpecifyEndPoint, removeSpecifyTemplate).subscribe((data) => {

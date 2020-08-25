@@ -17,22 +17,9 @@ export class ParamsComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.loadSettingParams();
-    }
+    isLoading = false;
 
-    isLoading: boolean = false;
-    loadSettingParams() {
-        this.isLoading = true;
-        this._microAppHttpClient.get(Interface.GetParamsEndPoint).subscribe((data) => {
-            this.formData = data;
-            this.isLoading = false;
-        }, (err) => {
-            this.msg.error('获取配置参数出错!');
-        })
-    }
-
-    isSettingParams: boolean = false;
+    isSettingParams = false;
     formData: any;
     settingSchema: SFSchema = {
         properties: {
@@ -59,15 +46,28 @@ export class ParamsComponent implements OnInit {
         required: ['min_price', 'yunfei', 'refund_hour']
     };
 
+    ngOnInit() {
+        this.loadSettingParams();
+    }
+    loadSettingParams() {
+        this.isLoading = true;
+        this._microAppHttpClient.get(Interface.GetParamsEndPoint).subscribe((data) => {
+            this.formData = data;
+            this.isLoading = false;
+        }, (err) => {
+            this.msg.error('获取配置参数出错!');
+        })
+    }
+
     disableChangeSettingParamsSubmitButton(sf: SFComponent) {
         return !sf.valid;
     }
 
     handleSubmit(e: any) {
-        let changeSettingTemplate = {
-            yunfei: e['yunfei'],
-            refund_hour: e['refund_hour'],
-            min_price: e['min_price']
+        const changeSettingTemplate = {
+            yunfei: e.yunfei,
+            refund_hour: e.refund_hour,
+            min_price: e.min_price
         };
         this.isSettingParams = true;
         this._microAppHttpClient.post(Interface.SettingParamsEndPoint, changeSettingTemplate).subscribe((data) => {

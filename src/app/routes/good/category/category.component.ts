@@ -32,10 +32,6 @@ export class CategoryComponent implements OnInit {
         this._uploadIconService.maxUploadLimit = 1;
     }
 
-    ngOnInit() {
-        this.loadCategoryList();
-    }
-
     /**
      * 分类列表设置
      *
@@ -45,7 +41,7 @@ export class CategoryComponent implements OnInit {
     columnsSetting: STColumn[] = [
         {
             title: 'ID', index: 'clabel', format: (item) => {
-                return 'T' + item['clabel'];
+                return 'T' + item.clabel;
             }
         },
         {title: '分类名称', index: 'cname'},
@@ -75,7 +71,7 @@ export class CategoryComponent implements OnInit {
                     text: '删除',
                     type: 'del',
                     click: (e: any) => {
-                        this.handleRemoveCategory(parseInt(e['clabel']));
+                        this.handleRemoveCategory(parseInt(e.clabel));
                     }
                 },
             ]
@@ -85,122 +81,10 @@ export class CategoryComponent implements OnInit {
     categoryRootList = [];
 
     /**
-     * 加载分类列表
-     */
-    loadCategoryList(): void {
-        this.isLoadingList = true;
-        this.categoryRootList = [];
-        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
-            if (data) {
-                this.categoryListData = data;
-                this.categoryListData.forEach((item) => {
-                    item['iconname'] = item['cicon'];
-                    if (item['cicon']) {
-                        item['cicon'] = environment.ICON_URL + '/' + item['cicon'];
-                    }
-                    if (!item['cparent'] || parseInt(item['cparent']) == 0) {
-                        this.categoryRootList.push({
-                            label: item['cname'],
-                            value: parseInt(item['clabel'])
-                        });
-                    }
-                    if (item['root']) {
-                        let flag = true;
-                        this.categoryFilterList.forEach((ca) => {
-                            if (ca.text == item['root']) {
-                                flag = false;
-                                return;
-                            }
-                        });
-                        if (flag) {
-                            this.categoryFilterList.push({
-                                text: item['root'], value: item['root']
-                            });
-                        }
-                    }
-                });
-                this.categoryRootList.unshift({
-                    label: '无',
-                    value: 0
-                });
-                this.columnsSetting.forEach((item) => {
-                    if (item.title == '所属分类') {
-                        item.filter.menus = this.categoryFilterList;
-                    }
-                });
-            }
-            this.isLoadingList = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingList = false;
-        })
-    }
-
-    /**
      * 添加分类模态框
      */
-    addOrEditCategoryModalVisible: boolean = false;
+    addOrEditCategoryModalVisible = false;
     isAddModal = true;
-
-    /**
-     * 显示 添加/修改 Category 对话框
-     */
-    showAddCategoryModal(): void {
-        if (this.isAddModal) {
-            this.handleAddOrEditFormDataInit();
-        }
-        this.addOrEditCategoryModalVisible = true;
-    }
-
-    /**
-     * 隐藏 添加/修改 Category 对话框
-     */
-    handleCreateCategoryCancel(): void {
-        this.isAddModal = true;
-        this.handleAddOrEditFormDataInit();
-        this.addOrEditCategoryModalVisible = false;
-    }
-
-    /**
-     * 添加或者修改 Category Form 表单数据初始化
-     * @param e
-     */
-    handleAddOrEditFormDataInit(e: any = {}): void {
-        this._uploadIconService.emptyIconList();
-        if (this.isAddModal) {
-            this.categoryFormData = {
-                category: 0,
-                rank: 1,
-                show: false
-            };
-        } else {
-            this.editCategoryLabel = parseInt(e['clabel']);
-            this.categoryFormData = {
-                category: parseInt(e['cparent']),
-                name: e['cname'],
-                rank: parseInt(e['crank']),
-                show: e['cshow'] !== 'False'
-            };
-            if (e['iconname']) {
-                this._uploadIconService.addIcon(e['iconname']);
-            }
-        }
-        if (e['iconname']) {
-            let icons = [];
-            icons.push({
-                uid: -1,
-                name: e['iconname'],
-                status: 'done',
-                url: e['cicon'],
-                response: {
-                    resource_id: 1,
-                },
-            });
-            this.categorySchema.properties.icon.enum = icons;
-        } else {
-            this.categorySchema.properties.icon.enum = null;
-        }
-    }
 
     /**
      * 添加或者编辑分类表单
@@ -261,8 +145,124 @@ export class CategoryComponent implements OnInit {
         },
         required: ['category', 'name', 'rank']
     };
-    isAddingOrEditingCategory: boolean = false;
-    editCategoryLabel: number = 0;
+    isAddingOrEditingCategory = false;
+    editCategoryLabel = 0;
+
+    ngOnInit() {
+        this.loadCategoryList();
+    }
+
+    /**
+     * 加载分类列表
+     */
+    loadCategoryList(): void {
+        this.isLoadingList = true;
+        this.categoryRootList = [];
+        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
+            if (data) {
+                this.categoryListData = data;
+                this.categoryListData.forEach((item) => {
+                    item.iconname = item.cicon;
+                    if (item.cicon) {
+                        item.cicon = environment.ICON_URL + '/' + item.cicon;
+                    }
+                    if (!item.cparent || parseInt(item.cparent) == 0) {
+                        this.categoryRootList.push({
+                            label: item.cname,
+                            value: parseInt(item.clabel)
+                        });
+                    }
+                    if (item.root) {
+                        let flag = true;
+                        this.categoryFilterList.forEach((ca) => {
+                            if (ca.text == item.root) {
+                                flag = false;
+                                return;
+                            }
+                        });
+                        if (flag) {
+                            this.categoryFilterList.push({
+                                text: item.root, value: item.root
+                            });
+                        }
+                    }
+                });
+                this.categoryRootList.unshift({
+                    label: '无',
+                    value: 0
+                });
+                this.columnsSetting.forEach((item) => {
+                    if (item.title == '所属分类') {
+                        item.filter.menus = this.categoryFilterList;
+                    }
+                });
+            }
+            this.isLoadingList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingList = false;
+        })
+    }
+
+    /**
+     * 显示 添加/修改 Category 对话框
+     */
+    showAddCategoryModal(): void {
+        if (this.isAddModal) {
+            this.handleAddOrEditFormDataInit();
+        }
+        this.addOrEditCategoryModalVisible = true;
+    }
+
+    /**
+     * 隐藏 添加/修改 Category 对话框
+     */
+    handleCreateCategoryCancel(): void {
+        this.isAddModal = true;
+        this.handleAddOrEditFormDataInit();
+        this.addOrEditCategoryModalVisible = false;
+    }
+
+    /**
+     * 添加或者修改 Category Form 表单数据初始化
+     * @param e
+     */
+    handleAddOrEditFormDataInit(e: any = {}): void {
+        this._uploadIconService.emptyIconList();
+        if (this.isAddModal) {
+            this.categoryFormData = {
+                category: 0,
+                rank: 1,
+                show: false
+            };
+        } else {
+            this.editCategoryLabel = parseInt(e.clabel);
+            this.categoryFormData = {
+                category: parseInt(e.cparent),
+                name: e.cname,
+                rank: parseInt(e.crank),
+                show: e.cshow !== 'False'
+            };
+            if (e.iconname) {
+                this._uploadIconService.addIcon(e.iconname);
+            }
+        }
+        if (e.iconname) {
+            const icons = [];
+            icons.push({
+                uid: -1,
+                name: e.iconname,
+                status: 'done',
+                url: e.cicon,
+                response: {
+                    resource_id: 1,
+                },
+            });
+            this.categorySchema.properties.icon.enum = icons;
+        } else {
+            this.categorySchema.properties.icon.enum = null;
+        }
+    }
 
     /**
      * Submit 按钮是否可用
@@ -277,13 +277,13 @@ export class CategoryComponent implements OnInit {
      * @param value
      */
     handleCreateOrEditCategorySubmit(value: any): void {
-        let categoryTemplate = {
+        const categoryTemplate = {
             clabel: this.isAddModal ? 0 : this.editCategoryLabel,
-            cname: value['name'] ? value['name'] : 0,
+            cname: value.name ? value.name : 0,
             cicon: this._uploadIconService.iconList[0] ? this._uploadIconService.iconList[0] : '',
-            cshow: value['show'] ? value['show'] : 0,
-            crank: value['rank'] ? value['rank'] : 1,
-            cparent: value['category'] ? value['category'] : 0
+            cshow: value.show ? value.show : 0,
+            crank: value.rank ? value.rank : 1,
+            cparent: value.category ? value.category : 0
         };
         this.isAddingOrEditingCategory = true;
         this._microAppHttpClient.post(Interface.AddOrEditProductCategoryInfoEndPoint, categoryTemplate).subscribe((data) => {
@@ -303,7 +303,7 @@ export class CategoryComponent implements OnInit {
      */
     handleRemoveCategory(label: number) {
         this.isLoadingList = true;
-        let removeCategoryTemplate = {
+        const removeCategoryTemplate = {
             clabel: label
         };
         this._microAppHttpClient.post(Interface.RemoveProductCategoryEndPoint, removeCategoryTemplate).subscribe((data) => {

@@ -22,17 +22,13 @@ export class MemberComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.loadUserList();
-    }
-
     /**
      * 用户列表
      */
     columnsSetting: STColumn[] = [
         {
             title: 'ID', index: 'member_id', format: (item) => {
-                return 'V' + item['member_id'];
+                return 'V' + item.member_id;
             }
         },
         {
@@ -58,8 +54,16 @@ export class MemberComponent implements OnInit {
 
     ];
 
-    isLoading: boolean = false;
+    isLoading = false;
     userList = [];
+
+    isAccountDetailModalVisible = false;
+    isLoadingAccountDetail = true;
+    accountDetails: any[];
+
+    ngOnInit() {
+        this.loadUserList();
+    }
 
     loadUserList() {
         this.isLoading = true;
@@ -70,10 +74,6 @@ export class MemberComponent implements OnInit {
             this.msg.error('加载用户列表失败!');
         });
     }
-
-    isAccountDetailModalVisible: boolean = false;
-    isLoadingAccountDetail: boolean = true;
-    accountDetails: any[];
 
     showAccountDetailModal(e: any): void {
         this.isAccountDetailModalVisible = true;
@@ -87,7 +87,7 @@ export class MemberComponent implements OnInit {
     generateAccountDetail(e: any): void {
         this.isLoadingAccountDetail = true;
         this.accountDetails = [];
-        this._microAppHttpClient.get(`${Interface.GenerateAccountDetailEndPoint}?id=${Number(e['member_id'])}`).subscribe((data) => {
+        this._microAppHttpClient.get(`${Interface.GenerateAccountDetailEndPoint}?id=${Number(e.member_id)}`).subscribe((data) => {
             if (data) {
                 this.accountDetails = data;
             }

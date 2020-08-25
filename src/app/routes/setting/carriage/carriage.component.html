@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-08-25 09:57:38
+ * @LastEditTime: 2020-08-25 14:38:46
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \Micro-Management-Platform\src\app\routes\setting\carriage\carriage.component.html
+-->
 <page-header [title]="''" [breadcrumb]="breadcrumb">
     <ng-template #breadcrumb>
         <nz-breadcrumb>
@@ -8,35 +16,30 @@
 </page-header>
 
 <div class="ant-row">
-    <nz-card nzTitle="运费规则一览" [nzExtra]="carriageExtra" [nzLoading]="isLoadingList" *ngIf="!isCarriageDetailListVisible && !addCarriageModalVisible">
+    <nz-card nzTitle="运费规则一览" [nzExtra]="carriageExtra" [nzLoading]="isLoadingList"
+        *ngIf="!isCarriageDetailListVisible && !addCarriageModalVisible">
         <st *ngIf="!isLoadingList" [data]="carriageList" [columns]="carriageColumnSettings" [loadingDelay]="1000"></st>
     </nz-card>
     <ng-template #carriageExtra>
-        <button nz-button nz-dropdown nzType="primary" [nzDropdownMenu]="addCarriageDropDownBtn"><i nz-icon nzType="plus"></i>添加运费规则</button>
-        <nz-dropdown-menu #addCarriageDropDownBtn="nzDropdownMenu">
-          <ul nz-menu>
-            <li nz-menu-item (click)="handleAddCarriageEvent(1)">添加供应商运费规则</li>
-            <li nz-menu-item (click)="handleAddCarriageEvent(2)">添加特定商品运费规则</li>
-          </ul>
-        </nz-dropdown-menu>
+        <button nz-button nzType="primary" (click)="handleAddCarriageShowEvent()"><i nz-icon
+                nzType="plus"></i>添加运费规则</button>
     </ng-template>
 
-    <nz-card nzTitle="供应商 - {{carriageRuleListShopName}} - {{carriageRuleListSubTitle}}运费规则" [nzExtra]="carriageDetailListExtra" *ngIf="isCarriageDetailListVisible">
+    <nz-card nzTitle="供应商 - {{carriageRuleListShopName}} - {{carriageRuleListSubTitle}}运费规则"
+        [nzExtra]="carriageDetailListExtra" *ngIf="isCarriageDetailListVisible">
         <st [data]="carriageRuleListType == 1? carriageRuleListShopRuleList:carriageRuleListProductRuleList"
-            [columns]="carriageRuleListType == 1? carriageRuleListShopRuleColumnSettings:carriageRuleListProductRuleColumnSettings" [loadingDelay]="50"></st>
+            [columns]="carriageRuleListType == 1? carriageRuleListShopRuleColumnSettings:carriageRuleListProductRuleColumnSettings"
+            [loadingDelay]="50"></st>
     </nz-card>
     <ng-template #carriageDetailListExtra>
         <button nz-button nzType="primary" (click)="handleHideShopOrProductRuleList()">返回</button>
     </ng-template>
 
     <!-- 运费规则编辑 -->
-    <nz-card nzTitle="分销商编辑" [nzExtra]="carriageAddExtra" *ngIf="addCarriageModalVisible">
-<!--        <sf #sf *ngIf="!isLoadingList" [mode]="'edit'" [schema]="deliverySchema" [formData]="deliveryFormData" [button]="null" [noColon]="true">-->
-<!--            <button nz-button type="button" (click)="handleCreateOrEditDeliveryCancel()">关闭</button>-->
-<!--            <button nz-button type="submit" [nzType]="'primary'" (click)="handleCreateOrEditDeliverySubmit(sf.value)" [disabled]="disableCreateOrEditDeliverySubmitButton(sf)"-->
-<!--                    [nzLoading]="isAddingOrEditingDelivery">保存-->
-<!--            </button>-->
-<!--        </sf>-->
+    <nz-card nzTitle="添加运费规则" [nzExtra]="carriageAddExtra" *ngIf="addCarriageModalVisible">
+        <sf *ngIf="true" [mode]="'edit'" [schema]="addCarriageSchema" [noColon]="true"
+            (formSubmit)="handleAddCarriageSubmit($event)">
+        </sf>
     </nz-card>
     <ng-template #carriageAddExtra>
         <button nz-button nzType="primary" (click)="handleAddCarriageHideEvent()">返回</button>

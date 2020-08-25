@@ -12,8 +12,6 @@ import {MicroAppService} from "@core/net/micro-app.service";
 })
 export class SellComponent implements OnInit {
 
-    orderDateRange: Date[];
-
     constructor(
         public lodopSrv: LodopService,
         private settingService: SettingsService,
@@ -22,17 +20,12 @@ export class SellComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.loadSellList();
-        // setInterval(() => {
-        //     this.loadSellList()
-        // }, 1000 * 60 * 2);
-    }
+    orderDateRange: Date[];
 
     checkboxSelectedList: STData[] = [];
-    isPrintingExcel: boolean = false;
+    isPrintingExcel = false;
 
-    isLoadingList: boolean = false;
+    isLoadingList = false;
     sellList = [];
     showSellList = [];
     sellColumnSetting: STColumn[] = [
@@ -71,6 +64,28 @@ export class SellComponent implements OnInit {
         }
     ];
 
+
+    cog: any = {
+        url: 'https://localhost:8443/CLodopfuncs.js',
+        printer: '',
+        paper: '',
+        html: '',
+    };
+    isPrintOrder = false;
+    error = false;
+    lodop: Lodop | null = null;
+    pinters: any[] = [];
+    papers: string[] = [];
+
+    printing = false;
+
+    ngOnInit() {
+        this.loadSellList();
+        // setInterval(() => {
+        //     this.loadSellList()
+        // }, 1000 * 60 * 2);
+    }
+
     loadSellList() {
         this.isLoadingList = true;
         this.sellList = [];
@@ -79,8 +94,8 @@ export class SellComponent implements OnInit {
             if (data) {
                 this.sellList = data;
                 this.sellList.forEach((item) => {
-                    item['check'] = 0;
-                    item['expand'] = true;
+                    item.check = 0;
+                    item.expand = true;
                 });
                 this.showSellList = this.sellList;
                 this.filterOrderAccordingDate(this.orderDateRange);
@@ -99,9 +114,9 @@ export class SellComponent implements OnInit {
     }
 
     getCheckBoxSelectedIDList(): string[] {
-        let pids: string[] = [];
+        const pids: string[] = [];
         this.checkboxSelectedList.forEach((item) => {
-            pids.push(item['order_id']);
+            pids.push(item.order_id);
         });
         return pids;
     }
@@ -109,7 +124,7 @@ export class SellComponent implements OnInit {
     handlePrintOrder(order_nums: string[]) {
         this.isPrintingExcel = true;
 
-        let downloadExcelTemplate = {
+        const downloadExcelTemplate = {
             ids: order_nums.join('-')
         };
 
@@ -151,9 +166,9 @@ export class SellComponent implements OnInit {
 
             if (result && result.length > 0) {
                 this.showSellList = this.sellList.filter((value, index) => {
-                    let temDate = (new Date(value['date'])).getTime();
-                    let begin = result[0].getTime();
-                    let end = result[1].getTime();
+                    const temDate = (new Date(value.date)).getTime();
+                    const begin = result[0].getTime();
+                    const end = result[1].getTime();
 
                     return temDate >= begin && temDate <= end;
                 })
@@ -167,7 +182,7 @@ export class SellComponent implements OnInit {
     }
 
     OrderDelivery(order_id: string, state: number) {
-        let OrderDeliveryTemplate = {
+        const OrderDeliveryTemplate = {
             'order_id': parseInt(order_id),
             'shop_id': parseInt(this.settingService.user.shop),
             'state': state
@@ -180,28 +195,13 @@ export class SellComponent implements OnInit {
         })
     }
 
-
-    cog: any = {
-        url: 'https://localhost:8443/CLodopfuncs.js',
-        printer: '',
-        paper: '',
-        html: '',
-    };
-    isPrintOrder: boolean = false;
-    error = false;
-    lodop: Lodop | null = null;
-    pinters: any[] = [];
-    papers: string[] = [];
-
-    printing = false;
-
     printOrder(value: any) {
         this.isPrintOrder = true;
 
-        let order = value['order_number'];
-        let mdate = value['date'];
-        let account = value['member_name'];
-        let expressinfo = value['express_info'];
+        const order = value.order_number;
+        const mdate = value.date;
+        const account = value.member_name;
+        const expressinfo = value.express_info;
 
         let content = `
             商品名称 数量 单价 小计
@@ -217,7 +217,7 @@ export class SellComponent implements OnInit {
             合计 ${value.total_price}元
         `;
 
-        let mhtml = `
+        const mhtml = `
             订单编号: ${order}
             下单时间: ${mdate}
             下单账户: ${account}

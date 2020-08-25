@@ -105,6 +105,17 @@ export class RechargeComponent implements OnInit {
     checkboxSelectedList: STData[] = [];
     isBatchRecharging = false;
 
+    employee_ids: string;
+
+    /**
+     * 手机验证码过程
+     */
+    isPhoneCodeVisible = false;
+    isRetrievingPhoneCode = false;
+    isSuccessGeneratePhoneCode = false;
+    phone: string = null;
+    code: string = null;
+
     ngOnInit() {
         this.loadEnterpriseRechargeLog();
     }
@@ -288,8 +299,6 @@ export class RechargeComponent implements OnInit {
         });
     }
 
-    employee_ids: string;
-
     handleBatchRecharge(): void {
 
         this.isBatchRecharging = true;
@@ -313,15 +322,6 @@ export class RechargeComponent implements OnInit {
         });
 
     }
-
-    /**
-     * 手机验证码过程
-     */
-    isPhoneCodeVisible = false;
-    isRetrievingPhoneCode = false;
-    isSuccessGeneratePhoneCode = false;
-    phone: string = null;
-    code: string = null;
 
     showPhoneCodeModal(value: any): void {
         this.employee_ids = value.join(',');

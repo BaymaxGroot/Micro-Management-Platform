@@ -9,10 +9,10 @@ import {environment} from "@env/environment";
 })
 export class UploadIconService {
 
-    private _minUploadLimit: number = 0;
-    private _maxUploadLimit: number = 1;
+    private _minUploadLimit = 0;
+    private _maxUploadLimit = 1;
     private _iconList: string[] = [];
-    private _isUploding: boolean = false;
+    private _isUploding = false;
 
     constructor(
         private http: HttpClient,

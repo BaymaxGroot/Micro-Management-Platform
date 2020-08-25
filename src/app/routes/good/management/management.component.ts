@@ -30,8 +30,6 @@ const TAG: STColumnTag = {
     styleUrls: ['./management.component.less']
 })
 export class ManagementComponent implements OnInit {
-    private _uploadIconsService: UploadIconService;
-    private _uploadDetailIconService: UploadIconService;
 
     constructor(
         private fb: FormBuilder,
@@ -47,12 +45,8 @@ export class ManagementComponent implements OnInit {
         this._uploadDetailIconService = new UploadIconService(_httpClient, msg);
         this._uploadDetailIconService.maxUploadLimit = 10;
     }
-
-    ngOnInit() {
-        this.loadProductList();
-        this.loadCategoryList();
-        this.loadShopList();
-    }
+    private _uploadIconsService: UploadIconService;
+    private _uploadDetailIconService: UploadIconService;
 
     /**
      * 商品列表设置
@@ -63,7 +57,7 @@ export class ManagementComponent implements OnInit {
         {title: '编号', index: 'check', type: 'checkbox'},
         {
             title: 'ID', index: 'id', format: (item) => {
-                return 'P' + item['id'];
+                return 'P' + item.id;
             }
         },
         {
@@ -131,110 +125,19 @@ export class ManagementComponent implements OnInit {
     checkboxSelectedList: STData[] = [];
 
     /**
-     * 加载商品列表
-     */
-    loadProductList() {
-        // 数据初始化
-        this.isLoadingList = true;
-        this.productListData = [];
-        this.typeFilterList = [];
-        this.checkboxSelectedList = [];
-        this.productRootList = [];
-
-        this._microAppHttpClient.get(Interface.LoadProductListEndPoint).subscribe((data) => {
-            if (data) {
-                this.productListData = data;
-                this.productListData.forEach((item) => {
-                    this.productRootList.push({
-                        title: item['name'],
-                        key: item['id']
-                    });
-                    item['check'] = 0;
-                    if (item['main_image']) {
-                        item['main_image_url'] = environment.ICON_URL + '/' + item['main_image'];
-                    }
-                    if (item['cname']) {
-                        let flag = true;
-                        this.typeFilterList.forEach((ca) => {
-                            if (ca.text == item['cname']) {
-                                flag = false;
-                                return;
-                            }
-                        });
-                        if (flag) {
-                            this.typeFilterList.push({
-                                text: item['cname'], value: item['cname']
-                            });
-                        }
-                    }
-                });
-            }
-            this.columnsSetting.forEach((item) => {
-                if (item.title == '商品类型') {
-                    item.filter.menus = this.typeFilterList;
-                }
-            });
-            this.isLoadingList = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingList = false;
-        })
-    }
-
-    /**
      * 加载商品分类信息
      */
     isLoadingCategoryList = false;
-
-    loadCategoryList() {
-        this.isLoadingCategoryList = true;
-        this.categoryRootList = [];
-        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
-            if (data) {
-                data.forEach((item) => {
-                    if (Number(item['cparent']) !== 0) {
-                        this.categoryRootList.push({
-                            label: item['cname'],
-                            value: parseInt(item['clabel'])
-                        });
-                    }
-                });
-            }
-            this.isLoadingCategoryList = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingCategoryList = false;
-        })
-    }
 
     /**
      * 加载商户信息
      */
     isLoadingShopList = false;
 
-    loadShopList() {
-        this.isLoadingShopList = true;
-        this.shopList = [];
-        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe((data) => {
-            if (data) {
-                data.forEach((item) => {
-                    this.shopList.push({
-                        label: item['name'],
-                        value: parseInt(item['shop_id'])
-                    });
-                });
-            }
-            this.isLoadingShopList = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingShopList = false;
-        })
-    }
-
     /**
      * 添加 / 修改 商品信息模块
      */
-    addOrEditProductModalVisible: boolean = false;
+    addOrEditProductModalVisible = false;
     isAddModal = true;
     productFormData: any;
     categoryRootList = [];
@@ -529,8 +432,124 @@ export class ManagementComponent implements OnInit {
         },
         required: ['category', 'shop', 'name', 'price', 'ori_price', 'stock']
     };
-    isAddingOrEditingProduct: boolean = false;
-    editProductLabel: number = 0;
+    isAddingOrEditingProduct = false;
+    editProductLabel = 0;
+
+    /**
+     * 批量修改库存 相关参数
+     */
+    batchModifyModalShow = false;
+    modifyProductStockSchema: SFSchema = {
+        properties: {
+            stock: {
+                type: 'number',
+                title: '库存设置',
+                minimum: 0,
+                description: '提交后, 勾选的商品不管是单规格还是多规格库存都会改成设置的库存.',
+                default: 0
+            }
+        },
+        required: ['stock']
+    };
+    modifyProductStockFormData: any;
+    modifyProductStockSubmitting = false;
+
+    ngOnInit() {
+        this.loadProductList();
+        this.loadCategoryList();
+        this.loadShopList();
+    }
+
+    /**
+     * 加载商品列表
+     */
+    loadProductList() {
+        // 数据初始化
+        this.isLoadingList = true;
+        this.productListData = [];
+        this.typeFilterList = [];
+        this.checkboxSelectedList = [];
+        this.productRootList = [];
+
+        this._microAppHttpClient.get(Interface.LoadProductListEndPoint).subscribe((data) => {
+            if (data) {
+                this.productListData = data;
+                this.productListData.forEach((item) => {
+                    this.productRootList.push({
+                        title: item.name,
+                        key: item.id
+                    });
+                    item.check = 0;
+                    if (item.main_image) {
+                        item.main_image_url = environment.ICON_URL + '/' + item.main_image;
+                    }
+                    if (item.cname) {
+                        let flag = true;
+                        this.typeFilterList.forEach((ca) => {
+                            if (ca.text == item.cname) {
+                                flag = false;
+                                return;
+                            }
+                        });
+                        if (flag) {
+                            this.typeFilterList.push({
+                                text: item.cname, value: item.cname
+                            });
+                        }
+                    }
+                });
+            }
+            this.columnsSetting.forEach((item) => {
+                if (item.title == '商品类型') {
+                    item.filter.menus = this.typeFilterList;
+                }
+            });
+            this.isLoadingList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingList = false;
+        })
+    }
+
+    loadCategoryList() {
+        this.isLoadingCategoryList = true;
+        this.categoryRootList = [];
+        this._microAppHttpClient.get(Interface.LoadProductCategoryListEndPoint).subscribe((data) => {
+            if (data) {
+                data.forEach((item) => {
+                    if (Number(item.cparent) !== 0) {
+                        this.categoryRootList.push({
+                            label: item.cname,
+                            value: parseInt(item.clabel)
+                        });
+                    }
+                });
+            }
+            this.isLoadingCategoryList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingCategoryList = false;
+        })
+    }
+
+    loadShopList() {
+        this.isLoadingShopList = true;
+        this.shopList = [];
+        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe((data) => {
+            if (data) {
+                data.forEach((item) => {
+                    this.shopList.push({
+                        label: item.name,
+                        value: parseInt(item.shop_id)
+                    });
+                });
+            }
+            this.isLoadingShopList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingShopList = false;
+        })
+    }
 
     /**
      * 打开添加商品 对话框
@@ -581,50 +600,50 @@ export class ManagementComponent implements OnInit {
                 add_home_rec: 0
             };
         } else {
-            this.editProductLabel = parseInt(e['id']);
+            this.editProductLabel = parseInt(e.id);
             this.productFormData = {
-                category: parseInt(e['cat_id']),
-                shop: parseInt(e['shop_id']),
-                name: e['name'],
-                sub_title: e['sub_title'],
-                unit: e['unit'],
-                weight: e['weight'],
-                rank: e['sort'],
-                stock: e['stock'],
-                v_sales: e['fake_sales'],
-                v_visit: e['fake_views'],
-                price: e['price'],
-                ori_price: e['original_price'],
-                purchase: e['min_buy_num'],
-                purchase_limit: e['max_buy_num'],
-                activity_tag: e['tags'],
-                address: e['address'],
-                delivery_type: parseInt(e['delivery']),
-                product_rec: e['related_product'].split(','),
-                add_home_rec: parseInt(e['is_recommend'])
+                category: parseInt(e.cat_id),
+                shop: parseInt(e.shop_id),
+                name: e.name,
+                sub_title: e.sub_title,
+                unit: e.unit,
+                weight: e.weight,
+                rank: e.sort,
+                stock: e.stock,
+                v_sales: e.fake_sales,
+                v_visit: e.fake_views,
+                price: e.price,
+                ori_price: e.original_price,
+                purchase: e.min_buy_num,
+                purchase_limit: e.max_buy_num,
+                activity_tag: e.tags,
+                address: e.address,
+                delivery_type: parseInt(e.delivery),
+                product_rec: e.related_product.split(','),
+                add_home_rec: parseInt(e.is_recommend)
             };
-            if (e['main_image']) {
-                this._uploadMainImageService.addIcon(e['main_image']);
+            if (e.main_image) {
+                this._uploadMainImageService.addIcon(e.main_image);
             }
-            if (e['images']) {
-                e['images'].split(',').forEach((item) => {
+            if (e.images) {
+                e.images.split(',').forEach((item) => {
                     this._uploadIconsService.addIcon(item);
                 })
             }
-            if (e['summary']) {
-                e['summary'].split(',').forEach((item) => {
+            if (e.summary) {
+                e.summary.split(',').forEach((item) => {
                     this._uploadDetailIconService.addIcon(item);
                 })
             }
         }
 
-        if (e['main_image']) {
-            let icons = [];
+        if (e.main_image) {
+            const icons = [];
             icons.push({
                 uid: Math.ceil(Math.random() * 10000000),
                 name: 'xxx.png',
                 status: 'done',
-                url: environment.ICON_URL + '/' + e['main_image'],
+                url: environment.ICON_URL + '/' + e.main_image,
                 response: {
                     resource_id: 1,
                 },
@@ -633,9 +652,9 @@ export class ManagementComponent implements OnInit {
         } else {
             this.productSchema.properties.main_icon.enum = [];
         }
-        if (e['images']) {
-            let icons = [];
-            e['images'].split(',').forEach((item) => {
+        if (e.images) {
+            const icons = [];
+            e.images.split(',').forEach((item) => {
                 icons.push({
                     uid: Math.ceil(Math.random() * 10000000),
                     name: 'xxx.png',
@@ -650,9 +669,9 @@ export class ManagementComponent implements OnInit {
         } else {
             this.productSchema.properties.icons.enum = [];
         }
-        if (e['summary']) {
-            let icons = [];
-            e['summary'].split(',').forEach((item) => {
+        if (e.summary) {
+            const icons = [];
+            e.summary.split(',').forEach((item) => {
                 icons.push({
                     uid: Math.ceil(Math.random() * 10000000),
                     name: 'xxx.png',
@@ -693,7 +712,7 @@ export class ManagementComponent implements OnInit {
             return;
         }
 
-        let createOrEditProductTemplate = {
+        const createOrEditProductTemplate = {
             'id': this.isAddModal ? 0 : this.editProductLabel,
             'cat_id': parseInt(value.category),
             'shop_id': parseInt(value.shop),
@@ -737,7 +756,7 @@ export class ManagementComponent implements OnInit {
      */
     handleRemoveProduct(pid: number[]) {
         this.isLoadingList = true;
-        let removeProductTemplate = {
+        const removeProductTemplate = {
             id_list: pid
         };
         this._microAppHttpClient.post(Interface.RemoveProductEndPoint, removeProductTemplate).subscribe((data) => {
@@ -755,7 +774,7 @@ export class ManagementComponent implements OnInit {
      */
     handleDownOrUpProduct(pid: number[], tag: boolean) {
         this.isLoadingList = true;
-        let changeProductStatusTemplate = {
+        const changeProductStatusTemplate = {
             id_list: pid,
             status: tag ? 1 : 0
         };
@@ -766,25 +785,6 @@ export class ManagementComponent implements OnInit {
             this.msg.error(`${tag ? '上架' : '下架'}商品失败, 请重新操作!`);
         });
     }
-
-    /**
-     * 批量修改库存 相关参数
-     */
-    batchModifyModalShow: boolean = false;
-    modifyProductStockSchema: SFSchema = {
-        properties: {
-            stock: {
-                type: 'number',
-                title: '库存设置',
-                minimum: 0,
-                description: '提交后, 勾选的商品不管是单规格还是多规格库存都会改成设置的库存.',
-                default: 0
-            }
-        },
-        required: ['stock']
-    };
-    modifyProductStockFormData: any;
-    modifyProductStockSubmitting: boolean = false;
 
     /**
      * 响应点击批量修改库存按钮事件
@@ -809,7 +809,7 @@ export class ManagementComponent implements OnInit {
      */
     handleBatchModifyProductStockSubmit(value: any) {
         this.modifyProductStockSubmitting = true;
-        let changeProductStockTemplate = {
+        const changeProductStockTemplate = {
             id_list: this.getCheckBoxSelectedIDList(),
             stock: value.stock
         };
@@ -838,9 +838,9 @@ export class ManagementComponent implements OnInit {
      * 得到Checkbox 选中的 商品ID List
      */
     getCheckBoxSelectedIDList(): number[] {
-        let pids: number[] = [];
+        const pids: number[] = [];
         this.checkboxSelectedList.forEach((item) => {
-            pids.push(parseInt(item['id']));
+            pids.push(parseInt(item.id));
         });
         return pids;
     }

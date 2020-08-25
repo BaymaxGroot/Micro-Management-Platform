@@ -23,12 +23,8 @@ export class ListComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.isLoadingDistributorList();
-    }
-
     // 加载供应商列表
-    isLoadingList: boolean = false;
+    isLoadingList = false;
     distributorList = [];
     distributorColumnSetting: STColumn[] = [
         {
@@ -46,7 +42,7 @@ export class ListComponent implements OnInit {
                     text: (record) => {
                         return record.status == 1 ? '隐藏' : '显示';
                     }, type: 'none', click: ((record) => {
-                      this.handleChangeDistributorStatus(parseInt(record['shop_id']), record['status'] == 0);
+                      this.handleChangeDistributorStatus(parseInt(record.shop_id), record.status == 0);
                     })
                 },
                 {
@@ -70,44 +66,15 @@ export class ListComponent implements OnInit {
                     text: '删除',
                     type: 'del',
                     click: (record) => {
-                        this.handleRemoveDelivery(parseInt(record['shop_id']));
+                        this.handleRemoveDelivery(parseInt(record.shop_id));
                     }
                 }
             ]
         }
     ];
 
-    isLoadingDistributorList() {
-        this.isLoadingList = true;
-        this.distributorList = [];
-        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe((data) => {
-            if (data) {
-                this.distributorList = data;
-            }
-            this.isLoadingList = false;
-        }, (err) => {
-            this.msg.error('请求失败, 请重试！');
-            this.isLoadingList = false;
-        })
-    }
-
-    // 修改分销商状态
-    handleChangeDistributorStatus(shop_id: number, status: boolean) {
-        let changeDistributorStatusTemplate = {
-            shop_id: shop_id,
-            status: status? 1:0
-        };
-        this.isLoadingList = true;
-        this._microAppHttpClient.post(Interface.DistributorStatusSetEndPoint, changeDistributorStatusTemplate).subscribe((data) => {
-           this.msg.info(`${status ? '显示' : '隐藏'}分销商成功!`);
-            this.isLoadingDistributorList();
-        }, (err) => {
-            this.msg.error(`${status ? '显示' : '隐藏'}分销商失败, 请重新操作!`);
-        });
-    }
-
     // 添加/修改 供应商 信息
-    addOrEditDeliveryModalVisible: boolean = false;
+    addOrEditDeliveryModalVisible = false;
     isAddModal = true;
     deliveryFormData: any;
     deliverySchema: SFSchema = {
@@ -136,8 +103,60 @@ export class ListComponent implements OnInit {
         },
         required: ['name', 'owner', 'mobile', 'status']
     };
-    isAddingOrEditingDelivery: boolean = false;
-    editDeliveryLabel: number = 0;
+    isAddingOrEditingDelivery = false;
+    editDeliveryLabel = 0;
+
+    showShopSellModal = false;
+    isLoadingSellList = false;
+    sellList = [];
+    sellColumnSetting: STColumn[] = [
+        {
+            title: '订单编号', index: 'order_number'
+        },
+        {title: '发货时间', index: 'delivery_time'},
+        {title: '总价格', index: 'total_price'},
+        {title: '状态', index: 'status', format: (item) => {
+                switch (parseInt(item.status)) {
+                    case 1:
+                        return '已打款';
+                    case 0:
+                        return '未打款';
+                }
+            }},
+    ];
+
+    ngOnInit() {
+        this.isLoadingDistributorList();
+    }
+
+    isLoadingDistributorList() {
+        this.isLoadingList = true;
+        this.distributorList = [];
+        this._microAppHttpClient.get(Interface.LoadDistributorListEndPoint).subscribe((data) => {
+            if (data) {
+                this.distributorList = data;
+            }
+            this.isLoadingList = false;
+        }, (err) => {
+            this.msg.error('请求失败, 请重试！');
+            this.isLoadingList = false;
+        })
+    }
+
+    // 修改分销商状态
+    handleChangeDistributorStatus(shop_id: number, status: boolean) {
+        const changeDistributorStatusTemplate = {
+            shop_id,
+            status: status? 1:0
+        };
+        this.isLoadingList = true;
+        this._microAppHttpClient.post(Interface.DistributorStatusSetEndPoint, changeDistributorStatusTemplate).subscribe((data) => {
+           this.msg.info(`${status ? '显示' : '隐藏'}分销商成功!`);
+            this.isLoadingDistributorList();
+        }, (err) => {
+            this.msg.error(`${status ? '显示' : '隐藏'}分销商失败, 请重新操作!`);
+        });
+    }
 
     showAddOrDeliveryModal(): void {
         if (this.isAddModal) {
@@ -161,12 +180,12 @@ export class ListComponent implements OnInit {
                 status: false
             }
         } else {
-            this.editDeliveryLabel = e['shop_id'];
+            this.editDeliveryLabel = e.shop_id;
             this.deliveryFormData = {
-                name: e['name'],
-                owner: e['owner'],
-                mobile: e['mobile'],
-                status: parseInt(e['status']) != 0
+                name: e.name,
+                owner: e.owner,
+                mobile: e.mobile,
+                status: parseInt(e.status) != 0
             }
         }
     }
@@ -176,12 +195,12 @@ export class ListComponent implements OnInit {
     }
 
     handleCreateOrEditDeliverySubmit(value: any): void {
-        let deliveryTemplate = {
+        const deliveryTemplate = {
             shop_id: this.isAddModal ? 0 : this.editDeliveryLabel,
-            name: value['name'],
-            owner: value['owner'],
-            mobile: value['mobile'],
-            status: value['status']
+            name: value.name,
+            owner: value.owner,
+            mobile: value.mobile,
+            status: value.status
         };
         this.isAddingOrEditingDelivery = true;
         this._microAppHttpClient.post(Interface.AddDistributorEndPoint, deliveryTemplate).subscribe((data) => {
@@ -198,7 +217,7 @@ export class ListComponent implements OnInit {
 
     handleRemoveDelivery(label: number) {
         this.isLoadingList = true;
-        let removeDeliveryTemplate = {
+        const removeDeliveryTemplate = {
             shop_id: label
         };
         this._microAppHttpClient.post(Interface.DeleteDistributorEndPoint, removeDeliveryTemplate).subscribe((data) => {
@@ -208,28 +227,9 @@ export class ListComponent implements OnInit {
             this.msg.error('删除分销商信息失败, 请重新删除!');
         })
     }
-
-    showShopSellModal: boolean = false;
     handleHideShopSellModal() {
         this.showShopSellModal = false;
     }
-    isLoadingSellList: boolean = false;
-    sellList = [];
-    sellColumnSetting: STColumn[] = [
-        {
-            title: '订单编号', index: 'order_number'
-        },
-        {title: '发货时间', index: 'delivery_time'},
-        {title: '总价格', index: 'total_price'},
-        {title: '状态', index: 'status', format: (item) => {
-                switch (parseInt(item.status)) {
-                    case 1:
-                        return '已打款';
-                    case 0:
-                        return '未打款';
-                }
-            }},
-    ];
 
     loadSellList(shop) {
          this.isLoadingSellList = true;

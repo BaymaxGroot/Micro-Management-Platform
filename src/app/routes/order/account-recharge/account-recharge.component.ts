@@ -12,25 +12,21 @@ import {SFComponent, SFSchema} from "@delon/form";
 })
 export class AccountRechargeComponent implements OnInit {
 
-    objectKeys = Object.keys;
-    orderDateRange: Date[];
-
     constructor(
         private msg: NzMessageService,
         private _microAppHttpClient: MicroAppService,
     ) {
     }
 
-    ngOnInit() {
-        this.loadOrderList();
-    }
+    objectKeys = Object.keys;
+    orderDateRange: Date[];
 
     checkboxSelectedList: STData[] = [];
-    isPrintingExcel: boolean = false;
+    isPrintingExcel = false;
     /**
      * 账户充值订单列表
      */
-    isLoadingOrderList: boolean = false;
+    isLoadingOrderList = false;
     orderList = [];
     showOrderList = [];
     orderColumnsSetting: STColumn[] = [
@@ -65,6 +61,10 @@ export class AccountRechargeComponent implements OnInit {
         }
     ];
 
+    ngOnInit() {
+        this.loadOrderList();
+    }
+
     /**
      * 账户充值订单列表
      */
@@ -75,7 +75,7 @@ export class AccountRechargeComponent implements OnInit {
             if (data) {
                 this.orderList = data;
                 this.orderList.forEach((item) => {
-                    item['check'] = 0;
+                    item.check = 0;
                 });
                 this.showOrderList = this.orderList;
                 this.filterOrderAccordingDate(this.orderDateRange);
@@ -94,9 +94,9 @@ export class AccountRechargeComponent implements OnInit {
     }
 
     getCheckBoxSelectedIDList(): string[] {
-        let pids: string[] = [];
+        const pids: string[] = [];
         this.checkboxSelectedList.forEach((item) => {
-            pids.push(item['order_id']);
+            pids.push(item.order_id);
         });
         return pids;
     }
@@ -104,7 +104,7 @@ export class AccountRechargeComponent implements OnInit {
     handlePrintOrder(order_nums: string[]) {
         this.isPrintingExcel = true;
 
-        let downloadExcelTemplate = {
+        const downloadExcelTemplate = {
             ids: order_nums.join('-')
         };
 
@@ -146,9 +146,9 @@ export class AccountRechargeComponent implements OnInit {
 
             if (result && result.length > 0) {
                 this.showOrderList = this.orderList.filter((value, index) => {
-                    let temDate = (new Date(value['date'])).getTime();
-                    let begin = result[0].getTime();
-                    let end = result[1].getTime();
+                    const temDate = (new Date(value.date)).getTime();
+                    const begin = result[0].getTime();
+                    const end = result[1].getTime();
 
                     return temDate >= begin && temDate <= end;
                 })

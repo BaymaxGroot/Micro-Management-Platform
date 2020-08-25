@@ -8,11 +8,11 @@ import { environment } from '@env/environment';
 })
 export class OrderItemSellComponent implements OnInit {
 
-    @Input() imgUrl: string = '';
-    @Input() name: string = '';
-    @Input() price: number = 0;
-    @Input() specify: string = '';
-    @Input() quantity: number = 0;
+    @Input() imgUrl = '';
+    @Input() name = '';
+    @Input() price = 0;
+    @Input() specify = '';
+    @Input() quantity = 0;
 
     getUrl(): string {
         return environment.ICON_URL + '/' + this.imgUrl;

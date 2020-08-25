@@ -13,9 +13,6 @@ import {Lodop, LodopService} from "@delon/abc";
 })
 export class ListComponent implements OnInit {
 
-    objectKeys = Object.keys;
-    orderDateRange: Date[];
-
     constructor(
         public lodopSrv: LodopService,
         private msg: NzMessageService,
@@ -25,17 +22,16 @@ export class ListComponent implements OnInit {
 
     }
 
-    ngOnInit() {
-        this.loadOrderList();
-    }
+    objectKeys = Object.keys;
+    orderDateRange: Date[];
 
     checkboxSelectedList: STData[] = [];
-    isMultiDelivery: boolean = false;
-    isPrintingExcel: boolean = false;
+    isMultiDelivery = false;
+    isPrintingExcel = false;
     /**
      * 订单列表
      */
-    isLoadingOrderList: boolean = false;
+    isLoadingOrderList = false;
     orderList = [];
     showOrderList = [];
     orderColumnsSetting: STColumn[] = [
@@ -90,7 +86,7 @@ export class ListComponent implements OnInit {
                         title: '确认退款？',
                         okType: 'danger'
                       },click: (record, modal, instance) => {
-                        this.handleRefund(parseInt(record['order_id']));
+                        this.handleRefund(parseInt(record.order_id));
                     },
                     iif: (item) => {
                         return item.status_desc == '待处理' || item.status_desc == '已完成' || item.status_desc == '待发货' || item.status_desc == '待收货';
@@ -99,6 +95,49 @@ export class ListComponent implements OnInit {
             ]
         }
     ];
+
+    /**
+     * 修改发货地址
+     */
+    openChangeAddress = false;
+    order_id = '';
+    isChangingAddress = false;
+    addressFormData: any;
+    changeAddressSchema: SFSchema = {
+        properties: {
+            name: {
+                type: 'string',
+                title: '收件人'
+            },
+            phone: {
+                type: 'string',
+                title: '电话'
+            },
+            address: {
+                type: 'string',
+                title: '收货地址'
+            }
+        },
+        required: ['name', 'phone', 'address']
+    };
+
+    cog: any = {
+        url: 'https://localhost:8443/CLodopfuncs.js',
+        printer: '',
+        paper: '',
+        html: '',
+    };
+    isPrintOrder = false;
+    error = false;
+    lodop: Lodop | null = null;
+    pinters: any[] = [];
+    papers: string[] = [];
+
+    printing = false;
+
+    ngOnInit() {
+        this.loadOrderList();
+    }
 
     /**
      * 加载订单列表
@@ -110,8 +149,8 @@ export class ListComponent implements OnInit {
             if (data) {
                 this.orderList = data;
                 this.orderList.forEach((item) => {
-                    item['check'] = 0;
-                    item['expand'] = true;
+                    item.check = 0;
+                    item.expand = true;
                 });
                 this.showOrderList = this.orderList;
                 this.filterOrderAccordingDate(this.orderDateRange);
@@ -130,9 +169,9 @@ export class ListComponent implements OnInit {
     }
 
     getCheckBoxSelectedIDList(): string[] {
-        let pids: string[] = [];
+        const pids: string[] = [];
         this.checkboxSelectedList.forEach((item) => {
-            pids.push(item['order_id']);
+            pids.push(item.order_id);
         });
         return pids;
     }
@@ -140,7 +179,7 @@ export class ListComponent implements OnInit {
     handleMultiDelivery(order_nums: string[]) {
         this.isMultiDelivery = true;
 
-        let multiDeliveryTemplate = {
+        const multiDeliveryTemplate = {
             order_ids: order_nums.join('-'),
             state: 1
         };
@@ -158,7 +197,7 @@ export class ListComponent implements OnInit {
     handlePrintOrder(order_nums: string[]) {
         this.isPrintingExcel = true;
 
-        let downloadExcelTemplate = {
+        const downloadExcelTemplate = {
             ids: order_nums.join('-')
         };
 
@@ -200,9 +239,9 @@ export class ListComponent implements OnInit {
 
             if (result && result.length > 0) {
                 this.showOrderList = this.orderList.filter((value, index) => {
-                    let temDate = (new Date(value['date'])).getTime();
-                    let begin = result[0].getTime();
-                    let end = result[1].getTime();
+                    const temDate = (new Date(value.date)).getTime();
+                    const begin = result[0].getTime();
+                    const end = result[1].getTime();
 
                     return temDate >= begin && temDate <= end;
                 })
@@ -216,7 +255,7 @@ export class ListComponent implements OnInit {
     }
 
     OrderDelivery(order_id: string, shop_id: string, state: number) {
-        let OrderDeliveryTemplate = {
+        const OrderDeliveryTemplate = {
             'order_id': parseInt(order_id),
             'shop_id': parseInt(shop_id),
             'state': state
@@ -229,31 +268,6 @@ export class ListComponent implements OnInit {
         })
     }
 
-    /**
-     * 修改发货地址
-     */
-    openChangeAddress: boolean = false;
-    order_id: string = '';
-    isChangingAddress: boolean = false;
-    addressFormData: any;
-    changeAddressSchema: SFSchema = {
-        properties: {
-            name: {
-                type: 'string',
-                title: '收件人'
-            },
-            phone: {
-                type: 'string',
-                title: '电话'
-            },
-            address: {
-                type: 'string',
-                title: '收货地址'
-            }
-        },
-        required: ['name', 'phone', 'address']
-    };
-
     hideChangeAddressModal() {
         this.openChangeAddress = false;
         this.loadOrderList();
@@ -264,7 +278,7 @@ export class ListComponent implements OnInit {
     }
 
     changeAddressSubmit(value: any) {
-        let changeAddressTemplate = {
+        const changeAddressTemplate = {
             order_id: parseInt(this.order_id),
             nickname: value.name,
             mobile: value.phone,
@@ -282,27 +296,13 @@ export class ListComponent implements OnInit {
         })
     }
 
-    cog: any = {
-        url: 'https://localhost:8443/CLodopfuncs.js',
-        printer: '',
-        paper: '',
-        html: '',
-    };
-    isPrintOrder: boolean = false;
-    error = false;
-    lodop: Lodop | null = null;
-    pinters: any[] = [];
-    papers: string[] = [];
-
-    printing = false;
-
     printOrder(value: any, shop: string) {
         this.isPrintOrder = true;
 
-        let order = value['order_number'];
-        let mdate = value['date'];
-        let account = value['member_name'];
-        let expressinfo = value['express_info'];
+        const order = value.order_number;
+        const mdate = value.date;
+        const account = value.member_name;
+        const expressinfo = value.express_info;
 
         let content = `
             商品名称 数量 单价 小计
@@ -317,7 +317,7 @@ export class ListComponent implements OnInit {
             合计 ${value.total_price}元
         `;
 
-        let mhtml = `
+        const mhtml = `
             订单编号: ${order}
             下单时间: ${mdate}
             下单账户: ${account}
@@ -376,8 +376,8 @@ export class ListComponent implements OnInit {
     }
 
     handleRefund(order_id: number) {
-        let refundTemplate = {
-            order_id: order_id
+        const refundTemplate = {
+            order_id
         };
         this.isLoadingOrderList = true;
         this._microAppHttpClient.post(Interface.OrderRefundEndPoint, refundTemplate).subscribe((data) => {

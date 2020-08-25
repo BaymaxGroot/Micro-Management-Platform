@@ -28,10 +28,6 @@ export class ListComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.loadEnterpriseList();
-    }
-
     /**
      * 企业列表设置
      */
@@ -39,7 +35,7 @@ export class ListComponent implements OnInit {
     columnSetting: STColumn[] = [
         {
             title: 'ID', index: 'id', format: (item) => {
-                return 'E' + item['id'];
+                return 'E' + item.id;
             }
         },
         {title: '企业名称', index: 'name'},
@@ -58,13 +54,36 @@ export class ListComponent implements OnInit {
                     text: '删除',
                     type: 'del',
                     click: (e: any) => {
-                        this.handleRemoveEnterprise(parseInt(e['id']));
+                        this.handleRemoveEnterprise(parseInt(e.id));
                     }
                 },
             ]
         }
     ];
     enterpriseListData: STData[] = [];
+
+    /**
+     * 添加企业模态框
+     */
+    addOrEditEnterpriseModalVisible = false;
+    isAddModal = true;
+
+    enterpriseFormData: any;
+    enterpriseSchema: SFSchema = {
+        properties: {
+            name: {
+                type: 'string',
+                title: '企业名称'
+            }
+        },
+        required: ['name']
+    };
+    isAddingOrEditingEnterprise = false;
+    editEnterpriseLabel = 0;
+
+    ngOnInit() {
+        this.loadEnterpriseList();
+    }
 
     /**
      * 加载企业列表
@@ -82,12 +101,6 @@ export class ListComponent implements OnInit {
             this.isLoadingList = false;
         });
     }
-
-    /**
-     * 添加企业模态框
-     */
-    addOrEditEnterpriseModalVisible: boolean = false;
-    isAddModal: boolean = true;
 
     showAddOrEditEnterpriseModal(): void {
         if (this.isAddModal) {
@@ -108,34 +121,21 @@ export class ListComponent implements OnInit {
               name: ''
             };
         } else {
-            this.editEnterpriseLabel = parseInt(e['id']);
+            this.editEnterpriseLabel = parseInt(e.id);
             this.enterpriseFormData = {
-                name: e['name']
+                name: e.name
             }
         }
     }
-
-    enterpriseFormData: any;
-    enterpriseSchema: SFSchema = {
-        properties: {
-            name: {
-                type: 'string',
-                title: '企业名称'
-            }
-        },
-        required: ['name']
-    };
-    isAddingOrEditingEnterprise: boolean = false;
-    editEnterpriseLabel: number = 0;
 
     disableAddOrEditEnterpriseSubmitButton(sf: SFComponent): boolean {
         return !sf.valid;
     }
 
     handleAddOrEditEnterpriseSubmit(value: any): void {
-        let enterpriseTemplate = {
+        const enterpriseTemplate = {
             enterprise_id: this.isAddModal? 0:this.editEnterpriseLabel,
-            name: value['name']
+            name: value.name
         };
         this.isAddingOrEditingEnterprise = true;
         this._microAppHttpClient.post(Interface.EnterpriseAddOrEditEndPoint, enterpriseTemplate).subscribe((data) =>{
@@ -151,7 +151,7 @@ export class ListComponent implements OnInit {
 
     handleRemoveEnterprise(label: number) {
         this.isLoadingList = true;
-        let removeEnterpriseTemplate = {
+        const removeEnterpriseTemplate = {
             enterprise_id: label
         };
         this._microAppHttpClient.post(Interface.EnterpriseRemoveEndPoint, removeEnterpriseTemplate).subscribe((data) =>{
