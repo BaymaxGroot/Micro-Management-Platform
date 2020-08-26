@@ -346,7 +346,7 @@ export class CarriageComponent implements OnInit {
         this.isAddingCarriageRule = true;
         const addCarriageRuleTemplate = {
             "carriage_rule_id": 0,
-            "is_shop": value.type == '供应商运费规则',
+            "is_shop": value.type == '供应商运费规则'? 'true':'false',
             "rule_name": value.rule_name,
             "shop_id": value.shop,
             "product_id": value.product,
@@ -383,7 +383,6 @@ export class CarriageComponent implements OnInit {
     }
 
     editCarriageModalVisible = false;
-    editCarriageModalSubTitle: string;
     editCarriageModalFormData: any;
     editCarriageSchema: SFSchema = {
         properties: {
@@ -477,6 +476,7 @@ export class CarriageComponent implements OnInit {
             required: []
         }
     };
+    isEditingCarriageRule: boolean = false;
 
     handleShowEditCarriageModal(data) {
         this.editCarriageModalVisible = true;
@@ -485,6 +485,35 @@ export class CarriageComponent implements OnInit {
 
     handleHideEditCarriageModal() {
         this.editCarriageModalVisible = false;
+    }
+
+    handleEditSaveCarriageRule(value: any) {
+        this.isEditingCarriageRule = true;
+        const editCarriageRuleTemplate = {
+            "carriage_rule_id": this.editCarriageModalFormData.rule_id,
+            "is_shop": Object.keys(this.editCarriageModalFormData).includes('shop_id')? 'true':'false',
+            "rule_name": value.rule_name,
+            "shop_id": this.editCarriageModalFormData.shop_id,
+            "product_id": this.editCarriageModalFormData.product_id,
+            "rule_type": value.rule_type,
+            "special_region": value.special_region,
+            "base_order_price": value.base_order_price,
+            "base_weight": value.base_weight,
+            "lower_base_carriage": value.lower_base_carriage,
+            "lower_extra_carriage": value.lower_extra_carriage,
+            "higher_base_carriage": value.higher_base_carriage,
+            "higher_extra_carriage": value.higher_extra_carriage,
+            "status": value.status ? 1 : 0,
+        };
+        this._microAppHttpClient.post(Interface.AddOrEditCarriageEndPoint, editCarriageRuleTemplate).subscribe(data => {
+            this.isEditingCarriageRule = false;
+            this.handleHideEditCarriageModal();
+            this.handleHideShopOrProductRuleList();
+            this.loadCarriageList();
+        }, err => {
+            this.isEditingCarriageRule = false;
+            this.msg.error('添加运费规则失败, 请重试!');
+        });
     }
 
 }

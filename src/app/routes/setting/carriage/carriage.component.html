@@ -38,7 +38,7 @@
     <!-- 运费规则添加 -->
     <nz-card nzTitle="添加运费规则" [nzExtra]="carriageAddExtra" *ngIf="addCarriageModalVisible">
         <sf [mode]="'edit'" [schema]="addCarriageSchema" [noColon]="true"
-            (formSubmit)="handleAddCarriageSubmit($event)">
+            (formSubmit)="handleAddCarriageSubmit($event)" [loading]="isAddingCarriageRule">
         </sf>
     </nz-card>
     <ng-template #carriageAddExtra>
@@ -48,7 +48,7 @@
     <!-- 运费规则编辑 -->
     <nz-card nzTitle="编辑运费规则" [nzExtra]="carriageEditExtra" *ngIf="editCarriageModalVisible && !addCarriageModalVisible">
         <sf [mode]="'edit'" [schema]="editCarriageSchema" [formData]="editCarriageModalFormData" [noColon]="true"
-            (formSubmit)="handleAddCarriageSubmit($event)">
+            (formSubmit)="handleEditSaveCarriageRule($event)" [loading]="isEditingCarriageRule">
         </sf>
     </nz-card>
     <ng-template #carriageEditExtra>
