@@ -485,6 +485,7 @@ export class CarriageComponent implements OnInit {
     handleShowEditCarriageModal(data) {
         this.editCarriageModalVisible = true;
         this.editCarriageModalFormData = data;
+        this.editCarriageModalFormData.rule_type = this.editCarriageModalFormData.type;
     }
 
     handleHideEditCarriageModal() {
