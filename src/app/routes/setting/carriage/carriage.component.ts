@@ -106,6 +106,7 @@ export class CarriageComponent implements OnInit {
             title: '操作', buttons: [
                 {
                     text: '编辑', type: 'none', click: record => {
+                        this.clickRuleRecord = record;
                         this.handleShowEditCarriageModal(record);
                     }
                 },
@@ -118,6 +119,7 @@ export class CarriageComponent implements OnInit {
         }
     ];
     carriageRuleListProductRuleList: [];
+    clickRuleRecord: any;
     carriageRuleListProductRuleColumnSettings: STColumn[] = [
         {
             title: 'ID', format: item => {
@@ -143,14 +145,15 @@ export class CarriageComponent implements OnInit {
         {title: '订单基准金额', index: 'base_order_price'},
         {title: '订单基准重量（克）', index: 'base_weight'},
         {title: '低于订单基准金额首重运费', index: 'lower_base_carriage'},
-        {title: '低于订单基准金额续重运费/斤', index: 'lower_extra_carriage'},
+        {title: '低于订单基准金额续重运费 元/斤', index: 'lower_extra_carriage'},
         {title: '不低于订单基准金额首重运费', index: 'higher_base_carriage'},
-        {title: '不低于订单基准金额续重运费/斤', index: 'higher_extra_carriage'},
+        {title: '不低于订单基准金额续重运费 元/斤', index: 'higher_extra_carriage'},
         {title: '状态', index: 'status', type: 'badge', badge: BADGE},
         {
             title: '操作', buttons: [
                 {
                     text: '编辑', type: 'none', click: record => {
+                        this.clickRuleRecord = record;
                         this.handleShowEditCarriageModal(record);
                     }
                 },
@@ -243,13 +246,13 @@ export class CarriageComponent implements OnInit {
             lower_base_carriage: {type: 'number', title: '低于订单基准金额首重运费'},
             lower_extra_carriage: {
                 type: 'number', title: '低于订单基准金额续重运费', ui: {
-                    unit: '斤'
+                    unit: '元/斤'
                 } as SFStringWidgetSchema
             },
             higher_base_carriage: {type: 'number', title: '不低于订单基准金额首重运费'},
             higher_extra_carriage: {
                 type: 'number', title: '不低于订单基准金额续重运费', ui: {
-                    unit: '斤'
+                    unit: '元/斤'
                 } as SFStringWidgetSchema
             },
             status: {
@@ -362,10 +365,11 @@ export class CarriageComponent implements OnInit {
         };
         this._microAppHttpClient.post(Interface.AddOrEditCarriageEndPoint, addCarriageRuleTemplate).subscribe(data => {
             this.isAddingCarriageRule = false;
+            this.handleAddCarriageHideEvent();
             this.loadCarriageList();
         }, err => {
             this.isAddingCarriageRule = false;
-            this.msg.error('添加运费规则失败, 请重试!');
+            this.msg.error('添加运费规则失败, 请重试! - ' + err.error.msg);
         });
     }
 
@@ -490,11 +494,11 @@ export class CarriageComponent implements OnInit {
     handleEditSaveCarriageRule(value: any) {
         this.isEditingCarriageRule = true;
         const editCarriageRuleTemplate = {
-            "carriage_rule_id": this.editCarriageModalFormData.rule_id,
-            "is_shop": Object.keys(this.editCarriageModalFormData).includes('shop_id')? 'true':'false',
+            "carriage_rule_id": this.clickRuleRecord.rule_id,
+            "is_shop": this.carriageRuleListType == 1? 'true':'false',
             "rule_name": value.rule_name,
-            "shop_id": this.editCarriageModalFormData.shop_id,
-            "product_id": this.editCarriageModalFormData.product_id,
+            "shop_id": this.clickRuleRecord.shop_id,
+            "product_id": this.clickRuleRecord.product_id,
             "rule_type": value.rule_type,
             "special_region": value.special_region,
             "base_order_price": value.base_order_price,
