@@ -39,7 +39,7 @@ export class CarriageComponent implements OnInit {
             title: '分销商级别运费规则', buttons: [
                 {
                     text: record => {
-                        return record.shop_rule_list.length;
+                        return record.shop_rule_list.length + '条';
                     }, type: 'none', click: record => {
                         if (record.shop_rule_list.length == 0) return;
                         this.carriageRuleListShopRuleList = record.shop_rule_list;
@@ -55,7 +55,7 @@ export class CarriageComponent implements OnInit {
             title: '特殊商品级别运费规则', buttons: [
                 {
                     text: record => {
-                        return record.product_rule_list.length;
+                        return record.product_rule_list.length + '条';
                     }, type: 'none', click: record => {
                         if (record.product_rule_list.length == 0) return;
                         this.carriageRuleListProductRuleList = record.product_rule_list;
