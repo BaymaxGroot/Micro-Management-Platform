@@ -451,13 +451,13 @@ export class CarriageComponent implements OnInit {
             lower_base_carriage: {type: 'number', title: '低于订单基准金额首重运费'},
             lower_extra_carriage: {
                 type: 'number', title: '低于订单基准金额续重运费', ui: {
-                    unit: '斤'
+                    unit: '元/斤'
                 } as SFStringWidgetSchema
             },
             higher_base_carriage: {type: 'number', title: '不低于订单基准金额首重运费'},
             higher_extra_carriage: {
                 type: 'number', title: '不低于订单基准金额续重运费', ui: {
-                    unit: '斤'
+                    unit: '元/斤'
                 } as SFStringWidgetSchema
             },
             status: {
