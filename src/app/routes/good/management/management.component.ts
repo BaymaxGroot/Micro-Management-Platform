@@ -702,7 +702,7 @@ export class ManagementComponent implements OnInit {
 
         let tag = true;
         this.productSchema.required.forEach((item) => {
-            if (value[item] == '') {
+            if (value[item] === '') {
                 tag = false;
             }
         });
