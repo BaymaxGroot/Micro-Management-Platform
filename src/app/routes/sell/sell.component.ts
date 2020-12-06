@@ -98,7 +98,6 @@ export class SellComponent implements OnInit {
                     item.expand = true;
                 });
                 this.showSellList = this.sellList;
-                this.filterOrderAccordingDate(this.orderDateRange);
             }
             this.isLoadingList = false;
         }, (err) => {

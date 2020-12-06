@@ -157,7 +157,6 @@ export class ListComponent implements OnInit {
                     item.expand = true;
                 });
                 this.showOrderList = this.orderList;
-                this.filterOrderAccordingDate(this.orderDateRange);
             }
             this.isLoadingOrderList = false;
         }, (err) => {
