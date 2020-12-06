@@ -43,9 +43,9 @@ export class SellComponent implements OnInit {
         {title: '下单时间', index: 'pay_time', type: 'date'},
         {title: '运费', index: 'yun_price'},
         {title: '总金额', index: 'total_price'},
-        {title: '支付方式', index: 'pay_type'},
-        {title: '余额抵扣', index: 'purse_price'},
-        {title: '微信支付', index: 'wx_price'},
+        // {title: '支付方式', index: 'pay_type'},
+        // {title: '余额抵扣', index: 'purse_price'},
+        // {title: '微信支付', index: 'wx_price'},
         {title: '支付时间', index: 'pay_time', type: 'date'},
         {
             title: '订单状态', index: 'status_desc', filter: {
@@ -80,17 +80,17 @@ export class SellComponent implements OnInit {
     printing = false;
 
     ngOnInit() {
+        this.orderDateRange = [
+            new Date( new Date().getTime() - 30 * 24 * 60 * 60 * 1000 ),
+            new Date(),
+        ];
         this.loadSellList();
-        // setInterval(() => {
-        //     this.loadSellList()
-        // }, 1000 * 60 * 2);
     }
 
     loadSellList() {
         this.isLoadingList = true;
         this.sellList = [];
-        // this.settingService.user.shop
-        this._microAppHttpClient.get(Interface.SellEndPoint + '?id=' + this.settingService.user.shop).subscribe((data) => {
+        this._microAppHttpClient.get(`${Interface.SellEndPoint}?id=${this.settingService.user.shop}&start=${this.orderDateRange[0].getTime()}&end=${this.orderDateRange[1].getTime()}`).subscribe((data) => {
             if (data) {
                 this.sellList = data;
                 this.sellList.forEach((item) => {
@@ -125,7 +125,8 @@ export class SellComponent implements OnInit {
         this.isPrintingExcel = true;
 
         const downloadExcelTemplate = {
-            ids: order_nums.join('-')
+            ids: order_nums.join('-'),
+            shop_id: this.settingService.user.shop
         };
 
         this._microAppHttpClient.post(Interface.PrintOrderEndPoint, downloadExcelTemplate).subscribe((data) => {
@@ -162,23 +163,8 @@ export class SellComponent implements OnInit {
 
     filterOrderAccordingDate(result: Date[]) {
         this.isLoadingList = true;
-        setTimeout(() => {
-
-            if (result && result.length > 0) {
-                this.showSellList = this.sellList.filter((value, index) => {
-                    const temDate = (new Date(value.date)).getTime();
-                    const begin = result[0].getTime();
-                    const end = result[1].getTime();
-
-                    return temDate >= begin && temDate <= end;
-                })
-            } else {
-                this.showSellList = this.sellList;
-            }
-
-            this.isLoadingList = false;
-
-        }, 1000);
+        this.orderDateRange = result;
+        this.loadSellList();
     }
 
     OrderDelivery(order_id: string, state: number) {

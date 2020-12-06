@@ -83,6 +83,11 @@
                             "text": "分销商",
                             "link": "/distribution/list",
                             "i18n": "分销商"
+                        },
+                        {
+                            "text": "销售统计",
+                            "link": "/distribution/statistics",
+                            "i18n": "销售统计"
                         }
                     ]
                 },

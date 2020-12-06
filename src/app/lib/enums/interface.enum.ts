@@ -87,6 +87,8 @@ export enum Interface {
      */
     SellOrderEndPoint = '/api/sales/info/id',
     SellEndPoint = '/api/order/list/shop/id',
+    StatisticsEndPoint = '/api/sales/list',
+    DownloadStatisticsEndPoint = '/api/download/sales/excel',
 
     /**
      * 企业管理

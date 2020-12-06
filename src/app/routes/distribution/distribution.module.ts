@@ -3,9 +3,11 @@ import {NgModule} from '@angular/core';
 import {DistributionRoutingModule} from './distribution-routing.module';
 import {ListComponent} from './list/list.component';
 import {SharedModule} from "@shared";
+import { StatisticsComponent } from './statistics/statistics.component';
 
 const COMPONENTS = [
-    ListComponent
+    ListComponent,
+    StatisticsComponent
 ];
 
 const COMPONENTS_NOROUNT = [];

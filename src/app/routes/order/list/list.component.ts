@@ -136,6 +136,10 @@ export class ListComponent implements OnInit {
     printing = false;
 
     ngOnInit() {
+        this.orderDateRange = [
+            new Date( new Date().getTime() - 30 * 24 * 60 * 60 * 1000 ),
+            new Date(),
+        ];
         this.loadOrderList();
     }
 
@@ -145,7 +149,7 @@ export class ListComponent implements OnInit {
     loadOrderList() {
         this.isLoadingOrderList = true;
         this.orderList = [];
-        this._microAppHttpClient.get(Interface.LoadOrderListEndPoint).subscribe((data) => {
+        this._microAppHttpClient.get(`${Interface.LoadOrderListEndPoint}?start=${this.orderDateRange[0].getTime()}&end=${this.orderDateRange[1].getTime()}`).subscribe((data) => {
             if (data) {
                 this.orderList = data;
                 this.orderList.forEach((item) => {
@@ -235,23 +239,8 @@ export class ListComponent implements OnInit {
 
     filterOrderAccordingDate(result: Date[]) {
         this.isLoadingOrderList = true;
-        setTimeout(() => {
-
-            if (result && result.length > 0) {
-                this.showOrderList = this.orderList.filter((value, index) => {
-                    const temDate = (new Date(value.date)).getTime();
-                    const begin = result[0].getTime();
-                    const end = result[1].getTime();
-
-                    return temDate >= begin && temDate <= end;
-                })
-            } else {
-                this.showOrderList = this.orderList;
-            }
-
-            this.isLoadingOrderList = false;
-
-        }, 1000);
+        this.orderDateRange = result;
+        this.loadOrderList();
     }
 
     OrderDelivery(order_id: string, shop_id: string, state: number) {
