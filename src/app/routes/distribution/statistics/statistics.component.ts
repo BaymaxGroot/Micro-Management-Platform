@@ -63,7 +63,11 @@ export class StatisticsComponent implements OnInit {
             start: this.listDateRange[0].getTime(),
             end: this.listDateRange[1].getTime()
         }).subscribe( data => {
-            this.isPrintingExcel = false;
+            this.msg.info('订单信息下载中....');
+            window.open(data);
+            setTimeout(() => {
+                this.isPrintingExcel = false;
+            }, 1000);
         } , error => {
             this.msg.error('下载销售统计失败，请重试!');
             this.isPrintingExcel = false;
